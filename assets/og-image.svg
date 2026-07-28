@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img"
+     aria-label="LOGIMOTORS — forklifts: sale, rent, service, parts">
+  <title>LOGIMOTORS</title>
+  <defs>
+    <linearGradient id="warm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a800"/>
+      <stop offset="1" stop-color="#f07818"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.1" r="0.7">
+      <stop offset="0" stop-color="#f5a800" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#f5a800" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0v64" fill="none" stroke="#f5a800" stroke-opacity="0.10" stroke-width="2"/>
+    </pattern>
+    <pattern id="hazard" width="28" height="28" patternUnits="userSpaceOnUse"
+             patternTransform="rotate(-45)">
+      <rect width="28" height="28" fill="#f5a800"/>
+      <rect width="14" height="28" fill="#16181f"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#101218"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect y="0" width="1200" height="10" fill="url(#hazard)"/>
+  <rect y="620" width="1200" height="10" fill="url(#hazard)"/>
+
+  <text x="90" y="250" font-family="Unbounded, 'Arial Black', sans-serif"
+        font-weight="900" font-size="96" fill="#f2f2ec" letter-spacing="-2">LOGIMOTORS</text>
+  <rect x="90" y="285" width="220" height="10" fill="url(#warm)"/>
+
+  <text x="90" y="360" font-family="'Exo 2', system-ui, sans-serif"
+        font-size="34" fill="#98a0af">Forklifts — sale · rent · service · parts</text>
+  <text x="90" y="412" font-family="'Exo 2', system-ui, sans-serif"
+        font-size="34" fill="#98a0af">Gasoline · Diesel · Electric · Any brand</text>
+
+  <text x="90" y="510" font-family="ui-monospace, monospace"
+        font-size="24" fill="#f5a800" letter-spacing="4">RUSTAVI, GEORGIA · SINCE 1999</text>
+</svg>

@@ -1,0 +1,512 @@
+/**
+ * Default site content.
+ *
+ * This is the content the site falls back to when data/content.json does not
+ * exist and nothing has been saved locally. Treat it as the "factory reset"
+ * state — Admin → Publish → Reset restores exactly this.
+ *
+ * Shape of a translatable value: { ka: '…', en: '…', ru: '…' }
+ * Anything not translatable (prices, dates, phone numbers) is a plain value.
+ */
+
+/** @typedef {{ka: string, en: string, ru: string}} Translatable */
+
+export const DEFAULT_CONTENT = {
+  /** Bumped when the shape changes so store.js can migrate old saved data. */
+  version: 1,
+
+  /* ======================================================================
+     Free text blocks, editable in Admin → Texts
+     ====================================================================== */
+  texts: {
+    heroBadge: {
+      en: 'LOGIMOTORS LTD — RUSTAVI, GEORGIA',
+      ka: 'შპს ლოგიმოტორსი — რუსთავი, საქართველო',
+      ru: 'ООО «ЛОГИМОТОРС» — РУСТАВИ, ГРУЗИЯ',
+    },
+    heroTitle: {
+      en: 'Machines that move your business',
+      ka: 'ტექნიკა, რომელიც თქვენს ბიზნესს ამოძრავებს',
+      ru: 'Техника, которая движет ваш бизнес',
+    },
+    heroSub: {
+      en: 'Sale, rent, service and spare parts for every type of forklift — gasoline, diesel, electric. Any brand. Working in Georgia since 1999.',
+      ka: 'ნებისმიერი ტიპის ავტოსატვირთველას გაყიდვა, გაქირავება, სერვისი და სათადარიგო ნაწილები — ბენზინი, დიზელი, ელექტრო. ნებისმიერი ბრენდი. ვმუშაობთ საქართველოში 1999 წლიდან.',
+      ru: 'Продажа, аренда, сервис и запчасти для любых погрузчиков — бензин, дизель, электро. Любой бренд. Работаем в Грузии с 1999 года.',
+    },
+    about1: {
+      en: 'The core of our business is the service of warehouse machinery, the sale of new and used warehouse equipment, and the full volume of spare parts required for regenerative repair. We work with warehouse machinery of any manufacturer — any brand.',
+      ka: 'ჩვენი საქმიანობის ძირითადი მიმართულებაა სასაწყობე ტექნიკის სერვისი, ახალი და მეორადი ტექნიკის გაყიდვა და აღდგენითი შეკეთებისთვის საჭირო სათადარიგო ნაწილების სრული ასორტიმენტი. ვმუშაობთ ნებისმიერი მწარმოებლის ტექნიკაზე — ნებისმიერი ბრენდი.',
+      ru: 'Основное направление деятельности — сервис складской техники, продажа новой и б/у складской техники, а также весь объём запчастей, необходимых для восстановительного ремонта. Мы работаем с техникой любых производителей — любой бренд.',
+    },
+    about2: {
+      en: 'The concept of LOGIMOTORS LTD is to create the best conditions for the customer when purchasing the machinery or spare parts they need — with minimal delivery timeframes, guaranteed quality and a price that matches their choice.',
+      ka: 'შპს „ლოგიმოტორსის“ კონცეფციაა შეუქმნას მომხმარებელს საუკეთესო პირობები საჭირო ტექნიკის ან ნაწილების შესაძენად — მიწოდების მინიმალური ვადებით, ხარისხის გარანტიით და მისთვის შესაფერისი ფასით.',
+      ru: 'Концепция компании LOGIMOTORS LTD — создать для клиента лучшие условия при покупке необходимой техники или запчастей: минимальные сроки поставки, гарантия качества и цена, соответствующая его выбору.',
+    },
+    about3: {
+      en: 'Our policy is focused on the customer and their priorities. Our employees are always ready for a meaningful dialogue to agree on mutually acceptable conditions for machinery service and parts delivery. We are always open to cooperation — get to know us, and you will appreciate the advantages of working with LOGIMOTORS LTD.',
+      ka: 'კომპანიის პოლიტიკა ორიენტირებულია მომხმარებელზე და მის პრიორიტეტებზე. ჩვენი თანამშრომლები ყოველთვის მზად არიან შინაარსიანი დიალოგისთვის, რათა შეთანხმდნენ ურთიერთმისაღებ პირობებზე ტექნიკის მომსახურებასა და ნაწილების მიწოდებაზე. ჩვენ ყოველთვის ღია ვართ თანამშრომლობისთვის — გაგვიცანით და დარწმუნდებით „ლოგიმოტორსთან“ მუშაობის უპირატესობებში.',
+      ru: 'Политика компании ориентирована на клиента и его приоритеты. Наши сотрудники всегда готовы к конструктивному диалогу для согласования взаимоприемлемых условий обслуживания техники и поставки запчастей. Мы всегда открыты к сотрудничеству — познакомившись с нами, вы оцените все преимущества работы с LOGIMOTORS LTD.',
+    },
+    serviceIntro: {
+      en: 'Regenerative repair, scheduled maintenance and diagnostics for forklifts of any brand — gasoline, diesel and electric. Original and analog spare parts with minimal delivery timeframes.',
+      ka: 'აღდგენითი შეკეთება, გეგმიური მომსახურება და დიაგნოსტიკა ნებისმიერი ბრენდის სატვირთველისთვის — ბენზინი, დიზელი, ელექტრო. ორიგინალი და ანალოგი ნაწილები მიწოდების მინიმალური ვადებით.',
+      ru: 'Восстановительный ремонт, плановое обслуживание и диагностика погрузчиков любых брендов — бензин, дизель, электро. Оригинальные и аналоговые запчасти с минимальными сроками поставки.',
+    },
+    /** Used for the <meta name="description"> tag, per language. */
+    metaDescription: {
+      en: 'LOGIMOTORS LTD, Rustavi — sale, rent, service and spare parts for forklifts of any brand. Gasoline, diesel and electric. Working in Georgia since 1999.',
+      ka: 'შპს ლოგიმოტორსი, რუსთავი — ნებისმიერი ბრენდის ავტოსატვირთველას გაყიდვა, გაქირავება, სერვისი და სათადარიგო ნაწილები. ვმუშაობთ 1999 წლიდან.',
+      ru: 'ООО «ЛОГИМОТОРС», Рустави — продажа, аренда, сервис и запчасти для погрузчиков любых брендов. Бензин, дизель, электро. Работаем с 1999 года.',
+    },
+  },
+
+  /* ======================================================================
+     Brand wordmarks. `short` is the logo and the oversized outlined lettering
+     in the footer; `full` is the watermark across the top of the hero.
+     ====================================================================== */
+  brand: {
+    short: 'LOGI',
+    full: 'LOGIMOTORS',
+  },
+
+  /**
+   * The four floating chips around the hero dial. Add or remove entries and
+   * the ring re-flows — positions come from :nth-child in css/pages.css, so
+   * four is the number the layout is designed for.
+   */
+  heroPills: [
+    { en: '1.5 – 5.0 t', ka: '1.5 – 5.0 ტ', ru: '1,5 – 5,0 т' },
+    { en: 'ELECTRIC', ka: 'ელექტრო', ru: 'ЭЛЕКТРО' },
+    { en: 'DIESEL · GAS', ka: 'დიზელი · გაზი', ru: 'ДИЗЕЛЬ · ГАЗ' },
+    { en: '24/7', ka: '24/7', ru: '24/7' },
+  ],
+
+  /* ======================================================================
+     Brand ticker — one string, shared by all languages
+     ====================================================================== */
+  brands:
+    'TOYOTA · LINDE · HYSTER · KOMATSU · JUNGHEINRICH · STILL · CAT · NISSAN · MITSUBISHI · CROWN · TCM · CLARK · HELI · DOOSAN · ANY BRAND · ',
+
+  /* ======================================================================
+     Services — shown on the home page and the service page
+     ====================================================================== */
+  services: [
+    {
+      id: 'sale',
+      num: '01',
+      title: { en: 'Sale', ka: 'გაყიდვა', ru: 'Продажа' },
+      desc: {
+        en: 'New and used forklifts of any brand — gasoline, diesel and electric — selected for your tasks and budget.',
+        ka: 'ახალი და მეორადი ავტოსატვირთველები ნებისმიერი ბრენდის — ბენზინი, დიზელი, ელექტრო — თქვენი ამოცანებისა და ბიუჯეტისთვის.',
+        ru: 'Новые и б/у погрузчики любых брендов — бензин, дизель, электро — под ваши задачи и бюджет.',
+      },
+    },
+    {
+      id: 'rent',
+      num: '02',
+      title: { en: 'Rent', ka: 'გაქირავება', ru: 'Аренда' },
+      desc: {
+        en: 'Short- and long-term rental with maintenance included. A machine on your site within days.',
+        ka: 'მოკლე და გრძელვადიანი გაქირავება მომსახურებით. ტექნიკა თქვენს ობიექტზე რამდენიმე დღეში.',
+        ru: 'Краткосрочная и долгосрочная аренда с обслуживанием. Техника на вашем объекте за считанные дни.',
+      },
+    },
+    {
+      id: 'service',
+      num: '03',
+      title: {
+        en: 'Service & repair',
+        ka: 'სერვისი და შეკეთება',
+        ru: 'Сервис и ремонт',
+      },
+      desc: {
+        en: 'Diagnostics, scheduled maintenance and full regenerative repair for warehouse machinery of any manufacturer.',
+        ka: 'დიაგნოსტიკა, გეგმიური მომსახურება და სრული აღდგენითი შეკეთება ნებისმიერი მწარმოებლის სასაწყობე ტექნიკისთვის.',
+        ru: 'Диагностика, плановое обслуживание и полный восстановительный ремонт складской техники любого производителя.',
+      },
+    },
+    {
+      id: 'parts',
+      num: '04',
+      title: {
+        en: 'Spare parts',
+        ka: 'სათადარიგო ნაწილები',
+        ru: 'Запчасти',
+      },
+      desc: {
+        en: 'The full volume of spare parts for regenerative repair — original and analog — with minimal delivery timeframes.',
+        ka: 'აღდგენითი შეკეთებისთვის საჭირო ნაწილების სრული ასორტიმენტი — ორიგინალი და ანალოგი — მიწოდების მინიმალური ვადებით.',
+        ru: 'Весь объём запчастей для восстановительного ремонта — оригинал и аналог — с минимальными сроками поставки.',
+      },
+    },
+    {
+      id: 'wheels',
+      num: '05',
+      title: {
+        en: 'Wheels & tyres',
+        ka: 'ბორბლები და საბურავები',
+        ru: 'Колёса и шины',
+      },
+      desc: {
+        en: 'Polyurethane, solid and pneumatic wheels for every type of forklift and pallet truck.',
+        ka: 'პოლიურეთანის, მთლიანი და პნევმატური ბორბლები ყველა ტიპის სატვირთველისა და პალეტის ურიკისთვის.',
+        ru: 'Полиуретановые, цельнолитые и пневматические колёса для всех типов погрузчиков и тележек.',
+      },
+    },
+  ],
+
+  /** The year the company was founded. Drives the years-of-experience figure. */
+  foundedYear: 1999,
+
+  /* ======================================================================
+     Statistics shown on the home and about pages.
+
+     The years entry carries `sinceYear` instead of a fixed value, so the
+     figure is worked out from the current date every time the page loads and
+     can never quietly go stale. The others are plain numbers.
+     ====================================================================== */
+  stats: [
+    { id: 'years', sinceYear: 1999, suffix: '+', labelKey: 'statYears' },
+    { id: 'machines', value: 3500, suffix: '+', labelKey: 'statMachines' },
+    { id: 'parts', value: 80000, suffix: '+', labelKey: 'statParts' },
+    { id: 'support', value: 24, suffix: '/7', labelKey: 'statSupport' },
+  ],
+
+  /* ======================================================================
+     Catalogue
+     ====================================================================== */
+  products: [
+    {
+      id: 'p1',
+      cat: 'forklift',
+      mode: 'sale',
+      fuel: 'electric',
+      cond: 'used',
+      brand: 'Toyota',
+      name: {
+        en: 'Toyota 8FBE20 electric forklift',
+        ka: 'Toyota 8FBE20 ელექტრო სატვირთველა',
+        ru: 'Электропогрузчик Toyota 8FBE20',
+      },
+      price: 14900,
+      unit: '',
+      capacity: '2.0 t',
+      lift: '4.5 m',
+      year: '2019',
+      img: '',
+    },
+    {
+      id: 'p2',
+      cat: 'forklift',
+      mode: 'sale',
+      fuel: 'gasoline',
+      cond: 'used',
+      brand: 'Linde',
+      name: {
+        en: 'Linde H25T LPG forklift',
+        ka: 'Linde H25T გაზის სატვირთველა',
+        ru: 'Газовый погрузчик Linde H25T',
+      },
+      price: 18500,
+      unit: '',
+      capacity: '2.5 t',
+      lift: '3.7 m',
+      year: '2018',
+      img: '',
+    },
+    {
+      id: 'p3',
+      cat: 'forklift',
+      mode: 'sale',
+      fuel: 'diesel',
+      cond: 'used',
+      brand: 'Hyster',
+      name: {
+        en: 'Hyster H3.0FT diesel forklift',
+        ka: 'Hyster H3.0FT დიზელის სატვირთველა',
+        ru: 'Дизельный погрузчик Hyster H3.0FT',
+      },
+      price: 16800,
+      unit: '',
+      capacity: '3.0 t',
+      lift: '4.0 m',
+      year: '2017',
+      img: '',
+    },
+    {
+      id: 'p4',
+      cat: 'forklift',
+      mode: 'sale',
+      fuel: 'electric',
+      cond: 'new',
+      brand: 'Jungheinrich',
+      name: {
+        en: 'Jungheinrich EFG 216 — new',
+        ka: 'Jungheinrich EFG 216 — ახალი',
+        ru: 'Jungheinrich EFG 216 — новый',
+      },
+      price: 32900,
+      unit: '',
+      capacity: '1.6 t',
+      lift: '5.0 m',
+      year: '2026',
+      img: '',
+    },
+    {
+      id: 'p5',
+      cat: 'forklift',
+      mode: 'rent',
+      fuel: 'diesel',
+      cond: 'used',
+      brand: 'Komatsu',
+      name: {
+        en: 'Komatsu FD30T — rental',
+        ka: 'Komatsu FD30T — გაქირავება',
+        ru: 'Komatsu FD30T — аренда',
+      },
+      price: 780,
+      unit: 'mo',
+      capacity: '3.0 t',
+      lift: '4.0 m',
+      year: '2020',
+      img: '',
+    },
+    {
+      id: 'p6',
+      cat: 'forklift',
+      mode: 'rent',
+      fuel: 'electric',
+      cond: 'used',
+      brand: 'Still',
+      name: {
+        en: 'Still RX20 — rental',
+        ka: 'Still RX20 — გაქირავება',
+        ru: 'Still RX20 — аренда',
+      },
+      price: 650,
+      unit: 'mo',
+      capacity: '2.0 t',
+      lift: '4.2 m',
+      year: '2021',
+      img: '',
+    },
+    {
+      id: 'p7',
+      cat: 'wheels',
+      mode: 'sale',
+      fuel: '',
+      cond: 'new',
+      brand: 'Universal',
+      name: {
+        en: 'Polyurethane wheel set (4 pcs)',
+        ka: 'პოლიურეთანის ბორბლების კომპლექტი (4 ც)',
+        ru: 'Комплект полиуретановых колёс (4 шт)',
+      },
+      price: 240,
+      unit: '',
+      capacity: '',
+      lift: '',
+      year: '',
+      img: '',
+    },
+    {
+      id: 'p8',
+      cat: 'parts',
+      mode: 'sale',
+      fuel: '',
+      cond: 'new',
+      brand: 'Universal',
+      name: {
+        en: 'Mast roller & chain kit',
+        ka: 'ანძის გორგოლაჭებისა და ჯაჭვის კომპლექტი',
+        ru: 'Комплект роликов мачты и цепи',
+      },
+      price: 390,
+      unit: '',
+      capacity: '',
+      lift: '',
+      year: '',
+      img: '',
+    },
+  ],
+
+  /* ======================================================================
+     News
+     ====================================================================== */
+  news: [
+    {
+      id: 'n1',
+      date: '2026-06-12',
+      img: '',
+      title: {
+        en: 'New arrivals: electric Jungheinrich EFG series in stock',
+        ka: 'ახალი ჩამოსვლა: ელექტრო Jungheinrich EFG სერია მარაგშია',
+        ru: 'Новое поступление: электрические Jungheinrich серии EFG на складе',
+      },
+      body: {
+        en: 'A fresh batch of Jungheinrich EFG 216 electric forklifts has arrived at our Rustavi warehouse. Lithium-ready, 1.6 t capacity, available for immediate delivery.',
+        ka: 'ჩვენს რუსთავის საწყობში ჩამოვიდა Jungheinrich EFG 216 ელექტრო სატვირთველების ახალი პარტია. 1.6 ტ ტვირთამწეობა, მზადაა დაუყოვნებელი მიწოდებისთვის.',
+        ru: 'На наш склад в Рустави прибыла новая партия электропогрузчиков Jungheinrich EFG 216. Грузоподъёмность 1,6 т, доступны к немедленной поставке.',
+      },
+    },
+    {
+      id: 'n2',
+      date: '2026-04-03',
+      img: '',
+      title: {
+        en: 'Rental fleet expanded — 12 new machines',
+        ka: 'გაქირავების პარკი გაფართოვდა — 12 ახალი ერთეული',
+        ru: 'Арендный парк расширен — 12 новых машин',
+      },
+      body: {
+        en: 'We added 12 machines to our rental fleet: diesel Komatsu and electric Still units from 1.5 to 3.5 tons. Short- and long-term contracts with service included.',
+        ka: 'გაქირავების პარკს დაემატა 12 ერთეული: დიზელის Komatsu და ელექტრო Still 1.5-დან 3.5 ტონამდე. მოკლე და გრძელვადიანი კონტრაქტები მომსახურებით.',
+        ru: 'Мы добавили в арендный парк 12 машин: дизельные Komatsu и электрические Still от 1,5 до 3,5 тонн. Краткосрочные и долгосрочные контракты с обслуживанием.',
+      },
+    },
+    {
+      id: 'n3',
+      date: '2026-02-18',
+      img: '',
+      title: {
+        en: '24/7 service support now available in Rustavi and Tbilisi',
+        ka: '24/7 სერვის-მხარდაჭერა უკვე ხელმისაწვდომია რუსთავსა და თბილისში',
+        ru: 'Сервисная поддержка 24/7 теперь доступна в Рустави и Тбилиси',
+      },
+      body: {
+        en: 'Our mobile service teams now respond around the clock. One call — and a technician with parts is on the way to your warehouse.',
+        ka: 'ჩვენი მობილური სერვის-ჯგუფები ახლა მთელი საათის განმავლობაში მუშაობენ. ერთი ზარი — და ტექნიკოსი ნაწილებით უკვე გზაშია თქვენი საწყობისკენ.',
+        ru: 'Наши мобильные сервисные бригады теперь работают круглосуточно. Один звонок — и техник с запчастями уже едет на ваш склад.',
+      },
+    },
+  ],
+
+  /* ======================================================================
+     Gallery
+     ====================================================================== */
+  gallery: [
+    {
+      id: 'g1',
+      img: '',
+      caption: {
+        en: 'Warehouse fleet',
+        ka: 'საწყობის ტექნიკა',
+        ru: 'Складской парк',
+      },
+    },
+    {
+      id: 'g2',
+      img: '',
+      caption: { en: 'Service bay', ka: 'სასერვისო ცენტრი', ru: 'Сервисная зона' },
+    },
+    {
+      id: 'g3',
+      img: '',
+      caption: {
+        en: 'Parts warehouse',
+        ka: 'ნაწილების საწყობი',
+        ru: 'Склад запчастей',
+      },
+    },
+    {
+      id: 'g4',
+      img: '',
+      caption: { en: 'Delivery day', ka: 'მიწოდების დღე', ru: 'День поставки' },
+    },
+    {
+      id: 'g5',
+      img: '',
+      caption: {
+        en: 'Team at work',
+        ka: 'გუნდი მუშაობისას',
+        ru: 'Команда за работой',
+      },
+    },
+    {
+      id: 'g6',
+      img: '',
+      caption: {
+        en: 'Rental yard',
+        ka: 'გაქირავების ეზო',
+        ru: 'Арендная площадка',
+      },
+    },
+  ],
+
+  /* ======================================================================
+     Contact details
+     ====================================================================== */
+  contacts: {
+    address: {
+      en: '21 Gagarin St, Rustavi, Georgia',
+      ka: 'რუსთავი, გაგარინის ქუჩა 21',
+      ru: 'г. Рустави, ул. Гагарина 21',
+    },
+    legal: {
+      en: 'LOGIMOTORS LTD',
+      ka: 'შპს ლოგიმოტორსი',
+      ru: 'ООО «ЛОГИМОТОРС»',
+    },
+    hours: {
+      en: 'Mon–Fri 9:00–18:00 · Sat 10:00–15:00',
+      ka: 'ორშ–პარ 9:00–18:00 · შაბ 10:00–15:00',
+      ru: 'Пн–Пт 9:00–18:00 · Сб 10:00–15:00',
+    },
+    phone1: '(599) 585 148',
+    phone2: '(555) 502 502',
+    /** Dial strings for tel: links — kept separate from the display format. */
+    phone1Dial: '+995599585148',
+    phone2Dial: '+995555502502',
+    email: 'logi@logimotors.com',
+    web: 'www.logimotors.com',
+    idCode: '416289171',
+    /**
+     * Where the map pin goes.
+     *
+     * Taken from the company's own Google Maps listing (ლოგიმოტორსი /
+     * Logimotors) — specifically the place marker in that URL, not the map
+     * centre, which sits about 40 m to the south-west.
+     *
+     * To move it: Admin → Contacts → Map. Paste a link, type the numbers, or
+     * press "Use my current location" while standing at the yard.
+     *
+     * Clear mapLat/mapLon to hide the map and show a plain placeholder, which
+     * also means no request to openstreetmap.org at all.
+     */
+    mapLat: 41.5425058,
+    mapLon: 45.0236142,
+    mapZoom: 17,
+    /** True once someone has confirmed the pin; drives the admin's warning. */
+    mapPinConfirmed: true,
+    /**
+     * Advanced escape hatch: paste a complete embed URL here and it wins over
+     * the coordinates above. Only needed for a non-OpenStreetMap provider.
+     */
+    mapEmbed: '',
+  },
+
+  /* ======================================================================
+     Per-language overrides for the UI strings in locales/*.js.
+     Only keys the owner has actually changed appear here.
+     ====================================================================== */
+  strings: { ka: {}, en: {}, ru: {} },
+
+  /* ======================================================================
+     Behavioural settings, editable in Admin → Settings
+     ====================================================================== */
+  settings: {
+    defaultLang: 'en',
+    defaultTheme: 'night',
+    /**
+     * Where the contact form posts. Leave empty and the form falls back to
+     * opening the visitor's mail client with the message pre-filled, which
+     * needs no server at all. Set it to a Formspree / Basin / Web3Forms
+     * endpoint to receive submissions by e-mail instead.
+     */
+    formEndpoint: '',
+    /** SHA-256 of PIN_SALT + pin. null means "still using the default PIN". */
+    pinHash: null,
+  },
+};

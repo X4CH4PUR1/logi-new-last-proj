@@ -1,0 +1,237 @@
+/* ==========================================================================
+   Base — reset, document defaults, shared primitives
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background var(--t-slow) ease, color var(--t-slow) ease;
+  overflow-x: hidden;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+}
+
+a {
+  color: var(--accent);
+  transition: color var(--t-fast) ease;
+}
+
+a:hover {
+  color: var(--accent-2);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Keyboard users get a way past the fixed header nav. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: calc(var(--z-header) + 1);
+  background: var(--accent);
+  color: var(--ink);
+  font-weight: 700;
+  padding: 12px 20px;
+}
+
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+  color: var(--ink);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   Brand primitives
+   These four motifs make up most of the visual identity, so they live here
+   rather than being repeated across component files.
+   ========================================================================== */
+
+/* Hazard tape: yellow / near-black diagonal stripe. */
+.hazard {
+  display: block;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--accent) 0 var(--hazard-a, 10px),
+    var(--ink) var(--hazard-a, 10px) var(--hazard-b, 20px)
+  );
+}
+
+/* Warm variant: yellow / orange, no black. Used for the logo underline. */
+.hazard--warm {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--accent) 0 var(--hazard-a, 7px),
+    var(--accent-2) var(--hazard-a, 7px) var(--hazard-b, 14px)
+  );
+}
+
+/* Three-tone rule sitting under major headings. */
+.rule {
+  display: block;
+  width: var(--rule-w, 180px);
+  height: var(--rule-h, 7px);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--accent) 0 12px,
+    var(--accent-2) 12px 18px,
+    var(--ink) 18px 30px
+  );
+}
+
+/* Text filled with the brand gradient. */
+.grad-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Outlined "ghost" lettering used for oversized background type. */
+.ghost-text {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Panel with a cut top-right corner. */
+.notch {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--notch, var(--notch-md))) 0,
+    100% var(--notch, var(--notch-md)),
+    100% 100%,
+    0 100%
+  );
+}
+
+/* Diagonal hatch used wherever a real photo has not been uploaded yet. */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--placeholder);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 14px,
+    var(--line) 14px 15px
+  );
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: lowercase;
+}
+
+/* Small monospace section label, e.g. "// SERVICES". */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 3.5px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 26px;
+  height: 4px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--accent) 0 5px,
+    var(--accent-2) 5px 10px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

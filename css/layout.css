@@ -1,0 +1,412 @@
+/* ==========================================================================
+   Layout — page shell, header, footer, containers, grids
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Shell
+   -------------------------------------------------------------------------- */
+
+.page-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 520px at 85% -5%, var(--glow), transparent 60%),
+    radial-gradient(900px 600px at -12% 40%, var(--glow), transparent 55%),
+    var(--bg);
+  color: var(--text);
+}
+
+.site-main {
+  padding-top: var(--header-height);
+}
+
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: var(--container-narrow);
+}
+
+/* Standard vertical rhythm for a full page view. */
+.page {
+  animation: fade-up 0.5s ease both;
+  padding-block: 72px;
+}
+
+.page__title {
+  font-weight: 800;
+  font-size: var(--fs-page-title);
+  letter-spacing: -0.5px;
+  margin-bottom: 32px;
+}
+
+.section {
+  padding-block: 72px;
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+
+.section__title {
+  font-weight: 800;
+  font-size: var(--fs-section);
+  letter-spacing: -0.5px;
+}
+
+.section__link {
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  border-bottom: 2px solid var(--accent);
+  white-space: nowrap;
+}
+
+/* Auto-fitting card grids. `--min` sets the smallest a column may get. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--min, 280px), 1fr));
+  gap: var(--gap, 18px);
+}
+
+.grid--fill {
+  grid-template-columns: repeat(auto-fill, minmax(var(--min, 240px), 1fr));
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap, 18px);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: var(--z-header);
+  background: var(--header-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header__tape {
+  height: 3px;
+}
+
+.site-header__inner {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: var(--header-height);
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: none;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.logo:hover {
+  color: var(--text);
+}
+
+.logo__word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.logo__bar {
+  height: 4px;
+}
+
+.main-nav {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.main-nav__link {
+  text-decoration: none;
+  color: var(--text);
+  opacity: 0.72;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  padding: 8px 12px 6px;
+  border-bottom: 2px solid transparent;
+  transition: opacity var(--t-fast), color var(--t-fast),
+    border-color var(--t-fast), transform var(--t-fast), text-shadow var(--t-fast);
+}
+
+.main-nav__link:hover {
+  opacity: 1;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  transform: translateY(-2px);
+  text-shadow: 0 0 14px var(--glow);
+}
+
+.main-nav__link[aria-current='page'] {
+  opacity: 1;
+  border-bottom-color: var(--accent);
+}
+
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+/* Burger only exists below the mobile breakpoint. */
+.nav-toggle {
+  display: none;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 11px;
+  background: var(--bg-2);
+  transition: border-color var(--t-fast);
+}
+
+.nav-toggle:hover {
+  border-color: var(--accent);
+}
+
+.nav-toggle__bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text);
+  transition: transform var(--t-fast), opacity var(--t-fast);
+}
+
+.nav-toggle__bar + .nav-toggle__bar {
+  margin-top: 4px;
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+/* No border-top: the hazard tape below is the divider. A hairline above it
+   showed up as a stray light seam where the yellow CTA band meets the footer. */
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+.site-footer__tape {
+  height: 6px;
+  --hazard-a: 12px;
+  --hazard-b: 24px;
+}
+
+.site-footer__ghost {
+  position: absolute;
+  right: -14px;
+  bottom: -40px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 210px;
+  line-height: 1;
+  letter-spacing: 6px;
+  opacity: 0.55;
+}
+
+.site-footer__inner {
+  position: relative;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: 56px var(--gutter) 28px;
+}
+
+.site-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 40px;
+  padding-bottom: 44px;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-footer__brand {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 16px;
+}
+
+.site-footer__brand-word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.site-footer__brand-bar {
+  height: 4px;
+}
+
+.site-footer__legal {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+.site-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.site-footer__col-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: var(--accent);
+}
+
+.site-footer__menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
+  max-width: 300px;
+}
+
+.site-footer__menu a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 14px;
+  transition: color var(--t-fast);
+}
+
+.site-footer__menu a:hover {
+  color: var(--accent);
+}
+
+.site-footer__contact {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.site-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 22px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  :root {
+    --gutter: 20px;
+  }
+
+  .nav-toggle {
+    display: block;
+    order: 3;
+  }
+
+  /* The nav becomes a drop-down panel, shown only while the burger is open. */
+  .main-nav {
+    display: none;
+    order: 4;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--line);
+    padding: 8px var(--gutter) 16px;
+    box-shadow: 0 20px 40px var(--shadow);
+  }
+
+  .site-header[data-nav-open='true'] .main-nav {
+    display: flex;
+    animation: fade-up 0.2s ease both;
+  }
+
+  .main-nav__link {
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--line);
+    font-size: 16px;
+  }
+
+  .main-nav__link:hover {
+    transform: none;
+  }
+
+  .main-nav__link[aria-current='page'] {
+    color: var(--accent);
+  }
+
+  .site-header__inner {
+    gap: 12px;
+    justify-content: space-between;
+  }
+
+  .site-footer__ghost {
+    font-size: 130px;
+  }
+}
+
+@media (max-width: 560px) {
+  .page,
+  .section {
+    padding-block: 48px;
+  }
+
+  .site-footer__menu {
+    grid-template-columns: 1fr;
+  }
+}

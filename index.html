@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>LOGIMOTORS — Forklifts: sale, rent, service, parts</title>
+    <meta
+      name="description"
+      content="LOGIMOTORS LTD, Rustavi — sale, rent, service and spare parts for forklifts of any brand. Gasoline, diesel and electric. Working in Georgia since 1999."
+    />
+    <meta name="theme-color" content="#101218" />
+    <!-- Update this if the site moves to its own domain. -->
+    <link rel="canonical" href="https://x4ch4pur1.github.io/logi-new-last-proj/" />
+
+    <!-- Social preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LOGIMOTORS" />
+    <meta property="og:title" content="LOGIMOTORS — Forklifts: sale, rent, service, parts" />
+    <meta
+      property="og:description"
+      content="Sale, rent, service and spare parts for every type of forklift — gasoline, diesel, electric. Any brand. Working in Georgia since 1999."
+    />
+    <meta property="og:image" content="assets/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+    <!--
+      Preload the two Latin cuts: they are needed for the first paint whatever
+      the language, because the header and the logo are Latin in all three.
+      The Georgian, Cyrillic and symbol subsets are left to font-display: swap
+      and are fetched only if the page actually contains those characters.
+    -->
+    <link
+      rel="preload"
+      href="assets/fonts/exo2-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/unbounded-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!--
+      Stylesheets are listed in cascade order, narrowest scope last:
+      tokens -> base -> animations -> layout -> components -> pages -> admin.
+      No build step and no @import, so each is a normal parallel request.
+    -->
+    <link rel="stylesheet" href="css/fonts.css" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+
+    <!--
+      Applies the saved theme before the first paint. Without this, someone who
+      chose the light theme gets a dark flash on every page load. It is inline
+      and tiny on purpose: an external file would arrive too late to help.
+    -->
+    <script>
+      try {
+        var saved = localStorage.getItem('logi:theme');
+        if (saved === 'night' || saved === 'day') {
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (e) {
+        /* private mode: the default night theme applies */
+      }
+    </script>
+
+    <script type="module" src="js/main.js"></script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div id="app"></div>
+
+    <noscript>
+      <div
+        style="
+          max-width: 640px;
+          margin: 15vh auto;
+          padding: 32px;
+          font: 16px/1.6 system-ui, sans-serif;
+          color: #f2f2ec;
+          background: #1a1e29;
+          border: 1px solid #f5a800;
+        "
+      >
+        <h1 style="font-size: 22px; margin: 0 0 12px">LOGIMOTORS</h1>
+        <p style="margin: 0 0 16px">
+          This site needs JavaScript to display its catalogue. Please enable it,
+          or call us directly:
+        </p>
+        <p style="margin: 0; font-size: 20px; font-weight: 700">
+          <a href="tel:+995599585148" style="color: #f5a800">(599) 585 148</a>
+          &nbsp;·&nbsp;
+          <a href="tel:+995555502502" style="color: #f5a800">(555) 502 502</a>
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>

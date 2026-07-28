@@ -1,0 +1,431 @@
+/* ==========================================================================
+   Admin panel
+   --------------------------------------------------------------------------
+   Only used by the editor route (#/control-room). Kept in its own file so the
+   public site's stylesheets stay focused on the marketing pages.
+   ========================================================================== */
+
+.admin {
+  animation: fade-up 0.4s ease both;
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: 56px var(--gutter);
+}
+
+/* --------------------------------------------------------------------------
+   Lock screen
+   -------------------------------------------------------------------------- */
+
+.admin-lock {
+  max-width: 420px;
+  margin: 80px auto;
+  padding: 44px;
+  --notch: var(--notch-md);
+}
+
+.admin-lock__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.admin-lock__title {
+  font-weight: 800;
+  font-size: 26px;
+  margin-bottom: 24px;
+}
+
+.admin-lock__pin {
+  font-size: 18px;
+  letter-spacing: 6px;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Header bar
+   -------------------------------------------------------------------------- */
+
+.admin__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.admin__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.admin__title {
+  font-weight: 800;
+  font-size: 30px;
+}
+
+.admin__tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin__tools-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+}
+
+.admin__tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px;
+}
+
+.admin__tabs .tab {
+  font-size: 13px;
+  padding: 9px 18px;
+  clip-path: polygon(
+    8px 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%,
+    0 8px
+  );
+}
+
+.admin__panel {
+  animation: fade-up 0.3s ease both;
+}
+
+.admin__panel-intro {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 720px;
+  margin-bottom: 24px;
+}
+
+/* Unsaved / published state indicator. */
+.admin__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 6px 14px;
+}
+
+.admin__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: none;
+}
+
+.admin__status[data-dirty='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.admin__status[data-dirty='true'] .admin__status-dot {
+  background: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Record lists
+   -------------------------------------------------------------------------- */
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  padding: 14px 18px;
+  flex-wrap: wrap;
+  transition: border-color var(--t-fast);
+}
+
+.admin-row:hover {
+  border-color: var(--muted);
+}
+
+.admin-row__thumb {
+  width: 56px;
+  height: 40px;
+  object-fit: cover;
+  flex: none;
+  border: 1px solid var(--line);
+}
+
+.admin-row__thumb--empty {
+  background-color: var(--placeholder);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 6px,
+    var(--line) 6px 7px
+  );
+}
+
+.admin-row__label {
+  flex: 1;
+  min-width: 160px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.admin-row__meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.admin-row__price {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.admin-row__actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Editor form
+   -------------------------------------------------------------------------- */
+
+.admin-editor {
+  border: 1px solid var(--accent);
+  background: var(--card);
+  padding: 32px;
+  --notch: 22px;
+}
+
+.admin-editor__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 22px;
+}
+
+.admin-editor__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.admin-editor__grid--wide {
+  grid-template-columns: 1fr;
+}
+
+.admin-editor__preview {
+  height: 110px;
+  border: 1px solid var(--line);
+  margin-bottom: 16px;
+  object-fit: cover;
+}
+
+.admin-editor__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+/* Field group with per-language tabs is highlighted so it is obvious which
+   language you are typing into. */
+.admin-field--localised .field__label::after {
+  content: ' · ' attr(data-lang);
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Texts tab
+   -------------------------------------------------------------------------- */
+
+.admin-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 760px;
+}
+
+.admin-texts__group-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: var(--accent);
+  margin-top: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-texts__search {
+  max-width: 360px;
+  margin-bottom: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Gallery tab
+   -------------------------------------------------------------------------- */
+
+.admin-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.admin-gallery__item {
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.admin-gallery__media {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.admin-gallery__foot {
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* File inputs styled as a primary button. */
+.admin-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  background: var(--accent-gradient);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 24px;
+  margin-bottom: 20px;
+  clip-path: polygon(
+    10px 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%,
+    0 10px
+  );
+}
+
+.admin-upload input[type='file'] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Backup / publish tab
+   -------------------------------------------------------------------------- */
+
+.admin-publish {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 820px;
+}
+
+.admin-publish__step {
+  border: 1px solid var(--line);
+  background: var(--card);
+  padding: 24px 26px;
+  --notch: var(--notch-sm);
+}
+
+.admin-publish__step-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.admin-publish__step-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+
+.admin-publish__step-text {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.admin-publish__code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  color: var(--accent);
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.admin-danger {
+  border-color: var(--danger);
+}
+
+.admin-danger .admin-publish__step-num {
+  color: var(--danger);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  .admin {
+    padding-block: 32px;
+  }
+
+  .admin-editor {
+    padding: 22px;
+  }
+
+  .admin-row__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .admin-lock {
+    margin-block: 40px;
+    padding: 28px;
+  }
+}
