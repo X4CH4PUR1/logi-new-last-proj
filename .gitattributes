@@ -1,2 +1,17 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Normalise line endings so the repository always stores LF, whatever the
+# editing machine uses. Without this, Windows checkouts commit CRLF and every
+# file looks fully rewritten to anyone on macOS or Linux.
+* text=auto eol=lf
+
+# Binary assets must never be touched.
+*.woff2 binary
+*.woff  binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+
+# PowerShell is happiest with CRLF on Windows.
+*.ps1 text eol=crlf
