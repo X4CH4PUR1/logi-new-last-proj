@@ -15,5 +15,11 @@ Desktop.ini
 tmp/
 temp/
 
+# Clones of other repositories that happen to sit inside this folder. They are
+# separate git repositories, so git would otherwise record them as empty
+# submodule stubs — which breaks a fresh clone of this one.
+/logi new last proj/
+/LOGI-Website-proj/
+
 # Nothing is built or installed for this project — everything committed here
 # is exactly what GitHub Pages serves. There is no node_modules, no dist.
