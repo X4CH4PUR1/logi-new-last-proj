@@ -12,6 +12,7 @@ import * as i18n from '../core/i18n.js';
 import * as theme from '../core/theme.js';
 import * as router from '../core/router.js';
 import { brand } from '../core/selectors.js';
+import { socialLinks } from './social.js';
 
 const noop = () => {};
 /** Removes the document listeners belonging to the currently open menu. */
@@ -76,6 +77,7 @@ export function header({ routeKey }) {
       h(
         'div.header-tools',
         {},
+        socialLinks('desktop'),
         languageSwitch(),
         themeToggle(),
         (toggleEl = h(
@@ -119,7 +121,10 @@ function navigation(routeKey, onNavigate) {
         'aria-current': routeKey === route.key ? 'page' : null,
         on: { click: onNavigate },
       })
-    )
+    ),
+    // Only visible once the nav has collapsed into the burger panel, where
+    // the toolbar copy has been hidden for want of room.
+    socialLinks('mobile')
   );
 }
 

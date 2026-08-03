@@ -180,6 +180,74 @@
   flex: none;
 }
 
+/* --------------------------------------------------------------------------
+   Social / messaging icons
+   Each brand keeps its own colour on hover, which is what makes them
+   recognisable at 20px — a row of identical yellow glyphs would not be.
+   -------------------------------------------------------------------------- */
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--t-fast), background var(--t-fast),
+    transform var(--t-fast);
+}
+
+.social-link:hover {
+  background: var(--bg-2);
+  transform: translateY(-2px);
+}
+
+.social-link[data-type='facebook']:hover {
+  color: #1877f2;
+}
+
+.social-link[data-type='whatsapp']:hover {
+  color: #25d366;
+}
+
+.social-link[data-type='instagram']:hover {
+  color: #e1306c;
+}
+
+.social-link[data-type='telegram']:hover {
+  color: #2aabee;
+}
+
+.social-link:not([data-type]):hover,
+.social-link[data-type='link']:hover {
+  color: var(--accent);
+}
+
+.social-link__icon {
+  display: block;
+  flex: none;
+}
+
+/* One copy is shown at a time; see the breakpoint block below. */
+.social-links--mobile {
+  display: none;
+}
+
+/* A divider between the icons and the language switch. */
+.social-links--desktop {
+  padding-right: 6px;
+  margin-right: 2px;
+  border-right: 1px solid var(--line);
+}
+
 /* Burger only exists below the mobile breakpoint. */
 .nav-toggle {
   display: none;
@@ -388,6 +456,25 @@
 
   .main-nav__link[aria-current='page'] {
     color: var(--accent);
+  }
+
+  /* The toolbar is full at this width, so the icons move into the menu and
+     get labels, which is more use on a phone than three bare glyphs. */
+  .social-links--desktop {
+    display: none;
+  }
+
+  .social-links--mobile {
+    display: flex;
+    gap: 8px;
+    padding-top: 14px;
+  }
+
+  .social-links--mobile .social-link {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    color: var(--text);
   }
 
   .site-header__inner {

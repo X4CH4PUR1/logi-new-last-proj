@@ -436,6 +436,35 @@ export const DEFAULT_CONTENT = {
   ],
 
   /* ======================================================================
+     Social and messaging links, shown as icons in the header.
+
+     Order here is the order on screen. `type` picks the icon — 'facebook',
+     'whatsapp', 'instagram' or 'telegram' are drawn; anything else falls back
+     to a generic link glyph. WhatsApp entries take a phone number and the link
+     is built from it; the rest take a full URL.
+     ====================================================================== */
+  social: [
+    {
+      id: 'facebook',
+      type: 'facebook',
+      label: 'Facebook',
+      url: 'https://www.facebook.com/profile.php?id=61592609919589',
+    },
+    {
+      id: 'whatsapp-1',
+      type: 'whatsapp',
+      label: 'WhatsApp (599) 585 148',
+      number: '+995599585148',
+    },
+    {
+      id: 'whatsapp-2',
+      type: 'whatsapp',
+      label: 'WhatsApp (555) 502 502',
+      number: '+995555502502',
+    },
+  ],
+
+  /* ======================================================================
      Contact details
      ====================================================================== */
   contacts: {

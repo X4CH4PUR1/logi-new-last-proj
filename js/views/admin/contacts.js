@@ -15,12 +15,14 @@ import {
   osmEmbedUrl,
   parseCoordinates,
 } from '../../util/geo.js';
+import { makeId } from '../../util/format.js';
 import {
   commit,
   editorPanel,
   field,
   localisedInput,
   patchDebounced,
+  select,
   textInput,
 } from './fields.js';
 
@@ -94,12 +96,174 @@ export function contactsTab() {
         )
       ),
 
+      socialPanel(store.getContent().social ?? []),
       mapPanel(c, render)
     );
   };
 
   render();
   return panel;
+}
+
+/* --------------------------------------------------------------------------
+   Social and messaging icons
+   -------------------------------------------------------------------------- */
+
+const SOCIAL_TYPES = [
+  { value: 'facebook', label: 'Facebook' },
+  { value: 'whatsapp', label: 'WhatsApp' },
+  { value: 'instagram', label: 'Instagram' },
+  { value: 'telegram', label: 'Telegram' },
+  { value: 'link', label: 'Other link' },
+];
+
+/**
+ * The icons in the header.
+ *
+ * WhatsApp entries take a phone number and the wa.me link is built from it;
+ * every other type takes a full URL. The label is what a screen reader
+ * announces and what shows on hover, which is how two WhatsApp icons sitting
+ * side by side stay tellable apart.
+ */
+function socialPanel(items) {
+  const row = (item, index, total) =>
+    h(
+      'div',
+      {
+        style: {
+          display: 'flex',
+          gap: '12px',
+          flexWrap: 'wrap',
+          alignItems: 'flex-end',
+          borderTop: index ? '1px solid var(--line)' : 'none',
+          paddingTop: index ? '14px' : '0',
+        },
+      },
+      h('div', { style: { width: '150px' } },
+        select({
+          label: 'Icon',
+          value: item.type,
+          options: SOCIAL_TYPES,
+          onInput: (value) =>
+            patchDebounced((draft) => {
+              draft.social[index].type = value;
+            }),
+        })
+      ),
+      h('div', { style: { flex: '1', minWidth: '200px' } },
+        textInput({
+          label: 'Label',
+          value: item.label,
+          hint: 'Shown on hover and read aloud by screen readers.',
+          onInput: (value) =>
+            patchDebounced((draft) => {
+              draft.social[index].label = value;
+            }),
+        })
+      ),
+      h('div', { style: { flex: '1.4', minWidth: '240px' } },
+        item.type === 'whatsapp'
+          ? textInput({
+              label: 'Phone number',
+              value: item.number,
+              placeholder: '+995599585148',
+              hint: 'Must include the country code. Spaces and brackets are ignored.',
+              onInput: (value) =>
+                patchDebounced((draft) => {
+                  draft.social[index].number = value;
+                }),
+            })
+          : textInput({
+              label: 'Link',
+              type: 'url',
+              value: item.url,
+              placeholder: 'https://…',
+              onInput: (value) =>
+                patchDebounced((draft) => {
+                  draft.social[index].url = value;
+                }),
+            })
+      ),
+      h(
+        'div',
+        { style: { display: 'flex', gap: '6px', paddingBottom: '2px' } },
+        h('button.btn-plain', {
+          type: 'button',
+          text: '↑',
+          'aria-label': 'Move left',
+          disabled: index === 0,
+          style: index === 0 ? { opacity: '0.4' } : null,
+          on: {
+            click: index === 0 ? undefined : () =>
+              commit((draft) => {
+                const l = draft.social;
+                [l[index - 1], l[index]] = [l[index], l[index - 1]];
+              }),
+          },
+        }),
+        h('button.btn-plain', {
+          type: 'button',
+          text: '↓',
+          'aria-label': 'Move right',
+          disabled: index === total - 1,
+          style: index === total - 1 ? { opacity: '0.4' } : null,
+          on: {
+            click: index === total - 1 ? undefined : () =>
+              commit((draft) => {
+                const l = draft.social;
+                [l[index], l[index + 1]] = [l[index + 1], l[index]];
+              }),
+          },
+        }),
+        h('button.btn-plain.btn-plain--danger', {
+          type: 'button',
+          text: 'Remove',
+          on: {
+            click: () => {
+              if (!window.confirm(`Remove the ${item.label || item.type} icon?`)) return;
+              commit((draft) => {
+                draft.social.splice(index, 1);
+              }, 'Icon removed');
+            },
+          },
+        })
+      )
+    );
+
+  return editorPanel(
+    'Header icons',
+    h(
+      'div',
+      { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
+      h('p.hint', {
+        text:
+          'Shown in the header, in this order. On a phone the toolbar has no room for them, ' +
+          'so they move into the burger menu instead.',
+      }),
+      items.length
+        ? h('div', { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
+            items.map((item, index) => row(item, index, items.length)))
+        : h('p.hint', { text: 'No icons yet.' }),
+      h('div', {},
+        h('button.btn.btn--ghost.btn--sm', {
+          type: 'button',
+          text: '+ Add icon',
+          on: {
+            click: () =>
+              commit((draft) => {
+                if (!Array.isArray(draft.social)) draft.social = [];
+                draft.social.push({
+                  id: makeId('so'),
+                  type: 'facebook',
+                  label: '',
+                  url: '',
+                });
+              }, 'Icon added'),
+          },
+        })
+      )
+    )
+  );
 }
 
 /* --------------------------------------------------------------------------

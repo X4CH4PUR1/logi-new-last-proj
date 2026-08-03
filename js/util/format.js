@@ -59,6 +59,16 @@ export function telHref(phone) {
   return `tel:${plus}${s.replace(/\D/g, '')}`;
 }
 
+/**
+ * A wa.me link from a phone number.
+ * WhatsApp wants digits only — no plus, no spaces, no brackets — and the
+ * country code is mandatory, so "(599) 585 148" alone will not work.
+ */
+export function whatsappHref(number) {
+  const digits = String(number || '').replace(/\D/g, '');
+  return digits ? `https://wa.me/${digits}` : '';
+}
+
 /** Prefixes a bare domain with https:// so it works as an href. */
 export function webHref(web) {
   const s = String(web || '').trim();

@@ -10,7 +10,7 @@
 
 import * as store from './store.js';
 import { localise, t } from './i18n.js';
-import { formatPrice, telHref, webHref, excerpt } from '../util/format.js';
+import { excerpt, formatPrice, telHref, webHref, whatsappHref } from '../util/format.js';
 import {
   DEFAULT_ZOOM,
   directionsUrl,
@@ -220,6 +220,24 @@ export function mapView() {
     directions: directionsUrl(pin),
     coords: formatCoordinates(pin),
   };
+}
+
+/**
+ * Social and messaging links, ready to render.
+ * Entries without a usable destination are dropped rather than rendered as
+ * dead icons.
+ *
+ * @returns {{id: string, type: string, label: string, href: string}[]}
+ */
+export function social() {
+  return (store.getContent().social ?? [])
+    .map((item) => ({
+      id: item.id,
+      type: item.type,
+      label: item.label || item.type,
+      href: item.type === 'whatsapp' ? whatsappHref(item.number) : String(item.url || '').trim(),
+    }))
+    .filter((item) => item.href);
 }
 
 /** The two phone numbers for the CTA band, with dial-ready hrefs. */
