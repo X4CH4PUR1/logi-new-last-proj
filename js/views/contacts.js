@@ -36,8 +36,25 @@ Logi.views.contacts = (function () {
 
   function contactRow(row) {
     const root = tpl.clone('contact-row');
-    const { link, plain } = tpl.refs(root);
+    const { link, plain, parts } = tpl.refs(root);
     tpl.bind(root, { key: row.key, value: row.value });
+
+    if (row.parts) {
+      // Several numbers in one row — each needs its own tel: link, so a
+      // single href on the row (as below) can't cover both.
+      tpl.toggle(link, false);
+      tpl.toggle(plain, false);
+      tpl.toggle(parts, true);
+      row.parts.forEach((part, index) => {
+        if (index > 0) parts.append(' · ');
+        const a = tpl.clone('contact-row-part');
+        tpl.bindAttr(a, { href: part.href });
+        tpl.bind(a, { value: part.value });
+        parts.append(a);
+      });
+      return root;
+    }
+
     tpl.toggle(link, !!row.href);
     tpl.toggle(plain, !row.href);
     if (row.href) {

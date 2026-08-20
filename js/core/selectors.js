@@ -192,16 +192,27 @@ Logi.core.selectors = (function () {
 
   /**
    * The contact table, already localised, with hrefs where a value is actionable.
-   * @returns {{key: string, value: string, href?: string}[]}
+   *
+   * The phone row carries a `parts` array instead of a single href when there
+   * is more than one number — each number needs its own tel: link, or the
+   * second number would show but not actually be callable.
+   *
+   * @returns {{key: string, value: string, href?: string, parts?: {value: string, href: string}[]}[]}
    */
   function contactRows() {
     const c = contacts();
+    const phones = [
+      c.phone1 && { value: c.phone1, href: telHref(c.phone1Dial || c.phone1) },
+      c.phone2 && { value: c.phone2, href: telHref(c.phone2Dial || c.phone2) },
+    ].filter(Boolean);
+
     const rows = [
       { key: t('address'), value: localise(c.address) },
       {
         key: t('phone'),
-        value: [c.phone1, c.phone2].filter(Boolean).join(' · '),
-        href: c.phone1 ? telHref(c.phone1Dial || c.phone1) : undefined,
+        value: phones.map((p) => p.value).join(' · '),
+        href: phones.length === 1 ? phones[0].href : undefined,
+        parts: phones.length > 1 ? phones : undefined,
       },
       { key: t('email'), value: c.email, href: c.email ? `mailto:${c.email}` : undefined },
       { key: t('web'), value: c.web, href: webHref(c.web) || undefined },

@@ -9,8 +9,7 @@ Logi.views.footer = (function () {
   const { NAV_ROUTES } = Logi.data.config;
   const { t, localise } = Logi.core.i18n;
   const router = Logi.core.router;
-  const { brand, contacts } = Logi.core.selectors;
-  const { telHref } = Logi.util.format;
+  const { brand, contacts, phoneLinks } = Logi.core.selectors;
   /**
    * @param {{afterCtaBand?: boolean}} [options]
    *        The home page ends with the yellow CTA band, which already closes
@@ -21,7 +20,7 @@ Logi.views.footer = (function () {
   function footer({ afterCtaBand = false } = {}) {
     const c = contacts();
     const marks = brand();
-    const phones = [c.phone1, c.phone2].filter(Boolean).join(' · ');
+    const phones = phoneLinks();
     const year = new Date().getFullYear();
 
     const root = tpl.clone('footer');
@@ -33,7 +32,6 @@ Logi.views.footer = (function () {
       legal: localise(c.legal),
       menuLabel: t('menu'),
       address: localise(c.address),
-      phones,
       email: c.email,
       hours: localise(c.hours),
       // No admin link here on purpose. The panel lives at an unlisted address
@@ -41,8 +39,16 @@ Logi.views.footer = (function () {
       copyright: `© ${year} ${localise(c.legal)}${c.idCode ? ` · ID ${c.idCode}` : ''}`,
     });
     tpl.toggle(address, !!c.address);
-    tpl.toggle(phonesEl, !!phones);
-    if (phones) tpl.bindAttr(root, { phonesHref: telHref(c.phone1Dial || c.phone1) });
+    // Each number gets its own tel: link — joining them under one href meant
+    // only the first was ever actually callable.
+    tpl.toggle(phonesEl, phones.length > 0);
+    phones.forEach((phone, index) => {
+      if (index > 0) phonesEl.append(' · ');
+      const a = tpl.clone('footer-phone');
+      tpl.bindAttr(a, { href: phone.href });
+      tpl.bind(a, { label: phone.label });
+      phonesEl.append(a);
+    });
     tpl.toggle(email, !!c.email);
     if (c.email) tpl.bindAttr(root, { emailHref: `mailto:${c.email}` });
     tpl.toggle(hours, !!c.hours);
