@@ -77,7 +77,60 @@
       }
     </script>
 
-    <script type="module" src="js/main.js"></script>
+    <!--
+      Loaded as classic (non-module) scripts, in dependency order, so the site
+      also runs from file:// (double-clicking index.html) with no local server.
+      Browsers refuse to execute <script type="module"> across the file://
+      origin at all, which is what used to leave the page on a black screen
+      with nothing but the favicon. Each file below assigns itself onto a
+      window.Logi.* namespace instead of using import/export; see any file
+      under js/ for the pattern. defer keeps them running in this order, after
+      the DOM is parsed, same as modules would.
+    -->
+    <script defer src="js/core/dom.js"></script>
+    <script defer src="js/data/config.js"></script>
+    <script defer src="js/core/router.js"></script>
+    <script defer src="locales/ka.js"></script>
+    <script defer src="locales/en.js"></script>
+    <script defer src="locales/ru.js"></script>
+    <script defer src="js/util/storage.js"></script>
+    <script defer src="js/data/defaults.js"></script>
+    <script defer src="js/core/store.js"></script>
+    <script defer src="js/util/format.js"></script>
+    <script defer src="js/core/i18n.js"></script>
+    <script defer src="js/util/geo.js"></script>
+    <script defer src="js/core/selectors.js"></script>
+    <script defer src="js/core/theme.js"></script>
+    <script defer src="js/views/social.js"></script>
+    <script defer src="js/views/header.js"></script>
+    <script defer src="js/views/footer.js"></script>
+    <script defer src="js/core/effects.js"></script>
+    <script defer src="js/views/partials.js"></script>
+    <script defer src="js/views/home.js"></script>
+    <script defer src="js/views/about.js"></script>
+    <script defer src="js/views/products.js"></script>
+    <script defer src="js/views/product-modal.js"></script>
+    <script defer src="js/views/news.js"></script>
+    <script defer src="js/views/contact-form.js"></script>
+    <script defer src="js/views/service.js"></script>
+    <script defer src="js/views/gallery.js"></script>
+    <script defer src="js/views/contacts.js"></script>
+    <script defer src="js/core/auth.js"></script>
+    <script defer src="js/core/toast.js"></script>
+    <script defer src="js/util/image.js"></script>
+    <script defer src="js/views/admin/fields.js"></script>
+    <script defer src="js/views/admin/products.js"></script>
+    <script defer src="js/views/admin/news.js"></script>
+    <script defer src="js/views/admin/gallery.js"></script>
+    <script defer src="js/views/admin/services.js"></script>
+    <script defer src="js/views/admin/texts.js"></script>
+    <script defer src="js/views/admin/ui-strings.js"></script>
+    <script defer src="js/views/admin/contacts.js"></script>
+    <script defer src="js/views/admin/settings.js"></script>
+    <script defer src="js/views/admin/publish.js"></script>
+    <script defer src="js/views/admin/index.js"></script>
+    <script defer src="js/app.js"></script>
+    <script defer src="js/main.js"></script>
   </head>
 
   <body>

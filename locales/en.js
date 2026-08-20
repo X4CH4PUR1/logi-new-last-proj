@@ -1,4 +1,6 @@
-/**
+window.Logi = window.Logi || {};
+Logi.locales = Logi.locales || {};
+Logi.locales.en = /**
  * English UI strings.
  *
  * These are interface labels only — buttons, table headers, filter names.
@@ -10,7 +12,7 @@
  * sets of en.js, ka.js and ru.js identical — js/core/i18n.js checks this in
  * development and warns about anything missing.
  */
-export default {
+{
   /* --- navigation ------------------------------------------------------- */
   navHome: 'Home',
   navAbout: 'About',

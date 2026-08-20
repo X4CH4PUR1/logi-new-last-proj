@@ -1,8 +1,10 @@
-/**
+window.Logi = window.Logi || {};
+Logi.locales = Logi.locales || {};
+Logi.locales.ka = /**
  * Georgian (ქართული) UI strings.
  * Key set must stay identical to locales/en.js — see the note in that file.
  */
-export default {
+{
   /* --- navigation ------------------------------------------------------- */
   navHome: 'მთავარი',
   navAbout: 'კომპანია',

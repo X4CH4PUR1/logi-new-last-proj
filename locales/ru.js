@@ -1,8 +1,10 @@
-/**
+window.Logi = window.Logi || {};
+Logi.locales = Logi.locales || {};
+Logi.locales.ru = /**
  * Russian (Русский) UI strings.
  * Key set must stay identical to locales/en.js — see the note in that file.
  */
-export default {
+{
   /* --- navigation ------------------------------------------------------- */
   navHome: 'Главная',
   navAbout: 'О компании',
