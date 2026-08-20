@@ -1,0 +1,660 @@
+/* ==========================================================================
+   Components — reusable UI pieces shared by more than one page
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Buttons
+   The primary/secondary shapes cut the top-left and bottom-right corners,
+   which is the counterpart to the .notch used on panels.
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 15px 34px;
+  border: 1px solid transparent;
+  transition: transform var(--t-fast), box-shadow var(--t-fast),
+    border-color var(--t-fast), background var(--t-fast);
+  clip-path: polygon(
+    var(--cut, 14px) 0,
+    100% 0,
+    100% calc(100% - var(--cut, 14px)),
+    calc(100% - var(--cut, 14px)) 100%,
+    0 100%,
+    0 var(--cut, 14px)
+  );
+}
+
+.btn--primary {
+  background: var(--accent-gradient);
+  color: var(--ink);
+  padding-block: 16px;
+}
+
+.btn--primary:hover {
+  color: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px var(--glow), 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+  font-weight: 600;
+}
+
+.btn--ghost:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.btn--sm {
+  --cut: 10px;
+  font-size: 14px;
+  padding: 12px 24px;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Square-cornered utility button — admin rows, chips, toolbars. */
+.btn-plain {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  padding: 7px 14px;
+  transition: border-color var(--t-fast), color var(--t-fast);
+}
+
+.btn-plain:hover {
+  border-color: var(--accent);
+}
+
+.btn-plain--danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* --------------------------------------------------------------------------
+   Segmented control — language switch, admin edit-language switch
+   -------------------------------------------------------------------------- */
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 3px;
+  background: var(--bg-2);
+}
+
+.segmented__btn {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.segmented__btn:hover {
+  color: var(--text);
+}
+
+.segmented__btn[aria-pressed='true'] {
+  background: var(--accent-gradient);
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   Theme toggle
+   -------------------------------------------------------------------------- */
+
+.theme-toggle {
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  padding: 9px 12px;
+  transition: border-color var(--t-fast);
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Cards
+   `.card--tilt` opts into the JS pointer-tilt effect; the transform itself is
+   written inline by js/core/tilt.js and cleared on pointer leave.
+   -------------------------------------------------------------------------- */
+
+.card {
+  position: relative;
+  border: 1px solid var(--line);
+  background: var(--card);
+  transition: transform var(--t-base), border-color var(--t-base),
+    box-shadow var(--t-base);
+}
+
+.card--tilt {
+  will-change: transform;
+}
+
+.card--hover:hover {
+  border-color: var(--accent);
+  box-shadow: 0 20px 50px var(--shadow), 0 0 30px var(--glow);
+}
+
+.card--lift:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 44px var(--shadow), 0 0 28px var(--glow);
+}
+
+.card--link {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.card--link:hover {
+  color: var(--text);
+}
+
+.card__body {
+  padding: 20px 22px 24px;
+}
+
+/* --------------------------------------------------------------------------
+   Badges and filter chips
+   -------------------------------------------------------------------------- */
+
+.badge-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 4px 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.chip {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  padding: 7px 16px;
+  text-transform: uppercase;
+  transition: border-color var(--t-fast), color var(--t-fast);
+}
+
+.chip:hover {
+  color: var(--text);
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Angled tab used for the product mode filter and the admin tab bar. */
+.tab {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 22px;
+  transition: border-color var(--t-fast), background var(--t-fast),
+    color var(--t-fast);
+  clip-path: polygon(
+    10px 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%,
+    0 10px
+  );
+}
+
+.tab:hover {
+  border-color: var(--accent);
+}
+
+.tab[aria-selected='true'] {
+  background: var(--accent-gradient);
+  border-color: transparent;
+  color: var(--ink);
+}
+
+.tab-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   Forms
+   -------------------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 0;
+}
+
+.field__label {
+  font-family: var(--font-mono);
+  letter-spacing: 1.5px;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--text);
+  font-size: 15px;
+  transition: border-color var(--t-fast);
+}
+
+.input:hover,
+.textarea:hover,
+.select:hover {
+  border-color: var(--muted);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: var(--accent);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+.textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.select {
+  appearance: none;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+.input--sm,
+.textarea--sm,
+.select--sm {
+  padding: 11px 13px;
+  font-size: 14px;
+}
+
+.input--file {
+  padding: 9px;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form__note {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 18px 22px;
+  font-weight: 600;
+}
+
+.form__error {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Brand marquee
+   The track is duplicated so the -50% translation loops seamlessly.
+   -------------------------------------------------------------------------- */
+
+.marquee {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  padding-block: 14px;
+  background: var(--bg-2);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 36s linear infinite;
+}
+
+.marquee__track--reverse {
+  animation: marquee-right 52s linear infinite;
+  margin-top: 6px;
+}
+
+.marquee__item {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--muted);
+  padding-right: 12px;
+}
+
+.marquee__item--outline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: 3px;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+/* --------------------------------------------------------------------------
+   Stat tiles
+   -------------------------------------------------------------------------- */
+
+.stat {
+  position: relative;
+  overflow: hidden;
+  padding: 30px 28px 34px;
+}
+
+.stat__tape {
+  width: 36px;
+  height: 5px;
+  margin-bottom: 20px;
+  --hazard-a: 6px;
+  --hazard-b: 12px;
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 52px;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__label {
+  margin-top: 12px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.stat--compact {
+  padding: 28px 26px;
+}
+
+.stat--compact .stat__value {
+  font-size: 40px;
+}
+
+.stat--compact .stat__label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: normal;
+  text-transform: none;
+  margin-top: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Modal
+   -------------------------------------------------------------------------- */
+
+/* A native <dialog>, so Escape, focus trapping and inertness come for free.
+   The element itself fills the viewport and paints the scrim; ::backdrop is
+   left transparent so one blur applies rather than two. */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  background: var(--overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fade-in 0.25s ease both;
+  border: none;
+  color: var(--text);
+  overflow: hidden;
+}
+
+.modal:not([open]) {
+  display: none;
+}
+
+.modal::backdrop {
+  background: transparent;
+}
+
+.modal__panel {
+  background: var(--card);
+  border: 1px solid var(--accent);
+  max-width: 860px;
+  width: 100%;
+  max-height: 88vh;
+  overflow: auto;
+  box-shadow: 0 40px 120px var(--shadow);
+  animation: fade-up 0.25s ease both;
+  --notch: var(--notch-lg);
+}
+
+.modal__media {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.modal__media--placeholder {
+  height: 220px;
+}
+
+.modal__body {
+  padding: 32px 36px 36px;
+}
+
+.modal__title {
+  font-weight: 800;
+  font-size: 26px;
+  margin-bottom: 18px;
+  line-height: 1.3;
+}
+
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.modal__price {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+}
+
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.spec {
+  border: 1px solid var(--line);
+  padding: 12px 16px;
+}
+
+.spec__key {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.spec__value {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Toast — transient confirmation, used by the admin panel
+   -------------------------------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 22px;
+  box-shadow: 0 20px 50px var(--shadow);
+  animation: toast-in 0.25s var(--ease-out) both;
+  max-width: calc(100vw - 40px);
+}
+
+.toast--error {
+  border-color: var(--danger);
+}
+
+.toast__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+.toast--error .toast__dot {
+  background: var(--danger);
+}
+
+/* --------------------------------------------------------------------------
+   Empty state
+   -------------------------------------------------------------------------- */
+
+.empty {
+  border: 1px dashed var(--line);
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Cursor spotlight — a soft glow that trails the pointer on fine-pointer
+   devices. Created by js/core/spotlight.js, positioned by transform.
+   -------------------------------------------------------------------------- */
+
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transform: translate(-1000px, -1000px);
+  background: radial-gradient(circle, var(--glow) 0%, transparent 65%);
+  transition: opacity var(--t-slow);
+}
+
+@media (max-width: 560px) {
+  .modal {
+    padding: 12px;
+  }
+
+  .modal__body {
+    padding: 24px 22px 28px;
+  }
+
+  .btn {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+}
