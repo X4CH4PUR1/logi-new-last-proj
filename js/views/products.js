@@ -10,24 +10,30 @@ Logi.views.products = (function () {
    * addressable, at #/products/<id>, which the app shell turns into a modal.
    */
 
-  const { h, mount, when } = Logi.core.dom;
+  const dom = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
-  const { filterProducts, fuelFilterApplies } = Logi.core.selectors;
+  const { categories, filterProducts, fuelFilterApplies, fuels } = Logi.core.selectors;
   const { empty, pageHeader, productGrid } = Logi.views.partials;
-  const MODES = [
-    { key: 'all', labelKey: 'filterAll' },
-    { key: 'sale', labelKey: 'modeSale' },
-    { key: 'rent', labelKey: 'modeRent' },
-    { key: 'parts', labelKey: 'partsTab' },
-    { key: 'wheels', labelKey: 'wheelsTab' },
-  ];
 
-  const FUELS = [
-    { key: 'all', labelKey: 'filterAll' },
-    { key: 'electric', labelKey: 'fuelElectric' },
-    { key: 'diesel', labelKey: 'fuelDiesel' },
-    { key: 'gasoline', labelKey: 'fuelGasoline' },
-  ];
+  /**
+   * All/Sale/Rent are fixed — the core catalogue line. Every other tab is
+   * built from content.categories, so Admin → Filters can add one (e.g. a
+   * new "Batteries" line) without a code change; it behaves like Parts/Wheels
+   * always have, a flat listing with no fuel filter.
+   */
+  function tabs() {
+    return [
+      { key: 'all', label: t('filterAll') },
+      { key: 'sale', label: t('modeSale') },
+      { key: 'rent', label: t('modeRent') },
+      ...categories(),
+    ];
+  }
+
+  function fuelOptions() {
+    return [{ key: 'all', label: t('filterAll') }, ...fuels()];
+  }
 
   /**
    * @param {{onOpenProduct: (id: string) => void}} handlers
@@ -35,9 +41,15 @@ Logi.views.products = (function () {
   function productsPage({ onOpenProduct }) {
     const state = { mode: 'all', fuel: 'all' };
 
-    const modeBar = h('div.tab-row.product-filters', { role: 'tablist', 'aria-label': t('productsTitle') });
-    const fuelBar = h('div.product-filters--fuel', { role: 'group' });
-    const results = h('div');
+    const root = tpl.clone('products');
+    const [eyebrowEl, titleEl] = pageHeader('CATALOG', t('productsTitle'));
+    tpl.place(root, 'eyebrow', eyebrowEl);
+    tpl.place(root, 'title', titleEl);
+
+    const modeBar = tpl.slot(root, 'modes');
+    const fuelBar = tpl.slot(root, 'fuels');
+    const results = tpl.slot(root, 'results');
+    modeBar.setAttribute('aria-label', t('productsTitle'));
 
     const setMode = (mode) => {
       state.mode = mode;
@@ -53,52 +65,30 @@ Logi.views.products = (function () {
     };
 
     function renderAll() {
-      mount(
-        modeBar,
-        MODES.map((mode) =>
-          h('button.tab', {
-            type: 'button',
-            role: 'tab',
-            text: t(mode.labelKey),
-            'aria-selected': String(state.mode === mode.key),
-            on: { click: () => setMode(mode.key) },
-          })
-        )
-      );
+      tpl.each(modeBar, tabs(), (tab) => {
+        const btn = tpl.clone('mode-tab');
+        tpl.bind(btn, { label: tab.label });
+        btn.setAttribute('aria-selected', String(state.mode === tab.key));
+        btn.addEventListener('click', () => setMode(tab.key));
+        return btn;
+      });
 
       const showFuel = fuelFilterApplies(state.mode);
       fuelBar.hidden = !showFuel;
-      mount(
-        fuelBar,
-        showFuel
-          ? FUELS.map((fuel) =>
-              h('button.chip', {
-                type: 'button',
-                text: t(fuel.labelKey),
-                'aria-pressed': String(state.fuel === fuel.key),
-                on: { click: () => setFuel(fuel.key) },
-              })
-            )
-          : []
-      );
+      tpl.each(fuelBar, showFuel ? fuelOptions() : [], (fuel) => {
+        const chip = tpl.clone('fuel-chip');
+        tpl.bind(chip, { label: fuel.label });
+        chip.setAttribute('aria-pressed', String(state.fuel === fuel.key));
+        chip.addEventListener('click', () => setFuel(fuel.key));
+        return chip;
+      });
 
       const list = filterProducts(state);
-      mount(
-        results,
-        list.length ? productGrid(list, onOpenProduct) : empty(t('noProducts'))
-      );
+      dom.mount(results, list.length ? productGrid(list, onOpenProduct) : empty(t('noProducts')));
     }
 
     renderAll();
-
-    return h(
-      'div.page.container',
-      { 'data-page': 'products' },
-      pageHeader('CATALOG', t('productsTitle')),
-      modeBar,
-      fuelBar,
-      results
-    );
+    return root;
   }
 
   return { productsPage };

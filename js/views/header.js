@@ -9,7 +9,8 @@ Logi.views.header = (function () {
    * tall at every width.
    */
 
-  const { h } = Logi.core.dom;
+  const dom = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { NAV_ROUTES } = Logi.data.config;
   const i18n = Logi.core.i18n;
   const theme = Logi.core.theme;
@@ -25,27 +26,67 @@ Logi.views.header = (function () {
    * @returns {HTMLElement}
    */
   function header({ routeKey }) {
-    let headerEl;
-    let toggleEl;
-
     // The shell rebuilds this header on every navigation. Document-level
     // listeners therefore have to be torn down, or each rebuild would leave
     // another one behind holding a detached header alive.
     releaseMenuListeners();
 
+    const root = tpl.clone('header');
+    const { themeToggle, navToggle } = tpl.refs(root);
+    const marks = brand();
+    const menuLabel = i18n.t('menu');
+
+    tpl.bind(root, { brandShort: marks.short, menuLabel });
+    tpl.bindAttr(root, { homeHref: router.href('home'), brandFull: marks.full, menuLabel });
+
+    tpl.each(tpl.slot(root, 'nav-links'), NAV_ROUTES, (route) => {
+      const a = tpl.clone('nav-link');
+      tpl.bindAttr(a, { href: router.href(route.key) });
+      tpl.bind(a, { label: i18n.t(route.labelKey) });
+      if (routeKey === route.key) a.setAttribute('aria-current', 'page');
+      a.addEventListener('click', closeMenu);
+      return a;
+    });
+    // Only visible once the nav has collapsed into the burger panel, where
+    // the toolbar copy has been hidden for want of room.
+    dom.mount(tpl.slot(root, 'nav-social'), socialLinks('mobile'));
+    dom.mount(tpl.slot(root, 'tools-social'), socialLinks('desktop'));
+
+    tpl.each(tpl.slot(root, 'lang-switch'), i18n.getLanguages(), (lang) => {
+      const b = tpl.clone('lang-btn');
+      tpl.bind(b, { label: lang.label });
+      tpl.bindAttr(b, {
+        htmlLang: lang.htmlLang,
+        name: lang.name,
+        pressed: String(i18n.getLang() === lang.code),
+      });
+      b.addEventListener('click', () => i18n.setLang(lang.code));
+      return b;
+    });
+
+    // The label names the theme you would switch *to*, which is how the
+    // original behaved. It is updated in place rather than by re-rendering,
+    // because a theme change needs no other DOM work — the custom properties
+    // do all of it.
+    themeToggle.textContent = theme.nextLabel();
+    themeToggle.addEventListener('click', () => {
+      theme.toggle();
+      themeToggle.textContent = theme.nextLabel();
+    });
+
     const onDocumentClick = (event) => {
-      if (!headerEl.contains(event.target)) closeMenu();
+      if (!root.contains(event.target)) closeMenu();
     };
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
         closeMenu();
-        toggleEl.focus();
+        navToggle.focus();
       }
     };
 
-    const openMenu = () => {
-      headerEl.dataset.navOpen = 'true';
-      toggleEl.setAttribute('aria-expanded', 'true');
+    function openMenu() {
+      root.dataset.navOpen = 'true';
+      navToggle.setAttribute('aria-expanded', 'true');
       document.addEventListener('click', onDocumentClick);
       document.addEventListener('keydown', onKeyDown);
       releaseMenuListeners = () => {
@@ -53,118 +94,23 @@ Logi.views.header = (function () {
         document.removeEventListener('keydown', onKeyDown);
         releaseMenuListeners = noop;
       };
-    };
+    }
 
-    const closeMenu = () => {
-      if (headerEl.dataset.navOpen !== 'true') return;
-      headerEl.dataset.navOpen = 'false';
-      toggleEl.setAttribute('aria-expanded', 'false');
+    function closeMenu() {
+      if (root.dataset.navOpen !== 'true') return;
+      root.dataset.navOpen = 'false';
+      navToggle.setAttribute('aria-expanded', 'false');
       releaseMenuListeners();
-    };
+    }
 
-    const toggleMenu = () => {
-      if (headerEl.dataset.navOpen === 'true') closeMenu();
+    function toggleMenu() {
+      if (root.dataset.navOpen === 'true') closeMenu();
       else openMenu();
-    };
+    }
 
-    headerEl = h(
-      'header.site-header',
-      { dataset: { navOpen: 'false' } },
-      h('span.site-header__tape.hazard', { 'aria-hidden': 'true' }),
-      h(
-        'div.site-header__inner',
-        {},
-        logo(),
-        navigation(routeKey, closeMenu),
-        h(
-          'div.header-tools',
-          {},
-          socialLinks('desktop'),
-          languageSwitch(),
-          themeToggle(),
-          (toggleEl = h(
-            'button.nav-toggle',
-            {
-              type: 'button',
-              'aria-label': i18n.t('menu'),
-              'aria-expanded': 'false',
-              'aria-controls': 'main-nav',
-              on: { click: toggleMenu },
-            },
-            h('span.nav-toggle__bar'),
-            h('span.nav-toggle__bar'),
-            h('span.nav-toggle__bar')
-          ))
-        )
-      )
-    );
+    navToggle.addEventListener('click', toggleMenu);
 
-    return headerEl;
-  }
-
-  function logo() {
-    const marks = brand();
-    return h(
-      'a.logo',
-      { href: router.href('home'), 'aria-label': marks.full },
-      h('span.logo__word', { text: marks.short }),
-      h('span.logo__bar.hazard--warm', { 'aria-hidden': 'true' })
-    );
-  }
-
-  function navigation(routeKey, onNavigate) {
-    return h(
-      'nav.main-nav',
-      { id: 'main-nav', 'aria-label': i18n.t('menu') },
-      NAV_ROUTES.map((route) =>
-        h('a.main-nav__link', {
-          href: router.href(route.key),
-          text: i18n.t(route.labelKey),
-          'aria-current': routeKey === route.key ? 'page' : null,
-          on: { click: onNavigate },
-        })
-      ),
-      // Only visible once the nav has collapsed into the burger panel, where
-      // the toolbar copy has been hidden for want of room.
-      socialLinks('mobile')
-    );
-  }
-
-  function languageSwitch() {
-    return h(
-      'div.segmented',
-      { role: 'group', 'aria-label': 'Language' },
-      i18n.getLanguages().map((lang) =>
-        h('button.segmented__btn', {
-          type: 'button',
-          text: lang.label,
-          lang: lang.htmlLang,
-          title: lang.name,
-          'aria-pressed': String(i18n.getLang() === lang.code),
-          on: { click: () => i18n.setLang(lang.code) },
-        })
-      )
-    );
-  }
-
-  /**
-   * The label names the theme you would switch *to*, which is how the original
-   * behaved. It is updated in place rather than by re-rendering, because a theme
-   * change needs no other DOM work — the custom properties do all of it.
-   */
-  function themeToggle() {
-    const button = h('button.theme-toggle', {
-      type: 'button',
-      text: theme.nextLabel(),
-      'aria-label': 'Switch colour theme',
-      on: {
-        click: () => {
-          theme.toggle();
-          button.textContent = theme.nextLabel();
-        },
-      },
-    });
-    return button;
+    return root;
   }
 
   return { header };

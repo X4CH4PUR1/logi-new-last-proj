@@ -17,6 +17,7 @@ Logi.views.admin.index = (function () {
   const toast = Logi.core.toast;
   const { editLangSwitch } = Logi.views.admin.fields;
   const { productsTab } = Logi.views.admin.products;
+  const { filtersTab } = Logi.views.admin.filters;
   const { newsTab } = Logi.views.admin.news;
   const { galleryTab } = Logi.views.admin.gallery;
   const { servicesTab } = Logi.views.admin.services;
@@ -27,6 +28,7 @@ Logi.views.admin.index = (function () {
   const { publishTab } = Logi.views.admin.publish;
   const TABS = [
     { key: 'products', label: 'Products', build: productsTab },
+    { key: 'filters', label: 'Filters', build: filtersTab },
     { key: 'news', label: 'News', build: newsTab },
     { key: 'gallery', label: 'Gallery', build: galleryTab },
     { key: 'services', label: 'Services', build: servicesTab },

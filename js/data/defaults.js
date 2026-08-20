@@ -178,6 +178,24 @@ Logi.data.defaults = (function () {
     ],
 
     /* ======================================================================
+       Catalogue filters, editable in Admin → Filters.
+
+       "forklift" itself stays structural (see FORKLIFT_CATEGORY in
+       js/data/config.js) because sale/rent + fuel is specific to how
+       forklifts are sold. Everything here is a flat browsing tab instead —
+       adding an entry adds a tab next to Parts/Wheels with no code change.
+       ====================================================================== */
+    categories: [
+      { key: 'parts', label: { en: 'Parts', ka: 'ნაწილები', ru: 'Запчасти' } },
+      { key: 'wheels', label: { en: 'Wheels', ka: 'თვლები', ru: 'Колёса' } },
+    ],
+    fuels: [
+      { key: 'electric', label: { en: 'Electric', ka: 'ელექტრო', ru: 'Электро' } },
+      { key: 'diesel', label: { en: 'Diesel', ka: 'დიზელი', ru: 'Дизель' } },
+      { key: 'gasoline', label: { en: 'Gasoline / LPG', ka: 'ბენზინი / გაზი', ru: 'Бензин / Газ' } },
+    ],
+
+    /* ======================================================================
        Catalogue
        ====================================================================== */
     products: [
@@ -198,7 +216,8 @@ Logi.data.defaults = (function () {
         capacity: '2.0 t',
         lift: '4.5 m',
         year: '2019',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
       {
         id: 'p2',
@@ -217,7 +236,8 @@ Logi.data.defaults = (function () {
         capacity: '2.5 t',
         lift: '3.7 m',
         year: '2018',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
       {
         id: 'p3',
@@ -236,7 +256,8 @@ Logi.data.defaults = (function () {
         capacity: '3.0 t',
         lift: '4.0 m',
         year: '2017',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
       {
         id: 'p4',
@@ -255,7 +276,8 @@ Logi.data.defaults = (function () {
         capacity: '1.6 t',
         lift: '5.0 m',
         year: '2026',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
       {
         id: 'p5',
@@ -274,7 +296,8 @@ Logi.data.defaults = (function () {
         capacity: '3.0 t',
         lift: '4.0 m',
         year: '2020',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
       {
         id: 'p6',
@@ -293,7 +316,8 @@ Logi.data.defaults = (function () {
         capacity: '2.0 t',
         lift: '4.2 m',
         year: '2021',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
       {
         id: 'p7',
@@ -312,7 +336,8 @@ Logi.data.defaults = (function () {
         capacity: '',
         lift: '',
         year: '',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
       {
         id: 'p8',
@@ -331,7 +356,8 @@ Logi.data.defaults = (function () {
         capacity: '',
         lift: '',
         year: '',
-        img: '',
+        images: [],
+        desc: { ka: '', en: '', ru: '' },
       },
     ],
 

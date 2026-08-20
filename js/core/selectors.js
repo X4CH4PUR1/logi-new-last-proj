@@ -41,22 +41,39 @@ Logi.core.selectors = (function () {
     if (product.lift) specs.push({ key: t('lift'), value: product.lift });
     if (product.year) specs.push({ key: t('year'), value: product.year });
 
+    // Older saved records may still carry a single `img` string from before
+    // the multi-photo gallery — treat it as a one-item gallery rather than
+    // losing the photo.
+    const images = product.images?.length ? product.images : product.img ? [product.img] : [];
+
     return {
       id: product.id,
       title: localise(product.name),
       brand: String(product.brand || '').toUpperCase(),
       badges,
       specs,
-      img: product.img || '',
+      description: localise(product.desc),
+      images,
+      img: images[0] || '',
       price: formatPrice(product.price, product.unit, t('perMonth')),
     };
   }
 
+  /** Label for a fuel key, from content.fuels — admin-added fuel types resolve too. */
   function fuelLabel(fuel) {
-    if (fuel === 'electric') return t('fuelElectric');
-    if (fuel === 'diesel') return t('fuelDiesel');
-    if (fuel === 'gasoline') return t('fuelGasoline');
-    return '';
+    if (!fuel) return '';
+    const match = (store.getContent().fuels ?? []).find((f) => f.key === fuel);
+    return match ? localise(match.label) : fuel;
+  }
+
+  /** Catalogue categories beyond the core "forklift" line — each is a flat browsing tab. */
+  function categories() {
+    return (store.getContent().categories ?? []).map((c) => ({ key: c.key, label: localise(c.label) }));
+  }
+
+  /** Selectable fuel types, localised — used by both the admin editor and the public filter chips. */
+  function fuels() {
+    return (store.getContent().fuels ?? []).map((f) => ({ key: f.key, label: localise(f.label) }));
   }
 
   /** Every product, unfiltered, in stored order. */
@@ -76,7 +93,9 @@ Logi.core.selectors = (function () {
     if (mode === 'sale' || mode === 'rent') {
       list = list.filter((p) => p.mode === mode && p.cat === 'forklift');
       if (fuel !== 'all') list = list.filter((p) => p.fuel === fuel);
-    } else if (mode === 'parts' || mode === 'wheels') {
+    } else if (mode !== 'all') {
+      // Any other mode is a category key — parts/wheels today, plus whatever
+      // Admin → Filters has added since.
       list = list.filter((p) => p.cat === mode);
     }
 
@@ -279,5 +298,5 @@ Logi.core.selectors = (function () {
     return store.getContent().settings ?? {};
   }
 
-  return { decorateProduct, fuelLabel, allProducts, filterProducts, fuelFilterApplies, findProduct, featuredProducts, sortedNews, decorateNews, services, gallery, stats, foundedYear, contacts, contactRows, mapView, social, phoneLinks, text, brands, brand, heroPills, settings };
+  return { decorateProduct, fuelLabel, categories, fuels, allProducts, filterProducts, fuelFilterApplies, findProduct, featuredProducts, sortedNews, decorateNews, services, gallery, stats, foundedYear, contacts, contactRows, mapView, social, phoneLinks, text, brands, brand, heroPills, settings };
 })();

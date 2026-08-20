@@ -5,20 +5,21 @@ Logi.views.service = (function () {
    * Service page: what the workshop does, and a booking form.
    */
 
-  const { h } = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
   const { services, text } = Logi.core.selectors;
   const { pageHeader, serviceGrid } = Logi.views.partials;
   const { contactForm } = Logi.views["contact-form"];
+
   function servicePage() {
-    return h(
-      'div.page.container',
-      { 'data-page': 'service' },
-      pageHeader('SERVICE', t('serviceTitle')),
-      h('p.service__intro', { text: text('serviceIntro') }),
-      h('div.service__grid', {}, serviceGrid(services())),
-      h('div.card.booking.notch', {}, contactForm({ title: t('serviceCta') }))
-    );
+    const root = tpl.clone('service');
+    const [eyebrowEl, titleEl] = pageHeader('SERVICE', t('serviceTitle'));
+    tpl.place(root, 'eyebrow', eyebrowEl);
+    tpl.place(root, 'title', titleEl);
+    tpl.bind(root, { intro: text('serviceIntro') });
+    tpl.place(root, 'grid', serviceGrid(services()));
+    tpl.place(root, 'form', contactForm({ title: t('serviceCta') }));
+    return root;
   }
 
   return { servicePage };

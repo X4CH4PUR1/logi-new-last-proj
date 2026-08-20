@@ -11,19 +11,22 @@ Logi.views.admin.products = (function () {
    */
 
   const { h, mount } = Logi.core.dom;
-  const { clone } = Logi.core.store;
+  const store = Logi.core.store;
+  const { clone } = store;
+  const toast = Logi.core.toast;
   const { allProducts } = Logi.core.selectors;
-  const { CATEGORIES, CONDITIONS, FUELS, MODES } = Logi.data.config;
+  const { CONDITIONS, FORKLIFT_CATEGORY, MODES } = Logi.data.config;
   const { formatPrice, makeId, pick } = Logi.util.format;
+  const { processImage } = Logi.util.image;
   const {
     commit,
     confirmThen,
     editorActions,
     editorGrid,
     editorPanel,
+    field,
     getEditLang,
     ghostButton,
-    imageInput,
     localisedInput,
     primaryButton,
     select,
@@ -32,19 +35,35 @@ Logi.views.admin.products = (function () {
   } = Logi.views.admin.fields;
   const EMPTY_PRODUCT = {
     id: null,
-    cat: 'forklift',
+    cat: FORKLIFT_CATEGORY,
     mode: 'sale',
     fuel: 'electric',
     cond: 'used',
     brand: '',
     name: { ka: '', en: '', ru: '' },
+    desc: { ka: '', en: '', ru: '' },
     price: '',
     unit: '',
     capacity: '',
     lift: '',
     year: '',
-    img: '',
+    images: [],
   };
+
+  /** Category options for the select: the fixed forklift line, then Admin → Filters' list. */
+  function categoryOptions() {
+    const lang = getEditLang();
+    return [
+      { value: FORKLIFT_CATEGORY, label: 'Forklift' },
+      ...(store.getContent().categories ?? []).map((c) => ({ value: c.key, label: pick(c.label, lang) || c.key })),
+    ];
+  }
+
+  /** Fuel options for the select, from Admin → Filters' list. */
+  function fuelOptions() {
+    const lang = getEditLang();
+    return (store.getContent().fuels ?? []).map((f) => ({ value: f.key, label: pick(f.label, lang) || f.key }));
+  }
 
   function productsTab() {
     const panel = h('div.admin__panel');
@@ -79,12 +98,13 @@ Logi.views.admin.products = (function () {
 
     function row(product) {
       const label = pick(product.name, getEditLang()) || '(untitled)';
+      const thumb = product.images?.[0] || product.img;
 
       return h(
         'div.admin-row',
         {},
-        product.img
-          ? h('img.admin-row__thumb', { src: product.img, alt: '' })
+        thumb
+          ? h('img.admin-row__thumb', { src: thumb, alt: '' })
           : h('span.admin-row__thumb.admin-row__thumb--empty', { 'aria-hidden': 'true' }),
         h('span.admin-row__label', { text: label }),
         h('span.admin-row__meta', {
@@ -131,7 +151,7 @@ Logi.views.admin.products = (function () {
         record.price = Number(record.price) || 0;
         // A non-forklift has no fuel type; keep the record clean rather than
         // storing a value the filters would then have to ignore.
-        if (record.cat !== 'forklift') record.fuel = '';
+        if (record.cat !== FORKLIFT_CATEGORY) record.fuel = '';
 
         commit((content) => {
           if (!record.id) {
@@ -171,10 +191,11 @@ Logi.views.admin.products = (function () {
           select({
             label: 'Category',
             value: draft.cat,
-            options: CATEGORIES.map((value) => ({ value, label: value })),
+            options: categoryOptions(),
             onInput: (value) => {
               draft.cat = value;
             },
+            hint: 'Add new categories in Admin → Filters.',
           }),
           select({
             label: 'Sale or rent',
@@ -187,11 +208,11 @@ Logi.views.admin.products = (function () {
           select({
             label: 'Fuel',
             value: draft.fuel,
-            options: [{ value: '', label: '—' }, ...FUELS.map((value) => ({ value, label: value }))],
+            options: [{ value: '', label: '—' }, ...fuelOptions()],
             onInput: (value) => {
               draft.fuel = value;
             },
-            hint: 'Forklifts only',
+            hint: 'Forklifts only. Add new fuel types in Admin → Filters.',
           }),
           select({
             label: 'Condition',
@@ -248,15 +269,85 @@ Logi.views.admin.products = (function () {
             },
           })
         ),
-        imageInput({
-          label: 'Photo',
-          value: draft.img,
-          hint: 'Large photos are resized automatically.',
-          onChange: (dataUrl) => {
-            draft.img = dataUrl;
-          },
+        localisedInput({
+          label: 'Description',
+          value: draft.desc,
+          multiline: true,
+          rows: 4,
+          onInput: (lang, value) => setTranslation(draft, 'desc', lang, value),
         }),
+        imagesField(),
         editorActions(primaryButton('Save', save), ghostButton('Cancel', cancel))
+      );
+    }
+
+    /**
+     * The product's own photo gallery — as many photos as needed, the first
+     * one doubling as the catalogue thumbnail. Edits write straight into the
+     * detached `draft` object; nothing is saved until Save is pressed.
+     */
+    function imagesField() {
+      if (!draft.images) draft.images = [];
+
+      const grid = draft.images.length
+        ? h(
+            'div.admin-gallery',
+            { style: { marginTop: '10px' } },
+            draft.images.map((src, index) =>
+              h(
+                'div.admin-gallery__item',
+                {},
+                h('img.admin-gallery__media', { src, alt: '' }),
+                h(
+                  'div.admin-gallery__foot',
+                  {},
+                  h('button.btn-plain.btn-plain--danger', {
+                    type: 'button',
+                    text: 'Remove',
+                    on: {
+                      click: () => {
+                        draft.images.splice(index, 1);
+                        render();
+                      },
+                    },
+                  })
+                )
+              )
+            )
+          )
+        : null;
+
+      const input = h('input', {
+        type: 'file',
+        accept: 'image/*',
+        multiple: true,
+        on: {
+          change: async (event) => {
+            const files = [...(event.currentTarget.files ?? [])];
+            event.currentTarget.value = '';
+            if (!files.length) return;
+
+            // Processed one at a time so a single bad file does not lose the batch.
+            for (const file of files) {
+              try {
+                const dataUrl = await processImage(file);
+                draft.images.push(dataUrl);
+              } catch (err) {
+                toast.error(`${file.name}: ${err.message}`);
+              }
+            }
+            render();
+          },
+        },
+      });
+
+      return h(
+        'div',
+        {},
+        field('Photos', h('label.admin-upload', {}, '+ Add photos', input), {
+          hint: 'The first photo is used as the catalogue thumbnail. Large photos are resized automatically.',
+        }),
+        grid
       );
     }
 

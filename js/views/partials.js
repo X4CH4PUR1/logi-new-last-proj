@@ -8,7 +8,8 @@ Logi.views.partials = (function () {
    * dedicated page can never drift apart visually.
    */
 
-  const { h, when } = Logi.core.dom;
+  const dom = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
   const router = Logi.core.router;
   const { attachTilt, countUp } = Logi.core.effects;
@@ -18,14 +19,20 @@ Logi.views.partials = (function () {
      Headings
      -------------------------------------------------------------------------- */
 
+  const eyebrowText = (label) => `// ${label}`;
+
   /** The monospace `// LABEL` marker. The leading rule comes from CSS. */
   function eyebrow(label) {
-    return h('div.eyebrow', { text: `// ${label}` });
+    const root = tpl.clone('eyebrow');
+    tpl.bind(root, { label: eyebrowText(label) });
+    return root;
   }
 
   /** Page heading: eyebrow + h1. */
   function pageHeader(label, title) {
-    return [eyebrow(label), h('h1.page__title', { text: title })];
+    const h1 = tpl.clone('page-title');
+    tpl.bind(h1, { title });
+    return [eyebrow(label), h1];
   }
 
   /**
@@ -33,14 +40,12 @@ Logi.views.partials = (function () {
    * @param {{label: string, title: string, linkTo?: string}} options
    */
   function sectionHead({ label, title, linkTo }) {
-    return h(
-      'div.section__head',
-      {},
-      h('div', {}, eyebrow(label), h('h2.section__title', { text: title })),
-      when(linkTo, () =>
-        h('a.section__link', { href: router.href(linkTo), text: `${t('viewAll')} →` })
-      )
-    );
+    const root = tpl.clone('section-head');
+    const { link } = tpl.refs(root);
+    tpl.bind(root, { eyebrowLabel: eyebrowText(label), title, linkLabel: `${t('viewAll')} →` });
+    tpl.toggle(link, !!linkTo);
+    if (linkTo) tpl.bindAttr(root, { href: router.href(linkTo) });
+    return root;
   }
 
   /* --------------------------------------------------------------------------
@@ -62,21 +67,20 @@ Logi.views.partials = (function () {
     onClick,
   } = {}) {
     if (src) {
-      return h('img', {
-        src,
-        alt,
-        loading: 'lazy',
-        decoding: 'async',
-        class: className,
-        on: onClick ? { click: onClick } : undefined,
-        style: onClick ? { cursor: 'zoom-in' } : undefined,
-      });
+      const img = tpl.clone('media-img');
+      img.src = src;
+      img.alt = alt;
+      if (className) img.className = className;
+      if (onClick) {
+        img.addEventListener('click', onClick);
+        img.style.cursor = 'zoom-in';
+      }
+      return img;
     }
-    return h(
-      'div.placeholder',
-      { class: [className, placeholderClass].filter(Boolean).join(' '), 'aria-hidden': 'true' },
-      h('span', { text: label })
-    );
+    const root = tpl.clone('media-placeholder');
+    root.className = ['placeholder', className, placeholderClass].filter(Boolean).join(' ');
+    tpl.bind(root, { label });
+    return root;
   }
 
   /* --------------------------------------------------------------------------
@@ -85,11 +89,13 @@ Logi.views.partials = (function () {
 
   function badgeRow(labels) {
     if (!labels?.length) return null;
-    return h(
-      'div.badge-row',
-      {},
-      labels.map((label) => h('span.badge', { text: label }))
-    );
+    const root = tpl.clone('badge-row');
+    tpl.each(tpl.slot(root, 'list'), labels, (label) => {
+      const b = tpl.clone('badge');
+      tpl.bind(b, { label });
+      return b;
+    });
+    return root;
   }
 
   /* --------------------------------------------------------------------------
@@ -102,23 +108,19 @@ Logi.views.partials = (function () {
    *        number — the variant used on the About page
    */
   function statTile(stat, { compact = false } = {}) {
-    return h(
-      'div.card.stat.notch',
-      { class: compact ? 'stat--compact' : 'card--lift' },
-      when(!compact, () => h('span.stat__tape.hazard--warm')),
-      h('div.stat__value.grad-text', {
-        ref: (el) => countUp(el, stat.value, stat.suffix, { format: formatNumber }),
-      }),
-      h('div.stat__label', { text: stat.label })
-    );
+    const root = tpl.clone('stat-tile');
+    const { tape, value } = tpl.refs(root);
+    root.classList.add(compact ? 'stat--compact' : 'card--lift');
+    tpl.toggle(tape, !compact);
+    tpl.bind(root, { label: stat.label });
+    countUp(value, stat.value, stat.suffix, { format: formatNumber });
+    return root;
   }
 
   function statGrid(stats, options) {
-    return h(
-      'div.grid',
-      { style: { '--min': '200px', '--gap': '20px' } },
-      stats.map((stat) => statTile(stat, options))
-    );
+    const root = tpl.clone('stat-grid');
+    tpl.each(tpl.slot(root, 'grid'), stats, (stat) => statTile(stat, options));
+    return root;
   }
 
   /* --------------------------------------------------------------------------
@@ -131,24 +133,18 @@ Logi.views.partials = (function () {
    *        number behind the card — used on the home page only
    */
   function serviceCard(service, { ghost = false } = {}) {
-    return h(
-      'article.card.card--hover.card--tilt.service-card.notch',
-      { ref: attachTilt },
-      when(ghost, () =>
-        h('span.service-card__ghost.ghost-text', { text: service.num, 'aria-hidden': 'true' })
-      ),
-      h('div.service-card__num', { text: service.num }),
-      h('h3.service-card__title', { text: service.title }),
-      h('p.service-card__desc', { text: service.desc })
-    );
+    const root = tpl.clone('service-card');
+    const { ghost: ghostEl } = tpl.refs(root);
+    tpl.toggle(ghostEl, ghost);
+    tpl.bind(root, { num: service.num, title: service.title, desc: service.desc });
+    attachTilt(root);
+    return root;
   }
 
   function serviceGrid(services, options) {
-    return h(
-      'div.grid',
-      { style: { '--min': '220px', '--gap': '16px' } },
-      services.map((service) => serviceCard(service, options))
-    );
+    const root = tpl.clone('service-grid');
+    tpl.each(tpl.slot(root, 'grid'), services, (service) => serviceCard(service, options));
+    return root;
   }
 
   /* --------------------------------------------------------------------------
@@ -166,39 +162,24 @@ Logi.views.partials = (function () {
    */
   function productCard(product, onOpen, { showBrand = true } = {}) {
     const view = decorateProduct(product);
+    const root = tpl.clone('product-card');
+    const { brand } = tpl.refs(root);
 
-    return h(
-      'button.card.card--hover.card--tilt.product-card.notch',
-      {
-        type: 'button',
-        ref: attachTilt,
-        'aria-label': `${view.title} — ${view.price}`,
-        on: { click: () => onOpen(view.id) },
-      },
-      media({
-        src: view.img,
-        alt: view.title,
-        className: 'product-card__media',
-      }),
-      h(
-        'div.card__body',
-        {},
-        badgeRow(view.badges),
-        h('div.product-card__title', { text: view.title }),
-        when(showBrand && view.brand, () =>
-          h('div.product-card__brand', { text: view.brand })
-        ),
-        h('div.product-card__price.grad-text', { text: view.price })
-      )
-    );
+    tpl.place(root, 'media', media({ src: view.img, alt: view.title, className: 'product-card__media' }));
+    tpl.place(root, 'badges', badgeRow(view.badges));
+    tpl.bind(root, { title: view.title, brand: view.brand, price: view.price });
+    tpl.toggle(brand, showBrand && !!view.brand);
+
+    root.setAttribute('aria-label', `${view.title} — ${view.price}`);
+    root.addEventListener('click', () => onOpen(view.id));
+    attachTilt(root);
+    return root;
   }
 
   function productGrid(products, onOpen, options) {
-    return h(
-      'div.grid',
-      {},
-      products.map((product) => productCard(product, onOpen, options))
-    );
+    const root = tpl.clone('product-grid');
+    tpl.each(tpl.slot(root, 'grid'), products, (product) => productCard(product, onOpen, options));
+    return root;
   }
 
   /* --------------------------------------------------------------------------
@@ -206,7 +187,9 @@ Logi.views.partials = (function () {
      -------------------------------------------------------------------------- */
 
   function empty(message) {
-    return h('div.empty', { text: message });
+    const root = tpl.clone('empty');
+    tpl.bind(root, { message });
+    return root;
   }
 
   /* --------------------------------------------------------------------------
@@ -222,29 +205,15 @@ Logi.views.partials = (function () {
    * between them, read as a rendering fault rather than as a design.
    */
   function ctaBand() {
-    return h(
-      'section.cta-band',
-      {},
-      h('span.cta-band__edge.cta-band__edge--top', { 'aria-hidden': 'true' }),
-      h('span.cta-band__edge.cta-band__edge--bottom', { 'aria-hidden': 'true' }),
-      h(
-        'div.cta-band__inner',
-        {},
-        h(
-          'div',
-          {},
-          h('p.cta-band__title', { text: t('ctaTitle') }),
-          h('p.cta-band__sub', { text: t('ctaSub') })
-        ),
-        h(
-          'div.cta-band__phones',
-          {},
-          phoneLinks().map((phone) =>
-            h('a.cta-band__phone', { href: phone.href, text: phone.label })
-          )
-        )
-      )
-    );
+    const root = tpl.clone('cta-band');
+    tpl.bind(root, { title: t('ctaTitle'), sub: t('ctaSub') });
+    tpl.each(tpl.slot(root, 'phones'), phoneLinks(), (phone) => {
+      const a = tpl.clone('cta-phone');
+      tpl.bindAttr(a, { href: phone.href });
+      tpl.bind(a, { label: phone.label });
+      return a;
+    });
+    return root;
   }
 
   return { eyebrow, pageHeader, sectionHead, media, badgeRow, statTile, statGrid, serviceCard, serviceGrid, productCard, productGrid, empty, ctaBand };

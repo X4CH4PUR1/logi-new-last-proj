@@ -88,6 +88,7 @@
       the DOM is parsed, same as modules would.
     -->
     <script defer src="js/core/dom.js"></script>
+    <script defer src="js/core/tpl.js"></script>
     <script defer src="js/data/config.js"></script>
     <script defer src="js/core/router.js"></script>
     <script defer src="locales/ka.js"></script>
@@ -120,6 +121,7 @@
     <script defer src="js/util/image.js"></script>
     <script defer src="js/views/admin/fields.js"></script>
     <script defer src="js/views/admin/products.js"></script>
+    <script defer src="js/views/admin/filters.js"></script>
     <script defer src="js/views/admin/news.js"></script>
     <script defer src="js/views/admin/gallery.js"></script>
     <script defer src="js/views/admin/services.js"></script>
@@ -137,6 +139,462 @@
     <a class="skip-link" href="#main">Skip to content</a>
 
     <div id="app"></div>
+
+    <!--
+      Template library — edit this markup directly. Elements in here are
+      inert (<template> content never renders) until JS clones them into the
+      page above, so nothing below is ever visible as-is.
+
+      IMPORTANT for hand-editors: text inside a data-bind="..." element is a
+      placeholder only. Anything driven by the visitor's language or by
+      Admin -> UI Text / Admin -> Texts is overwritten by JS on every render
+      — edit locales/*.js or the Admin panel for that content, not the
+      placeholder text below. Structure, classes and wrapper markup ARE safe
+      to edit here directly.
+    -->
+    <div id="templates" hidden aria-hidden="true">
+      <!-- ============ SOCIAL ============ -->
+      <template id="tpl-social-links"><div class="social-links" data-slot="list"></div></template>
+      <template id="tpl-social-link">
+        <a class="social-link" target="_blank" rel="noopener noreferrer" data-bind-attr="href:href,title:label,aria-label:label">
+          <svg class="social-link__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path fill="currentColor" data-bind-attr="d:path"></path>
+          </svg>
+        </a>
+      </template>
+
+      <!-- ============ HEADER ============ -->
+      <template id="tpl-header">
+        <header class="site-header" data-nav-open="false">
+          <span class="site-header__tape hazard" aria-hidden="true"></span>
+          <div class="site-header__inner">
+            <a class="logo" data-bind-attr="href:homeHref,aria-label:brandFull">
+              <span class="logo__word" data-bind="brandShort"></span>
+              <span class="logo__bar hazard--warm" aria-hidden="true"></span>
+            </a>
+            <nav class="main-nav" id="main-nav" data-bind-attr="aria-label:menuLabel">
+              <div data-slot="nav-links"></div>
+              <div data-slot="nav-social"></div>
+            </nav>
+            <div class="header-tools">
+              <div data-slot="tools-social"></div>
+              <div class="segmented" role="group" aria-label="Language" data-slot="lang-switch"></div>
+              <button class="theme-toggle" type="button" data-ref="themeToggle" aria-label="Switch colour theme"></button>
+              <button class="nav-toggle" type="button" data-ref="navToggle" aria-controls="main-nav" aria-expanded="false" data-bind-attr="aria-label:menuLabel">
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+              </button>
+            </div>
+          </div>
+        </header>
+      </template>
+      <template id="tpl-nav-link"><a class="main-nav__link" data-bind-attr="href:href" data-bind="label"></a></template>
+      <template id="tpl-lang-btn"><button class="segmented__btn" type="button" data-bind="label" data-bind-attr="lang:htmlLang,title:name,aria-pressed:pressed"></button></template>
+
+      <!-- ============ FOOTER ============ -->
+      <template id="tpl-footer">
+        <footer class="site-footer">
+          <span class="site-footer__tape hazard" aria-hidden="true" data-ref="tape"></span>
+          <span class="site-footer__ghost ghost-text" aria-hidden="true" data-bind="brandShort"></span>
+          <div class="site-footer__inner">
+            <div class="site-footer__cols">
+              <div>
+                <div class="site-footer__brand">
+                  <span class="site-footer__brand-word" data-bind="brandShort"></span>
+                  <span class="site-footer__brand-bar hazard--warm" aria-hidden="true"></span>
+                </div>
+                <p class="site-footer__legal" data-bind="legal"></p>
+              </div>
+              <div class="site-footer__col">
+                <span class="site-footer__col-title">// MENU</span>
+                <nav class="site-footer__menu" data-slot="menu-links" data-bind-attr="aria-label:menuLabel"></nav>
+              </div>
+              <div class="site-footer__col site-footer__contact">
+                <span class="site-footer__col-title">// CONTACT</span>
+                <span data-ref="address" data-bind="address"></span>
+                <a data-ref="phones" data-bind="phones" data-bind-attr="href:phonesHref" style="color:inherit;text-decoration:none"></a>
+                <a data-ref="email" data-bind="email" data-bind-attr="href:emailHref"></a>
+                <span data-ref="hours" data-bind="hours"></span>
+              </div>
+            </div>
+            <div class="site-footer__bottom">
+              <span data-bind="copyright"></span>
+            </div>
+          </div>
+        </footer>
+      </template>
+      <template id="tpl-footer-link"><a data-bind-attr="href:href" data-bind="label"></a></template>
+
+      <!-- ============ SHARED PARTIALS ============ -->
+      <template id="tpl-eyebrow"><div class="eyebrow" data-bind="label"></div></template>
+      <template id="tpl-page-title"><h1 class="page__title" data-bind="title"></h1></template>
+      <template id="tpl-section-head">
+        <div class="section__head">
+          <div>
+            <div class="eyebrow" data-bind="eyebrowLabel"></div>
+            <h2 class="section__title" data-bind="title"></h2>
+          </div>
+          <a class="section__link" data-ref="link" data-bind-attr="href:href" data-bind="linkLabel"></a>
+        </div>
+      </template>
+
+      <template id="tpl-media-img"><img loading="lazy" decoding="async"></template>
+      <template id="tpl-media-placeholder"><div class="placeholder" aria-hidden="true"><span data-bind="label"></span></div></template>
+
+      <template id="tpl-badge-row"><div class="badge-row" data-slot="list"></div></template>
+      <template id="tpl-badge"><span class="badge" data-bind="label"></span></template>
+
+      <template id="tpl-stat-tile">
+        <div class="card stat notch">
+          <span class="stat__tape hazard--warm" data-ref="tape"></span>
+          <div class="stat__value grad-text" data-ref="value"></div>
+          <div class="stat__label" data-bind="label"></div>
+        </div>
+      </template>
+      <template id="tpl-stat-grid"><div class="grid" data-slot="grid" style="--min:200px;--gap:20px"></div></template>
+
+      <template id="tpl-service-card">
+        <article class="card card--hover card--tilt service-card notch">
+          <span class="service-card__ghost ghost-text" data-ref="ghost" aria-hidden="true" data-bind="num"></span>
+          <div class="service-card__num" data-bind="num"></div>
+          <h3 class="service-card__title" data-bind="title"></h3>
+          <p class="service-card__desc" data-bind="desc"></p>
+        </article>
+      </template>
+      <template id="tpl-service-grid"><div class="grid" data-slot="grid" style="--min:220px;--gap:16px"></div></template>
+
+      <template id="tpl-product-card">
+        <button type="button" class="card card--hover card--tilt product-card notch">
+          <div data-slot="media"></div>
+          <div class="card__body">
+            <div data-slot="badges"></div>
+            <div class="product-card__title" data-bind="title"></div>
+            <div class="product-card__brand" data-ref="brand" data-bind="brand"></div>
+            <div class="product-card__price grad-text" data-bind="price"></div>
+          </div>
+        </button>
+      </template>
+      <template id="tpl-product-grid"><div class="grid" data-slot="grid"></div></template>
+
+      <template id="tpl-empty"><div class="empty" data-bind="message"></div></template>
+
+      <template id="tpl-cta-band">
+        <section class="cta-band">
+          <span class="cta-band__edge cta-band__edge--top" aria-hidden="true"></span>
+          <span class="cta-band__edge cta-band__edge--bottom" aria-hidden="true"></span>
+          <div class="cta-band__inner">
+            <div>
+              <p class="cta-band__title" data-bind="title"></p>
+              <p class="cta-band__sub" data-bind="sub"></p>
+            </div>
+            <div class="cta-band__phones" data-slot="phones"></div>
+          </div>
+        </section>
+      </template>
+      <template id="tpl-cta-phone"><a class="cta-band__phone" data-bind-attr="href:href" data-bind="label"></a></template>
+
+      <!-- ============ HOME ============ -->
+      <template id="tpl-home">
+        <div data-page="home">
+          <div data-slot="hero"></div>
+          <div data-slot="marquee"></div>
+          <div data-slot="stats"></div>
+          <div data-slot="services"></div>
+          <div data-slot="featured"></div>
+          <div data-slot="news"></div>
+          <div data-slot="cta"></div>
+        </div>
+      </template>
+      <template id="tpl-hero">
+        <section class="hero">
+          <div class="hero__orb hero__orb--a" aria-hidden="true" data-ref="orbA"><div class="hero__orb-inner"></div></div>
+          <div class="hero__orb hero__orb--b" aria-hidden="true" data-ref="orbB"><div class="hero__orb-inner"></div></div>
+          <div class="hero__watermark" aria-hidden="true" data-bind="brandFull"></div>
+          <span class="hero__bracket hero__bracket--tl" aria-hidden="true"></span>
+          <span class="hero__bracket hero__bracket--tr" aria-hidden="true"></span>
+          <span class="hero__bracket hero__bracket--bl" aria-hidden="true"></span>
+          <span class="hero__bracket hero__bracket--br" aria-hidden="true"></span>
+          <div class="hero__cue" aria-hidden="true">
+            <span class="hero__cue-label" data-bind="scroll"></span>
+            <span class="hero__cue-line"></span>
+          </div>
+          <div class="hero__inner">
+            <div class="hero__copy">
+              <p class="hero__badge">
+                <span class="hero__badge-dot" aria-hidden="true"></span>
+                <span data-bind="heroBadge"></span>
+              </p>
+              <h1 class="hero__title" data-bind="heroTitle"></h1>
+              <span class="rule hero__rule" aria-hidden="true"></span>
+              <p class="hero__sub" data-bind="heroSub"></p>
+              <div class="hero__actions">
+                <a class="btn btn--primary" data-bind-attr="href:productsHref" data-bind="heroCta1"></a>
+                <a class="btn btn--ghost" data-bind-attr="href:contactsHref" data-bind="heroCta2"></a>
+              </div>
+            </div>
+            <span data-slot="dial"></span>
+          </div>
+        </section>
+      </template>
+      <template id="tpl-dial">
+        <div class="dial-wrap" data-ref="dialWrap">
+          <div class="dial" aria-hidden="true">
+            <div class="dial__sweep"></div>
+            <div class="dial__ticks"></div>
+            <div class="dial__ring-dashed"></div>
+            <div class="dial__ring-solid"></div>
+            <div class="dial__core">
+              <span class="dial__number grad-text" data-bind="number"></span>
+              <span class="dial__caption" data-bind="caption"></span>
+            </div>
+            <div data-slot="pills"></div>
+          </div>
+        </div>
+      </template>
+      <template id="tpl-dial-pill"><span class="dial__pill" data-bind="label"></span></template>
+
+      <template id="tpl-marquee">
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee__track">
+            <span class="marquee__item" data-bind="brand"></span>
+            <span class="marquee__item" data-bind="brand"></span>
+            <span class="marquee__item" data-bind="brand"></span>
+            <span class="marquee__item" data-bind="brand"></span>
+          </div>
+          <div class="marquee__track marquee__track--reverse">
+            <span class="marquee__item marquee__item--outline ghost-text" data-bind="brand"></span>
+            <span class="marquee__item marquee__item--outline ghost-text" data-bind="brand"></span>
+            <span class="marquee__item marquee__item--outline ghost-text" data-bind="brand"></span>
+            <span class="marquee__item marquee__item--outline ghost-text" data-bind="brand"></span>
+          </div>
+        </div>
+      </template>
+
+      <template id="tpl-stats-section">
+        <section class="container" style="padding: 72px var(--gutter) 24px">
+          <span data-slot="grid"></span>
+        </section>
+      </template>
+
+      <template id="tpl-services-section">
+        <section class="section container">
+          <div>
+            <div class="eyebrow">// SERVICES</div>
+            <h2 class="section__title" style="margin-bottom: 36px" data-bind="title"></h2>
+          </div>
+          <span data-slot="grid"></span>
+        </section>
+      </template>
+
+      <template id="tpl-featured-section">
+        <section class="container" style="padding: 24px var(--gutter) 72px">
+          <span data-slot="head"></span>
+          <span data-slot="grid"></span>
+        </section>
+      </template>
+
+      <template id="tpl-news-section">
+        <section class="container" style="padding: 0 var(--gutter) 72px">
+          <span data-slot="head"></span>
+          <div class="grid" style="--min: 320px" data-slot="grid"></div>
+        </section>
+      </template>
+      <template id="tpl-news-teaser">
+        <a class="card card--lift card--link news-teaser notch" data-bind-attr="href:href">
+          <div class="news-item__date" data-bind="date"></div>
+          <div class="news-teaser__title" data-bind="title"></div>
+          <p class="news-teaser__excerpt" data-ref="excerpt" data-bind="excerpt"></p>
+        </a>
+      </template>
+
+      <!-- ============ ABOUT ============ -->
+      <template id="tpl-about">
+        <div class="page container" data-page="about">
+          <span data-slot="eyebrow"></span>
+          <span data-slot="title"></span>
+          <span class="rule about__rule" aria-hidden="true"></span>
+          <p class="about__lead" data-bind="lead"></p>
+          <div class="grid about__panels">
+            <div class="card about__panel notch">
+              <div class="about__panel-label">CONCEPT</div>
+              <p class="about__panel-text" data-bind="about2"></p>
+            </div>
+            <div class="card about__panel notch">
+              <div class="about__panel-label">POLICY</div>
+              <p class="about__panel-text" data-bind="about3"></p>
+            </div>
+          </div>
+          <div class="about__strip" data-bind="anyBrand"></div>
+          <div class="about__stats"><span data-slot="stats"></span></div>
+        </div>
+      </template>
+
+      <!-- ============ PRODUCTS / PRODUCT MODAL ============ -->
+      <template id="tpl-products">
+        <div class="page container" data-page="products">
+          <span data-slot="eyebrow"></span>
+          <span data-slot="title"></span>
+          <div class="tab-row product-filters" role="tablist" data-slot="modes"></div>
+          <div class="product-filters--fuel" role="group" data-slot="fuels"></div>
+          <div data-slot="results"></div>
+        </div>
+      </template>
+      <template id="tpl-mode-tab"><button type="button" class="tab" role="tab" data-bind="label"></button></template>
+      <template id="tpl-fuel-chip"><button type="button" class="chip" data-bind="label"></button></template>
+
+      <template id="tpl-product-modal">
+        <dialog class="modal">
+          <div class="modal__panel notch">
+            <span data-slot="media"></span>
+            <div class="modal__body">
+              <span data-slot="badges"></span>
+              <h2 class="modal__title" data-bind="title"></h2>
+              <p class="modal__desc" data-ref="descP" data-bind="description"></p>
+              <div class="spec-grid" data-ref="specGrid" data-slot="specs"></div>
+              <div class="modal__footer">
+                <p class="modal__price grad-text" data-bind="price"></p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                  <a class="btn btn--primary btn--sm" data-ref="quote" data-bind-attr="href:contactsHref" data-bind="requestQuote"></a>
+                  <button type="button" class="btn btn--ghost btn--sm" data-ref="closeBtn" data-bind="close"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </template>
+      <template id="tpl-product-spec">
+        <div class="spec">
+          <div class="spec__key" data-bind="key"></div>
+          <div class="spec__value" data-bind="value"></div>
+        </div>
+      </template>
+      <template id="tpl-product-gallery">
+        <div>
+          <span data-slot="main"></span>
+          <div class="modal__thumbs" data-ref="thumbs" hidden></div>
+        </div>
+      </template>
+      <template id="tpl-product-thumb">
+        <button type="button" class="modal__thumb">
+          <img data-bind-attr="src:src,alt:alt">
+        </button>
+      </template>
+
+      <!-- ============ NEWS ============ -->
+      <template id="tpl-news">
+        <div class="page container container--narrow" data-page="news">
+          <span data-slot="eyebrow"></span>
+          <span data-slot="title"></span>
+          <span data-slot="body"></span>
+        </div>
+      </template>
+      <template id="tpl-news-stack"><div class="stack" data-slot="list"></div></template>
+      <template id="tpl-news-article">
+        <article class="card card--hover news-item notch">
+          <span data-slot="media"></span>
+          <div class="news-item__body">
+            <p class="news-item__date" data-ref="dateP"><time data-bind-attr="datetime:date" data-bind="date"></time></p>
+            <h2 class="news-item__title" data-bind="title"></h2>
+            <p class="news-item__text" data-bind="body"></p>
+          </div>
+        </article>
+      </template>
+
+      <!-- ============ GALLERY / LIGHTBOX ============ -->
+      <template id="tpl-gallery">
+        <div class="page container" data-page="gallery">
+          <span data-slot="eyebrow"></span>
+          <span data-slot="title"></span>
+          <span data-slot="body"></span>
+        </div>
+      </template>
+      <template id="tpl-gallery-grid"><div class="grid gallery-grid" data-slot="list"></div></template>
+      <template id="tpl-gallery-figure">
+        <figure class="card card--lift gallery-figure notch">
+          <span data-slot="media"></span>
+          <figcaption class="gallery-figure__caption" data-ref="caption" data-bind="caption"></figcaption>
+        </figure>
+      </template>
+      <template id="tpl-lightbox">
+        <dialog class="modal">
+          <figure class="modal__panel notch" style="margin: 0">
+            <img class="lightbox__image" data-ref="image">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 4px 20px 16px">
+              <figcaption class="gallery-figure__caption" data-ref="caption"></figcaption>
+              <div style="display: flex; gap: 8px; align-items: center">
+                <span class="badge" data-ref="counter"></span>
+                <button type="button" class="btn-plain" data-ref="prev" data-bind-attr="aria-label:prevAria">←</button>
+                <button type="button" class="btn-plain" data-ref="next" data-bind-attr="aria-label:nextAria">→</button>
+                <button type="button" class="btn-plain" data-ref="closeBtn" data-bind="closeLabel"></button>
+              </div>
+            </div>
+          </figure>
+        </dialog>
+      </template>
+
+      <!-- ============ SERVICE / CONTACTS / CONTACT-FORM ============ -->
+      <template id="tpl-service">
+        <div class="page container" data-page="service">
+          <span data-slot="eyebrow"></span>
+          <span data-slot="title"></span>
+          <p class="service__intro" data-bind="intro"></p>
+          <div class="service__grid"><span data-slot="grid"></span></div>
+          <div class="card booking notch"><span data-slot="form"></span></div>
+        </div>
+      </template>
+
+      <template id="tpl-contacts">
+        <div class="page container" data-page="contacts">
+          <span data-slot="eyebrow"></span>
+          <span data-slot="title"></span>
+          <div class="contacts-grid">
+            <span data-slot="details"></span>
+            <div class="card contact-form-panel notch"><span data-slot="form"></span></div>
+          </div>
+        </div>
+      </template>
+      <template id="tpl-contact-details">
+        <div class="card contact-card notch">
+          <span data-slot="map"></span>
+        </div>
+      </template>
+      <template id="tpl-contact-row">
+        <div class="contact-row">
+          <span class="contact-row__key" data-bind="key"></span>
+          <span class="contact-row__value">
+            <a data-ref="link" data-bind-attr="href:href" data-bind="value"></a>
+            <span data-ref="plain" data-bind="value"></span>
+          </span>
+        </div>
+      </template>
+      <template id="tpl-contact-map-placeholder">
+        <div class="placeholder contact-card__map" aria-hidden="true"><span data-bind="label"></span></div>
+      </template>
+      <template id="tpl-contact-map">
+        <div style="flex: 1; display: flex; flex-direction: column; min-height: 220px">
+          <iframe class="contact-card__map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="flex: 1; min-height: 220px" data-bind-attr="src:embed,title:mapTitle"></iframe>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; padding: 12px 26px 16px; font-size: 13px">
+            <a data-ref="linkA" target="_blank" rel="noopener noreferrer" data-bind-attr="href:link" data-bind="viewAllLabel"></a>
+            <a data-ref="directionsA" target="_blank" rel="noopener noreferrer" data-bind-attr="href:directions" data-bind="directionsLabel"></a>
+          </div>
+        </div>
+      </template>
+
+      <template id="tpl-contact-form">
+        <div>
+          <h2 class="booking__title" data-ref="titleEl" data-bind="title" hidden></h2>
+          <p class="form__note" role="status" data-ref="sentNote" data-bind="sentText" hidden></p>
+          <form class="form" novalidate data-ref="form">
+            <input class="input" type="text" name="name" autocomplete="name" required data-ref="nameInput" data-bind-attr="placeholder:namePh,aria-label:namePh">
+            <input class="input" type="tel" name="phone" autocomplete="tel" required data-ref="phoneInput" data-bind-attr="placeholder:phonePh,aria-label:phonePh">
+            <textarea class="textarea" name="message" rows="4" data-ref="msgInput" data-bind-attr="placeholder:msgPh,aria-label:msgPh"></textarea>
+            <p class="form__error" role="alert" data-ref="errorEl" data-bind="errorText" hidden></p>
+            <button type="submit" class="btn btn--primary btn--block" data-ref="submitBtn" data-bind="sendLabel"></button>
+          </form>
+        </div>
+      </template>
+    </div>
 
     <noscript>
       <div

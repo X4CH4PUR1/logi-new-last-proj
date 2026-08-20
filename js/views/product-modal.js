@@ -14,7 +14,7 @@ Logi.views["product-modal"] = (function () {
    * that will not go away is a much worse failure than a redundant call.
    */
 
-  const { h, when } = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
   const router = Logi.core.router;
   const { decorateProduct } = Logi.core.selectors;
@@ -26,8 +26,10 @@ Logi.views["product-modal"] = (function () {
    */
   function productModal(product, onDismiss) {
     const view = decorateProduct(product);
-    let dialog;
     let dismissed = false;
+
+    const dialog = tpl.clone('product-modal');
+    const { specGrid, quote, closeBtn, descP } = tpl.refs(dialog);
 
     const dismiss = () => {
       if (dismissed) return;
@@ -36,81 +38,91 @@ Logi.views["product-modal"] = (function () {
       onDismiss();
     };
 
-    dialog = h(
-      'dialog.modal',
-      {
-        'aria-label': view.title,
-        on: {
-          // Clicking the scrim — but not the panel — dismisses.
-          click: (event) => {
-            if (event.target === dialog) dismiss();
-          },
-          // Escape. preventDefault stops the browser closing it behind our back.
-          cancel: (event) => {
-            event.preventDefault();
-            dismiss();
-          },
-          keydown: (event) => {
-            if (event.key === 'Escape') {
-              event.preventDefault();
-              dismiss();
-            }
-          },
-          close: dismiss,
-        },
-      },
-      h(
-        'div.modal__panel.notch',
-        {},
-        media({
-          src: view.img,
-          alt: view.title,
-          className: 'modal__media',
-          placeholderClass: 'modal__media--placeholder',
-        }),
-        h(
-          'div.modal__body',
-          {},
-          badgeRow(view.badges),
-          h('h2.modal__title', { text: view.title }),
-          when(view.specs.length, () =>
-            h(
-              'div.spec-grid',
-              {},
-              view.specs.map((spec) =>
-                h(
-                  'div.spec',
-                  {},
-                  h('div.spec__key', { text: spec.key }),
-                  h('div.spec__value', { text: spec.value })
-                )
-              )
-            )
-          ),
-          h(
-            'div.modal__footer',
-            {},
-            h('p.modal__price.grad-text', { text: view.price }),
-            h(
-              'div',
-              { style: { display: 'flex', gap: '10px', flexWrap: 'wrap' } },
-              h('a.btn.btn--primary.btn--sm', {
-                href: router.href('contacts'),
-                text: t('requestQuote'),
-                on: { click: dismiss },
-              }),
-              h('button.btn.btn--ghost.btn--sm', {
-                type: 'button',
-                text: t('close'),
-                on: { click: dismiss },
-              })
-            )
-          )
-        )
-      )
-    );
+    dialog.setAttribute('aria-label', view.title);
+    tpl.place(dialog, 'media', gallery(view.images, view.title));
+    tpl.place(dialog, 'badges', badgeRow(view.badges));
+    tpl.toggle(descP, !!view.description);
+    tpl.bind(dialog, {
+      title: view.title,
+      description: view.description,
+      price: view.price,
+      requestQuote: t('requestQuote'),
+      close: t('close'),
+    });
+    tpl.bindAttr(dialog, { contactsHref: router.href('contacts') });
+
+    tpl.toggle(specGrid, view.specs.length > 0);
+    tpl.each(specGrid, view.specs, (spec) => {
+      const row = tpl.clone('product-spec');
+      tpl.bind(row, { key: spec.key, value: spec.value });
+      return row;
+    });
+
+    quote.addEventListener('click', dismiss);
+    closeBtn.addEventListener('click', dismiss);
+
+    // Clicking the scrim — but not the panel — dismisses.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dismiss();
+    });
+    // Escape. preventDefault stops the browser closing it behind our back.
+    dialog.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      dismiss();
+    });
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        dismiss();
+      }
+    });
+    dialog.addEventListener('close', dismiss);
 
     return dialog;
+  }
+
+  /**
+   * The main photo plus a thumbnail strip when there is more than one — the
+   * strip only appears once a product actually has extra photos, so a single-
+   * image product (or one with none) looks exactly as it did before.
+   * @param {string[]} images
+   * @param {string} title used as the alt text for every photo
+   */
+  function gallery(images, title) {
+    const root = tpl.clone('product-gallery');
+    const { thumbs } = tpl.refs(root);
+
+    let current = buildMedia(images[0], title);
+    tpl.place(root, 'main', current);
+
+    tpl.toggle(thumbs, images.length > 1);
+    if (images.length > 1) {
+      tpl.each(thumbs, images, (src, index) => {
+        const btn = tpl.clone('product-thumb');
+        tpl.bindAttr(btn, { src, alt: title });
+        btn.setAttribute('aria-current', String(index === 0));
+        btn.addEventListener('click', () => {
+          const next = buildMedia(src, title);
+          current.replaceWith(next);
+          current = next;
+          for (const sibling of thumbs.children) {
+            sibling.setAttribute('aria-current', String(sibling === btn));
+          }
+        });
+        return btn;
+      });
+    }
+
+    return root;
+  }
+
+  function buildMedia(src, title) {
+    return media({
+      src,
+      alt: title,
+      className: 'modal__media',
+      placeholderClass: 'modal__media--placeholder',
+    });
   }
 
   return { productModal };

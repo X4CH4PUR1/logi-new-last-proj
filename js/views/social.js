@@ -13,11 +13,13 @@ Logi.views.social = (function () {
    * room left. CSS shows exactly one of the two.
    */
 
-  const { h } = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { social } = Logi.core.selectors;
   /* --------------------------------------------------------------------------
      Glyphs
-     Single-path marks, drawn on a 24x24 grid.
+     Single-path marks, drawn on a 24x24 grid. This stays in JS — it's vector
+     data, not editorial markup — while the <a>/<svg> wrapper lives in
+     index.html as tpl-social-link.
      -------------------------------------------------------------------------- */
 
   const PATHS = {
@@ -32,21 +34,6 @@ Logi.views.social = (function () {
     link: 'M10.59 13.41a1 1 0 0 1 0-1.41l3-3a3 3 0 1 1 4.24 4.24l-1.42 1.42a1 1 0 0 1-1.41-1.42l1.41-1.41a1 1 0 0 0-1.41-1.42l-3 3a1 1 0 0 1-1.41 0Zm2.82-2.82a1 1 0 0 1 0 1.41l-3 3a3 3 0 1 1-4.24-4.24l1.42-1.42a1 1 0 0 1 1.41 1.42l-1.41 1.41a1 1 0 0 0 1.41 1.42l3-3a1 1 0 0 1 1.41 0Z',
   };
 
-  /** A 24×24 icon that inherits the surrounding text colour. */
-  function icon(type) {
-    return h(
-      'svg.social-link__icon',
-      {
-        viewBox: '0 0 24 24',
-        width: '20',
-        height: '20',
-        'aria-hidden': 'true',
-        focusable: 'false',
-      },
-      h('path', { d: PATHS[type] ?? PATHS.link, fill: 'currentColor' })
-    );
-  }
-
   /* --------------------------------------------------------------------------
      List
      -------------------------------------------------------------------------- */
@@ -60,26 +47,17 @@ Logi.views.social = (function () {
     const items = social();
     if (!items.length) return null;
 
-    return h(
-      'div.social-links',
-      { class: `social-links--${variant}` },
-      items.map((item) =>
-        h(
-          'a.social-link',
-          {
-            href: item.href,
-            target: '_blank',
-            // noopener is what actually matters; noreferrer keeps the visitor's
-            // path off the destination's analytics.
-            rel: 'noopener noreferrer',
-            title: item.label,
-            'aria-label': item.label,
-            dataset: { type: item.type },
-          },
-          icon(item.type)
-        )
-      )
-    );
+    const root = tpl.clone('social-links');
+    root.classList.add(`social-links--${variant}`);
+
+    tpl.each(tpl.slot(root, 'list'), items, (item) => {
+      const a = tpl.clone('social-link');
+      tpl.bindAttr(a, { href: item.href, label: item.label, path: PATHS[item.type] ?? PATHS.link });
+      a.dataset.type = item.type;
+      return a;
+    });
+
+    return root;
   }
 
   return { socialLinks };

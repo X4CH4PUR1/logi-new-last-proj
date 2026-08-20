@@ -15,9 +15,13 @@ Logi.views["contact-form"] = (function () {
    * The fallback needs no server, which suits a site hosted on GitHub Pages, but
    * it does depend on the visitor having a mail client — so the phone numbers
    * stay prominent either way.
+   *
+   * The form is cloned once and its fields never rebuilt — sent/sending/error
+   * states are applied as direct mutations on the same nodes, since the field
+   * set itself never changes shape across a submission.
    */
 
-  const { h, mount, when } = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
   const { contacts, settings } = Logi.core.selectors;
   /**
@@ -25,87 +29,59 @@ Logi.views["contact-form"] = (function () {
    * @returns {HTMLElement}
    */
   function contactForm({ title } = {}) {
-    const panel = h('div', {});
+    const root = tpl.clone('contact-form');
+    const { titleEl, sentNote, form, nameInput, phoneInput, msgInput, errorEl, submitBtn } = tpl.refs(root);
 
-    const render = (state) => {
-      mount(
-        panel,
-        when(title, () => h('h2.booking__title', { text: title })),
-        state.sent
-          ? h('p.form__note', { role: 'status', text: t('formSent') })
-          : formFields(state, render)
-      );
+    tpl.toggle(titleEl, !!title);
+    if (title) tpl.bind(root, { title });
+
+    tpl.bindAttr(root, { namePh: t('formName'), phonePh: t('formPhone'), msgPh: t('formMsg') });
+    tpl.bind(root, { sentText: t('formSent') });
+
+    const values = { name: '', phone: '', msg: '' };
+    let sending = false;
+
+    nameInput.addEventListener('input', (event) => { values.name = event.currentTarget.value; });
+    phoneInput.addEventListener('input', (event) => { values.phone = event.currentTarget.value; });
+    msgInput.addEventListener('input', (event) => { values.msg = event.currentTarget.value; });
+
+    const setError = (message) => {
+      errorEl.textContent = message || '';
+      tpl.toggle(errorEl, !!message);
     };
 
-    render({ sent: false, sending: false, error: '', values: { name: '', phone: '', msg: '' } });
-    return panel;
-  }
-
-  function formFields(state, render) {
-    const values = { ...state.values };
-
-    const onInput = (key) => (event) => {
-      values[key] = event.currentTarget.value;
+    const setSending = (state) => {
+      sending = state;
+      submitBtn.disabled = state;
+      submitBtn.textContent = state ? t('formSending') : t('formSend');
     };
+    setSending(false);
 
-    const onSubmit = async (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      if (state.sending) return;
+      if (sending) return;
 
       if (!values.name.trim() || !values.phone.trim()) {
-        render({ ...state, values, error: t('formRequired') });
+        setError(t('formRequired'));
         return;
       }
 
-      render({ ...state, values, sending: true, error: '' });
+      setError('');
+      setSending(true);
 
       try {
         await deliver(values);
-        render({ sent: true, sending: false, error: '', values: { name: '', phone: '', msg: '' } });
+        form.hidden = true;
+        tpl.toggle(sentNote, true);
+        setSending(false);
       } catch (err) {
         console.error('[contact-form]', err);
-        render({ ...state, values, sending: false, error: t('formError') });
+        setSending(false);
+        setError(t('formError'));
       }
-    };
+    });
 
-    return h(
-      'form.form',
-      { on: { submit: onSubmit }, novalidate: true },
-      h('input.input', {
-        type: 'text',
-        name: 'name',
-        value: values.name,
-        placeholder: t('formName'),
-        'aria-label': t('formName'),
-        autocomplete: 'name',
-        required: true,
-        on: { input: onInput('name') },
-      }),
-      h('input.input', {
-        type: 'tel',
-        name: 'phone',
-        value: values.phone,
-        placeholder: t('formPhone'),
-        'aria-label': t('formPhone'),
-        autocomplete: 'tel',
-        required: true,
-        on: { input: onInput('phone') },
-      }),
-      h('textarea.textarea', {
-        name: 'message',
-        rows: '4',
-        placeholder: t('formMsg'),
-        'aria-label': t('formMsg'),
-        value: values.msg,
-        on: { input: onInput('msg') },
-      }),
-      when(state.error, () => h('p.form__error', { role: 'alert', text: state.error })),
-      h('button.btn.btn--primary.btn--block', {
-        type: 'submit',
-        disabled: state.sending,
-        text: state.sending ? t('formSending') : t('formSend'),
-      })
-    );
+    return root;
   }
 
   /**

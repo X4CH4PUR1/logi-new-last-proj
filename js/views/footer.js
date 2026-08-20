@@ -5,7 +5,7 @@ Logi.views.footer = (function () {
    * Site footer: legal name, menu, contact details, and the admin entry point.
    */
 
-  const { h, when } = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { NAV_ROUTES } = Logi.data.config;
   const { t, localise } = Logi.core.i18n;
   const router = Logi.core.router;
@@ -24,79 +24,37 @@ Logi.views.footer = (function () {
     const phones = [c.phone1, c.phone2].filter(Boolean).join(' · ');
     const year = new Date().getFullYear();
 
-    return h(
-      'footer.site-footer',
-      {},
-      afterCtaBand ? null : h('span.site-footer__tape.hazard', { 'aria-hidden': 'true' }),
-      h('span.site-footer__ghost.ghost-text', { text: marks.short, 'aria-hidden': 'true' }),
-      h(
-        'div.site-footer__inner',
-        {},
-        h(
-          'div.site-footer__cols',
-          {},
-          brandColumn(c, marks),
-          menuColumn(),
-          contactColumn(c, phones)
-        ),
-        // No admin link here on purpose. The panel lives at an unlisted address
-        // (ADMIN_PATH in js/data/config.js) so visitors never see a way in.
-        h(
-          'div.site-footer__bottom',
-          {},
-          h('span', {
-            text: `© ${year} ${localise(c.legal)}${c.idCode ? ` · ID ${c.idCode}` : ''}`,
-          })
-        )
-      )
-    );
-  }
+    const root = tpl.clone('footer');
+    const { tape, address, phones: phonesEl, email, hours } = tpl.refs(root);
 
-  function brandColumn(c, marks) {
-    return h(
-      'div',
-      {},
-      h(
-        'div.site-footer__brand',
-        {},
-        h('span.site-footer__brand-word', { text: marks.short }),
-        h('span.site-footer__brand-bar.hazard--warm', { 'aria-hidden': 'true' })
-      ),
-      h('p.site-footer__legal', { text: localise(c.legal) })
-    );
-  }
+    tpl.toggle(tape, !afterCtaBand);
+    tpl.bind(root, {
+      brandShort: marks.short,
+      legal: localise(c.legal),
+      menuLabel: t('menu'),
+      address: localise(c.address),
+      phones,
+      email: c.email,
+      hours: localise(c.hours),
+      // No admin link here on purpose. The panel lives at an unlisted address
+      // (ADMIN_PATH in js/data/config.js) so visitors never see a way in.
+      copyright: `© ${year} ${localise(c.legal)}${c.idCode ? ` · ID ${c.idCode}` : ''}`,
+    });
+    tpl.toggle(address, !!c.address);
+    tpl.toggle(phonesEl, !!phones);
+    if (phones) tpl.bindAttr(root, { phonesHref: telHref(c.phone1Dial || c.phone1) });
+    tpl.toggle(email, !!c.email);
+    if (c.email) tpl.bindAttr(root, { emailHref: `mailto:${c.email}` });
+    tpl.toggle(hours, !!c.hours);
 
-  function menuColumn() {
-    return h(
-      'div.site-footer__col',
-      {},
-      h('span.site-footer__col-title', { text: '// MENU' }),
-      h(
-        'nav.site-footer__menu',
-        { 'aria-label': t('menu') },
-        NAV_ROUTES.map((route) =>
-          h('a', { href: router.href(route.key), text: t(route.labelKey) })
-        )
-      )
-    );
-  }
+    tpl.each(tpl.slot(root, 'menu-links'), NAV_ROUTES, (route) => {
+      const a = tpl.clone('footer-link');
+      tpl.bindAttr(a, { href: router.href(route.key) });
+      tpl.bind(a, { label: t(route.labelKey) });
+      return a;
+    });
 
-  function contactColumn(c, phones) {
-    return h(
-      'div.site-footer__col.site-footer__contact',
-      {},
-      h('span.site-footer__col-title', { text: '// CONTACT' }),
-      when(c.address, () => h('span', { text: localise(c.address) })),
-      when(phones, () =>
-        h('a', {
-          href: telHref(c.phone1Dial || c.phone1),
-          text: phones,
-          style: { color: 'inherit', textDecoration: 'none' },
-        })
-      ),
-      when(c.email, () => h('a', { href: `mailto:${c.email}`, text: c.email })),
-      when(c.hours, () => h('span', { text: localise(c.hours) }))
-    );
+    return root;
   }
 
   return { footer };

@@ -5,50 +5,49 @@ Logi.views.contacts = (function () {
    * Contacts page: the detail table with a map, and the enquiry form.
    */
 
-  const { h, when } = Logi.core.dom;
+  const tpl = Logi.core.tpl;
   const { localise, t } = Logi.core.i18n;
   const { contactRows, contacts, mapView } = Logi.core.selectors;
   const { pageHeader } = Logi.views.partials;
   const { contactForm } = Logi.views["contact-form"];
+
   function contactsPage() {
-    return h(
-      'div.page.container',
-      { 'data-page': 'contacts' },
-      pageHeader('CONTACT', t('contactsTitle')),
-      h(
-        'div.contacts-grid',
-        {},
-        detailsCard(),
-        h('div.card.contact-form-panel.notch', {}, contactForm({ title: t('heroCta2') }))
-      )
-    );
+    const root = tpl.clone('contacts');
+    const [eyebrowEl, titleEl] = pageHeader('CONTACT', t('contactsTitle'));
+    tpl.place(root, 'eyebrow', eyebrowEl);
+    tpl.place(root, 'title', titleEl);
+    tpl.place(root, 'details', detailsCard());
+    tpl.place(root, 'form', contactForm({ title: t('heroCta2') }));
+    return root;
   }
 
   function detailsCard() {
-    return h(
-      'div.card.contact-card.notch',
-      {},
-      contactRows().map((row) =>
-        h(
-          'div.contact-row',
-          {},
-          h('span.contact-row__key', { text: row.key }),
-          h(
-            'span.contact-row__value',
-            {},
-            row.href
-              ? h('a', {
-                  href: row.href,
-                  text: row.value,
-                  rel: row.href.startsWith('http') ? 'noopener noreferrer' : null,
-                  target: row.href.startsWith('http') ? '_blank' : null,
-                })
-              : row.value
-          )
-        )
-      ),
-      map()
-    );
+    const root = tpl.clone('contact-details');
+    // Rows are inserted before the map marker (not via each()/clear+append,
+    // which would also wipe the marker) so both can share one container,
+    // exactly like the original's rows-then-map child list.
+    const mapMarker = tpl.slot(root, 'map');
+    for (const row of contactRows()) {
+      mapMarker.before(contactRow(row));
+    }
+    tpl.place(root, 'map', map());
+    return root;
+  }
+
+  function contactRow(row) {
+    const root = tpl.clone('contact-row');
+    const { link, plain } = tpl.refs(root);
+    tpl.bind(root, { key: row.key, value: row.value });
+    tpl.toggle(link, !!row.href);
+    tpl.toggle(plain, !row.href);
+    if (row.href) {
+      tpl.bindAttr(root, { href: row.href });
+      if (row.href.startsWith('http')) {
+        link.rel = 'noopener noreferrer';
+        link.target = '_blank';
+      }
+    }
+    return root;
   }
 
   /**
@@ -63,54 +62,27 @@ Logi.views.contacts = (function () {
     const view = mapView();
 
     if (!view) {
-      return h('div.placeholder.contact-card__map', { 'aria-hidden': 'true' }, h('span', { text: 'map' }));
+      const root = tpl.clone('contact-map-placeholder');
+      tpl.bind(root, { label: 'map' });
+      return root;
     }
 
-    return h(
-      'div',
-      { style: { flex: '1', display: 'flex', flexDirection: 'column', minHeight: '220px' } },
-      h('iframe.contact-card__map', {
-        src: view.embed,
-        title: `${t('address')} — ${localise(contacts().address)}`,
-        loading: 'lazy',
-        referrerpolicy: 'no-referrer-when-downgrade',
-        // Third-party frame: withholding allow-top-navigation means the embed
-        // can never redirect the page out from under a visitor. It still gets
-        // scripts and its own origin, which map tiles need, and popups so
-        // "view larger map" opens in a new tab.
-        sandbox: 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox',
-        style: { flex: '1', minHeight: '220px' },
-      }),
-      h(
-        'div',
-        {
-          style: {
-            display: 'flex',
-            gap: '16px',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            padding: '12px 26px 16px',
-            fontSize: '13px',
-          },
-        },
-        when(view.link, () =>
-          h('a', {
-            href: view.link,
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            text: `${t('viewAll')} →`,
-          })
-        ),
-        when(view.directions, () =>
-          h('a', {
-            href: view.directions,
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            text: `${t('address')} →`,
-          })
-        )
-      )
-    );
+    const root = tpl.clone('contact-map');
+    const { linkA, directionsA } = tpl.refs(root);
+    tpl.bindAttr(root, {
+      embed: view.embed,
+      // Third-party frame: withholding allow-top-navigation means the embed
+      // can never redirect the page out from under a visitor. It still gets
+      // scripts and its own origin, which map tiles need, and popups so
+      // "view larger map" opens in a new tab.
+      mapTitle: `${t('address')} — ${localise(contacts().address)}`,
+      link: view.link || '',
+      directions: view.directions || '',
+    });
+    tpl.bind(root, { viewAllLabel: `${t('viewAll')} →`, directionsLabel: `${t('address')} →` });
+    tpl.toggle(linkA, !!view.link);
+    tpl.toggle(directionsA, !!view.directions);
+    return root;
   }
 
   return { contactsPage };

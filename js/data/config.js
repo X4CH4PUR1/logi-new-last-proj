@@ -85,11 +85,17 @@ Logi.data.config = (function () {
   /** JPEG quality used when re-encoding uploads. */
   const IMAGE_QUALITY = 0.82;
 
-  /** Product categories and the filter tabs built from them. */
-  const CATEGORIES = ['forklift', 'parts', 'wheels'];
+  /**
+   * The core catalogue line: sale/rent forklifts, with a fuel filter. Every
+   * other category (parts, wheels, and anything Admin → Filters adds) is a
+   * flat browsing tab with no mode/fuel split — see content.categories and
+   * content.fuels in js/data/defaults.js, which the admin can add to without
+   * a code change. This one stays structural because the sale/rent + fuel
+   * split is specific to how forklifts themselves are sold.
+   */
+  const FORKLIFT_CATEGORY = 'forklift';
   const MODES = ['sale', 'rent'];
-  const FUELS = ['electric', 'diesel', 'gasoline'];
   const CONDITIONS = ['new', 'used'];
 
-  return { LANGUAGES, LANGUAGE_CODES, DEFAULT_LANGUAGE, DEFAULT_THEME, ADMIN_PATH, ROUTES, NAV_ROUTES, STORAGE, CONTENT_URL, DEFAULT_PIN, PIN_SALT, IMAGE_MAX_EDGE, IMAGE_QUALITY, CATEGORIES, MODES, FUELS, CONDITIONS };
+  return { LANGUAGES, LANGUAGE_CODES, DEFAULT_LANGUAGE, DEFAULT_THEME, ADMIN_PATH, ROUTES, NAV_ROUTES, STORAGE, CONTENT_URL, DEFAULT_PIN, PIN_SALT, IMAGE_MAX_EDGE, IMAGE_QUALITY, FORKLIFT_CATEGORY, MODES, CONDITIONS };
 })();
