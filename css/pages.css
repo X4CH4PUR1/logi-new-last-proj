@@ -804,6 +804,19 @@
 }
 
 @media (max-width: 560px) {
+  /*
+    .hero__inner relies on .hero__copy/.dial-wrap's min-width to force
+    flex-wrap to actually wrap them onto separate lines (see base rules
+    above). Zeroing that min-width — needed so neither ever overflows a
+    narrow screen — also removes the one thing that was triggering the wrap,
+    so without an explicit column direction here the two squeeze onto one
+    row instead of stacking. That crushed .dial from a square down to a thin
+    oval, taking .dial__ticks (inset: 0 of .dial) down with it.
+  */
+  .hero__inner {
+    flex-direction: column;
+  }
+
   .hero__copy,
   .dial-wrap {
     min-width: 0;
