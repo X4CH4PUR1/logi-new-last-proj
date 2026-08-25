@@ -56,8 +56,7 @@ Logi.app = (function () {
       h('div.page-shell', {},
         header({ routeKey: route.key }),
         h('main.site-main', { id: 'main', tabindex: '-1' }, page(route)),
-        // Only the home page closes with the CTA band; see footer.js.
-        footer({ afterCtaBand: route.key === 'home' })
+        footer()
       )
     );
 
