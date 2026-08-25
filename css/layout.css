@@ -291,10 +291,18 @@
    Footer
    -------------------------------------------------------------------------- */
 
+/* No border-top: the hazard tape below is the divider. A hairline above it
+   showed up as a stray light seam where the yellow CTA band meets the footer. */
 .site-footer {
   position: relative;
   overflow: hidden;
   background: var(--bg-2);
+}
+
+.site-footer__tape {
+  height: 6px;
+  --hazard-a: 12px;
+  --hazard-b: 24px;
 }
 
 .site-footer__ghost {
