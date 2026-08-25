@@ -17,7 +17,7 @@ Logi.views.contacts = (function () {
     tpl.place(root, 'eyebrow', eyebrowEl);
     tpl.place(root, 'title', titleEl);
     tpl.place(root, 'details', detailsCard());
-    tpl.place(root, 'form', contactForm({ title: t('heroCta2') }));
+    tpl.place(root, 'form', contactForm({ title: t('heroCta2'), messageRows: 10 }));
     return root;
   }
 

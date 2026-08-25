@@ -25,15 +25,19 @@ Logi.views["contact-form"] = (function () {
   const { t } = Logi.core.i18n;
   const { contacts, settings } = Logi.core.selectors;
   /**
-   * @param {{title?: string}} [options]
+   * @param {{title?: string, messageRows?: number}} [options]
+   *        messageRows sizes the message field's starting height — taller on
+   *        the Contacts page, where the panel is stretched to match the map
+   *        card next to it and a 4-row field left most of that height empty.
    * @returns {HTMLElement}
    */
-  function contactForm({ title } = {}) {
+  function contactForm({ title, messageRows = 4 } = {}) {
     const root = tpl.clone('contact-form');
     const { titleEl, sentNote, form, nameInput, phoneInput, msgInput, errorEl, submitBtn } = tpl.refs(root);
 
     tpl.toggle(titleEl, !!title);
     if (title) tpl.bind(root, { title });
+    msgInput.rows = messageRows;
 
     tpl.bindAttr(root, { namePh: t('formName'), phonePh: t('formPhone'), msgPh: t('formMsg') });
     tpl.bind(root, { sentText: t('formSent') });

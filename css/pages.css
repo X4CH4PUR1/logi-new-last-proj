@@ -522,6 +522,7 @@
 }
 
 .booking__title {
+  text-align: center;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 22px;
