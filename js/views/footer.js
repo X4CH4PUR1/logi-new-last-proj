@@ -10,15 +10,23 @@ Logi.views.footer = (function () {
   const { t, localise } = Logi.core.i18n;
   const router = Logi.core.router;
   const { brand, contacts, phoneLinks } = Logi.core.selectors;
-  function footer() {
+  /**
+   * @param {{afterCtaBand?: boolean}} [options]
+   *        The home page ends with the yellow CTA band, which already closes
+   *        with hazard tape. Drawing the footer's tape as well would stack two
+   *        striped bars with different stripe widths right against each other —
+   *        so on that one page the footer goes without.
+   */
+  function footer({ afterCtaBand = false } = {}) {
     const c = contacts();
     const marks = brand();
     const phones = phoneLinks();
     const year = new Date().getFullYear();
 
     const root = tpl.clone('footer');
-    const { address, phones: phonesEl, email, hours } = tpl.refs(root);
+    const { tape, address, phones: phonesEl, email, hours } = tpl.refs(root);
 
+    tpl.toggle(tape, !afterCtaBand);
     tpl.bind(root, {
       brandShort: marks.short,
       legal: localise(c.legal),

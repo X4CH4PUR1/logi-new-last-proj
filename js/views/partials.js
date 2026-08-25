@@ -199,7 +199,10 @@ Logi.views.partials = (function () {
   /**
    * The yellow "Need a machine or a part?" strip at the foot of the home page.
    *
-   * Hazard tape top and bottom, so the band is bracketed symmetrically.
+   * Hazard tape top and bottom, so the band is bracketed symmetrically. The
+   * footer suppresses its own tape when it follows this band — see footer.js.
+   * Two striped bars touching, with different stripe widths and a hairline
+   * between them, read as a rendering fault rather than as a design.
    */
   function ctaBand() {
     const root = tpl.clone('cta-band');
