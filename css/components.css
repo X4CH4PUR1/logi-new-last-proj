@@ -421,6 +421,7 @@
   position: relative;
   overflow: hidden;
   padding: 30px 28px 34px;
+  container-type: inline-size;
 }
 
 .stat__tape {
@@ -434,7 +435,10 @@
 .stat__value {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 52px;
+  /* The thousands separator is a no-break space, so a wide number (e.g.
+     "80 000+") never wraps onto a second line — it has to shrink to fit
+     the card's width instead, or it overflows and gets clipped. */
+  font-size: clamp(28px, 17cqw, 52px);
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
 }
