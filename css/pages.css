@@ -517,6 +517,7 @@
 .booking {
   padding: 40px;
   max-width: 680px;
+  margin-inline: auto;
   --notch: var(--notch-lg);
 }
 
@@ -683,7 +684,6 @@
 
 .contact-form-panel {
   padding: 40px;
-  align-self: start;
   --notch: 26px;
 }
 

@@ -317,7 +317,8 @@
 }
 
 .textarea {
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
   line-height: 1.6;
 }
 

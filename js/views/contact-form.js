@@ -43,7 +43,13 @@ Logi.views["contact-form"] = (function () {
 
     nameInput.addEventListener('input', (event) => { values.name = event.currentTarget.value; });
     phoneInput.addEventListener('input', (event) => { values.phone = event.currentTarget.value; });
-    msgInput.addEventListener('input', (event) => { values.msg = event.currentTarget.value; });
+    // Grows with the message instead of offering a manual drag handle, so the
+    // field never hides the end of what the visitor just typed.
+    msgInput.addEventListener('input', (event) => {
+      values.msg = event.currentTarget.value;
+      event.currentTarget.style.height = 'auto';
+      event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`;
+    });
 
     const setError = (message) => {
       errorEl.textContent = message || '';
