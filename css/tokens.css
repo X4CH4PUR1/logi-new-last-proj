@@ -70,17 +70,17 @@
 
 /* --- day theme ----------------------------------------------------------- */
 :root[data-theme='day'] {
-  --bg: #f2f2ee;
-  --bg-2: #ffffff;
-  --card: #ffffff;
-  --text: #16181f;
-  --muted: #5b6274;
-  --line: rgba(20, 22, 30, 0.13);
-  --glow: rgba(245, 168, 0, 0.16);
-  --header-bg: rgba(242, 242, 238, 0.8);
-  --shadow: rgba(20, 22, 30, 0.14);
-  --placeholder: rgba(20, 22, 30, 0.03);
-  --overlay: rgba(20, 22, 30, 0.55);
+  --bg: #f6f1e7;
+  --bg-2: #fbf8f2;
+  --card: #fbf8f2;
+  --text: #241f1a;
+  --muted: #7a7167;
+  --line: rgba(48, 38, 24, 0.12);
+  --glow: rgba(245, 168, 0, 0.14);
+  --header-bg: rgba(246, 241, 231, 0.82);
+  --shadow: rgba(60, 45, 20, 0.12);
+  --placeholder: rgba(48, 38, 24, 0.04);
+  --overlay: rgba(36, 28, 18, 0.5);
 
   color-scheme: light;
 }
