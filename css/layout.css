@@ -436,6 +436,14 @@
     animation: fade-up 0.2s ease both;
   }
 
+  /* The links live inside a wrapper div (the [data-slot] the JS fills), so
+     .main-nav's own flex-direction only stacks that wrapper against the
+     social row next to it — the links inside still need their own column. */
+  .main-nav [data-slot='nav-links'] {
+    display: flex;
+    flex-direction: column;
+  }
+
   .main-nav__link {
     padding: 14px 4px;
     border-bottom: 1px solid var(--line);
