@@ -2,15 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.texts = (function () {
-  /**
-   * Admin → Texts.
-   *
-   * Every editorial block on the site that is not a product, a post or a photo:
-   * the hero copy, the About paragraphs, the service intro, the brand wordmarks,
-   * the ticker and the four chips around the hero dial.
-   *
-   * Everything here saves as you type.
-   */
 
   const { h, mount } = Logi.core.dom;
   const store = Logi.core.store;
@@ -22,10 +13,6 @@ Logi.views.admin.texts = (function () {
     textArea,
     textInput,
   } = Logi.views.admin.fields;
-  /**
-   * Which content.texts keys to show, in which order, with a readable label and
-   * whether they deserve a multi-line box.
-   */
   const TEXT_BLOCKS = [
     { key: 'heroBadge', label: 'Hero — badge line', rows: 2 },
     { key: 'heroTitle', label: 'Hero — headline', rows: 2 },
@@ -37,7 +24,6 @@ Logi.views.admin.texts = (function () {
     { key: 'metaDescription', label: 'Search engine description', rows: 3 },
   ];
 
-  /** Readable names for the statistic tiles, keyed by their stable id. */
   const STAT_LABELS = {
     years: 'Years of experience',
     machines: 'Machines serviced',

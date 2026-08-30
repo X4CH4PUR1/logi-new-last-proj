@@ -1,7 +1,3 @@
-/* ==========================================================================
-   Base — reset, document defaults, shared primitives
-   ========================================================================== */
-
 *,
 *::before,
 *::after {
@@ -84,7 +80,6 @@ p {
   outline-offset: 3px;
 }
 
-/* Keyboard users get a way past the fixed header nav. */
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -115,13 +110,6 @@ p {
   border: 0;
 }
 
-/* ==========================================================================
-   Brand primitives
-   These four motifs make up most of the visual identity, so they live here
-   rather than being repeated across component files.
-   ========================================================================== */
-
-/* Hazard tape: yellow / near-black diagonal stripe. */
 .hazard {
   display: block;
   background-image: repeating-linear-gradient(
@@ -131,7 +119,6 @@ p {
   );
 }
 
-/* Warm variant: yellow / orange, no black. Used for the logo underline. */
 .hazard--warm {
   background-image: repeating-linear-gradient(
     -45deg,
@@ -140,7 +127,6 @@ p {
   );
 }
 
-/* Three-tone rule sitting under major headings. */
 .rule {
   display: block;
   width: var(--rule-w, 180px);
@@ -153,7 +139,6 @@ p {
   );
 }
 
-/* Text filled with the brand gradient. */
 .grad-text {
   background: var(--accent-gradient);
   -webkit-background-clip: text;
@@ -161,7 +146,6 @@ p {
   color: transparent;
 }
 
-/* Outlined "ghost" lettering used for oversized background type. */
 .ghost-text {
   color: transparent;
   -webkit-text-stroke: 1px var(--line);
@@ -169,7 +153,6 @@ p {
   user-select: none;
 }
 
-/* Panel with a cut top-right corner. */
 .notch {
   clip-path: polygon(
     0 0,
@@ -180,7 +163,6 @@ p {
   );
 }
 
-/* Diagonal hatch used wherever a real photo has not been uploaded yet. */
 .placeholder {
   display: flex;
   align-items: center;
@@ -198,7 +180,6 @@ p {
   text-transform: lowercase;
 }
 
-/* Small monospace section label, e.g. "// SERVICES". */
 .eyebrow {
   display: flex;
   align-items: center;

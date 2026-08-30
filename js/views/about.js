@@ -1,9 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.about = (function () {
-  /**
-   * About page: intro, the concept and policy panels, and the statistics.
-   */
 
   const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;

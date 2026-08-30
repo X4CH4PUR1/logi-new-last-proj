@@ -1,10 +1,4 @@
 (function () {
-  /**
-   * Entry point.
-   *
-   * Boot order matters: content has to be loaded before language and theme,
-   * because both of those read their defaults out of content.settings.
-   */
 
   const store = Logi.core.store;
   const i18n = Logi.core.i18n;
@@ -18,8 +12,6 @@
     try {
       await store.init();
     } catch (err) {
-      // The store swallows a missing content.json on its own, so reaching here
-      // means something structural is wrong and rendering would only confuse.
       console.error('[boot] could not load content', err);
       showBootError(root, err);
       return;

@@ -2,13 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.index = (function () {
-  /**
-   * Admin shell: the lock screen, the toolbar and the tab bar.
-   *
-   * The active tab lives in the URL (#/control-room/gallery), so a reload keeps you
-   * where you were and a tab can be bookmarked. The editing language does not —
-   * it is a preference for this sitting, not a place.
-   */
 
   const { h, mount, when } = Logi.core.dom;
   const store = Logi.core.store;
@@ -39,18 +32,10 @@ Logi.views.admin.index = (function () {
     { key: 'publish', label: 'Publish', build: publishTab },
   ];
 
-  /**
-   * @param {{tab?: string, onAuthChange?: () => void}} options
-   *        `tab` comes from the URL; `onAuthChange` rebuilds the page after an
-   *        unlock or a lock, neither of which changes the URL.
-   */
   function adminPage({ tab, onAuthChange = () => {} } = {}) {
     return auth.isUnlocked() ? dashboard(tab, onAuthChange) : lockScreen(onAuthChange);
   }
 
-  /* --------------------------------------------------------------------------
-     Lock screen
-     -------------------------------------------------------------------------- */
 
   function lockScreen(onAuthChange) {
     let pin = '';
@@ -104,9 +89,6 @@ Logi.views.admin.index = (function () {
     );
   }
 
-  /* --------------------------------------------------------------------------
-     Dashboard
-     -------------------------------------------------------------------------- */
 
   function dashboard(requestedTab, onAuthChange) {
     const active = TABS.find((t) => t.key === requestedTab) ?? TABS[0];
@@ -132,8 +114,6 @@ Logi.views.admin.index = (function () {
           {},
           statusPill(),
           h('span.admin__tools-label', { text: 'EDIT LANG' }),
-          // Switching the editing language rebuilds only the current tab, so
-          // every field re-reads in the new language without losing the shell.
           editLangSwitch(renderBody),
           h('button.btn-plain', {
             type: 'button',

@@ -1,26 +1,9 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.social = (function () {
-  /**
-   * Social and messaging icons.
-   *
-   * The glyphs are inline SVG paths rather than an icon font or an image
-   * sprite — nothing extra to download, they inherit `currentColor` so they
-   * follow the theme, and they stay crisp at any size.
-   *
-   * The same list is rendered twice: once in the header toolbar for desktop,
-   * once inside the burger panel for narrow screens, where the toolbar has no
-   * room left. CSS shows exactly one of the two.
-   */
 
   const tpl = Logi.core.tpl;
   const { social } = Logi.core.selectors;
-  /* --------------------------------------------------------------------------
-     Glyphs
-     Single-path marks, drawn on a 24x24 grid. This stays in JS — it's vector
-     data, not editorial markup — while the <a>/<svg> wrapper lives in
-     index.html as tpl-social-link.
-     -------------------------------------------------------------------------- */
 
   const PATHS = {
     facebook:
@@ -34,15 +17,6 @@ Logi.views.social = (function () {
     link: 'M10.59 13.41a1 1 0 0 1 0-1.41l3-3a3 3 0 1 1 4.24 4.24l-1.42 1.42a1 1 0 0 1-1.41-1.42l1.41-1.41a1 1 0 0 0-1.41-1.42l-3 3a1 1 0 0 1-1.41 0Zm2.82-2.82a1 1 0 0 1 0 1.41l-3 3a3 3 0 1 1-4.24-4.24l1.42-1.42a1 1 0 0 1 1.41 1.42l-1.41 1.41a1 1 0 0 0 1.41 1.42l3-3a1 1 0 0 1 1.41 0Z',
   };
 
-  /* --------------------------------------------------------------------------
-     List
-     -------------------------------------------------------------------------- */
-
-  /**
-   * @param {'desktop'|'mobile'} variant which slot this copy belongs to
-   * @returns {HTMLElement|null} null when nothing is configured, so the header
-   *          does not render an empty container
-   */
   function socialLinks(variant) {
     const items = social();
     if (!items.length) return null;

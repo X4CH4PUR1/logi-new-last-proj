@@ -1,14 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.products = (function () {
-  /**
-   * Products page: mode tabs, fuel chips and the catalogue grid.
-   *
-   * The two filters live in this module rather than in the router, because they
-   * are a way of browsing rather than a place — you would not want the Back
-   * button to walk you through every chip you tried. Individual products *are*
-   * addressable, at #/products/<id>, which the app shell turns into a modal.
-   */
 
   const dom = Logi.core.dom;
   const tpl = Logi.core.tpl;
@@ -16,12 +8,6 @@ Logi.views.products = (function () {
   const { categories, filterProducts, fuelFilterApplies, fuels } = Logi.core.selectors;
   const { empty, pageHeader, productGrid } = Logi.views.partials;
 
-  /**
-   * All/Sale/Rent are fixed — the core catalogue line. Every other tab is
-   * built from content.categories, so Admin → Filters can add one (e.g. a
-   * new "Batteries" line) without a code change; it behaves like Parts/Wheels
-   * always have, a flat listing with no fuel filter.
-   */
   function tabs() {
     return [
       { key: 'all', label: t('filterAll') },
@@ -35,9 +21,6 @@ Logi.views.products = (function () {
     return [{ key: 'all', label: t('filterAll') }, ...fuels()];
   }
 
-  /**
-   * @param {{onOpenProduct: (id: string) => void}} handlers
-   */
   function productsPage({ onOpenProduct }) {
     const state = { mode: 'all', fuel: 'all' };
 
@@ -53,8 +36,6 @@ Logi.views.products = (function () {
 
     const setMode = (mode) => {
       state.mode = mode;
-      // Leaving the forklift modes retires the fuel filter, so switching to
-      // Parts never silently hides everything.
       if (!fuelFilterApplies(mode)) state.fuel = 'all';
       renderAll();
     };

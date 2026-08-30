@@ -2,14 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin["ui-strings"] = (function () {
-  /**
-   * Admin → UI text.
-   *
-   * Every button label, table header and filter name on the site, editable per
-   * language. A field left at its shipped wording stores nothing; clearing an
-   * edited field removes the override rather than saving an empty string, so
-   * "Reset" genuinely restores the translation from locales/<lang>.js.
-   */
 
   const { h, mount, when } = Logi.core.dom;
   const store = Logi.core.store;
@@ -100,7 +92,6 @@ Logi.views.admin["ui-strings"] = (function () {
             const value = event.currentTarget.value;
             patchDebounced((draft) => {
               if (!draft.strings[lang]) draft.strings[lang] = {};
-              // Matching the shipped wording, or emptied — drop the override.
               if (value === '' || value === shipped) delete draft.strings[lang][key];
               else draft.strings[lang][key] = value;
             });

@@ -1,26 +1,10 @@
 window.Logi = window.Logi || {};
 Logi.util = Logi.util || {};
 Logi.util.image = (function () {
-  /**
-   * Client-side image processing for admin uploads.
-   *
-   * Uploaded photos are downscaled and re-encoded as JPEG data URLs before they
-   * go anywhere near storage. A 4 MB phone photo becomes roughly 200 KB, which
-   * matters because everything is kept in localStorage (~5 MB total) until it is
-   * published into data/content.json.
-   */
 
   const { IMAGE_MAX_EDGE, IMAGE_QUALITY } = Logi.data.config;
   const ACCEPTED = /^image\/(jpeg|png|webp|gif|avif)$/i;
 
-  /**
-   * Reads a File, downscales it so the longest edge is at most `maxEdge`, and
-   * returns a JPEG data URL.
-   *
-   * @param {File} file
-   * @param {{maxEdge?: number, quality?: number}} [options]
-   * @returns {Promise<string>} data URL
-   */
   function processImage(file, options = {}) {
     const maxEdge = options.maxEdge ?? IMAGE_MAX_EDGE;
     const quality = options.quality ?? IMAGE_QUALITY;
@@ -65,7 +49,6 @@ Logi.util.image = (function () {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas is not available in this browser.');
 
-    // JPEG has no alpha channel; without this, transparent PNGs come out black.
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
     ctx.imageSmoothingQuality = 'high';
@@ -74,7 +57,6 @@ Logi.util.image = (function () {
     return canvas.toDataURL('image/jpeg', quality);
   }
 
-  /** Human-readable size of a data URL, for the admin storage readout. */
   function dataUrlBytes(dataUrl) {
     const comma = String(dataUrl || '').indexOf(',');
     if (comma < 0) return 0;

@@ -1,20 +1,9 @@
-/* ==========================================================================
-   Admin panel
-   --------------------------------------------------------------------------
-   Only used by the editor route (#/control-room). Kept in its own file so the
-   public site's stylesheets stay focused on the marketing pages.
-   ========================================================================== */
-
 .admin {
   animation: fade-up 0.4s ease both;
   max-width: 1100px;
   margin-inline: auto;
   padding: 56px var(--gutter);
 }
-
-/* --------------------------------------------------------------------------
-   Lock screen
-   -------------------------------------------------------------------------- */
 
 .admin-lock {
   max-width: 420px;
@@ -42,10 +31,6 @@
   letter-spacing: 6px;
   text-align: center;
 }
-
-/* --------------------------------------------------------------------------
-   Header bar
-   -------------------------------------------------------------------------- */
 
 .admin__head {
   display: flex;
@@ -117,7 +102,6 @@
   margin-bottom: 24px;
 }
 
-/* Unsaved / published state indicator. */
 .admin__status {
   display: inline-flex;
   align-items: center;
@@ -147,10 +131,6 @@
 .admin__status[data-dirty='true'] .admin__status-dot {
   background: var(--accent);
 }
-
-/* --------------------------------------------------------------------------
-   Record lists
-   -------------------------------------------------------------------------- */
 
 .admin-list {
   display: flex;
@@ -216,10 +196,6 @@
   margin-left: auto;
 }
 
-/* --------------------------------------------------------------------------
-   Editor form
-   -------------------------------------------------------------------------- */
-
 .admin-editor {
   border: 1px solid var(--accent);
   background: var(--card);
@@ -259,14 +235,11 @@
   margin-top: 6px;
 }
 
-/* Field group with per-language tabs is highlighted so it is obvious which
-   language you are typing into. */
 .admin-field--localised .field__label::after {
   content: ' · ' attr(data-lang);
   color: var(--accent);
 }
 
-/* A checkbox field reads left-to-right, not label-above-control like the rest. */
 .field--checkbox {
   flex-direction: row;
   align-items: center;
@@ -296,10 +269,6 @@
   gap: 14px;
 }
 
-/* --------------------------------------------------------------------------
-   Texts tab
-   -------------------------------------------------------------------------- */
-
 .admin-texts {
   display: flex;
   flex-direction: column;
@@ -321,10 +290,6 @@
   max-width: 360px;
   margin-bottom: 8px;
 }
-
-/* --------------------------------------------------------------------------
-   Gallery tab
-   -------------------------------------------------------------------------- */
 
 .admin-gallery {
   display: grid;
@@ -350,7 +315,6 @@
   align-items: center;
 }
 
-/* File inputs styled as a primary button. */
 .admin-upload {
   display: inline-flex;
   align-items: center;
@@ -375,10 +339,6 @@
 .admin-upload input[type='file'] {
   display: none;
 }
-
-/* --------------------------------------------------------------------------
-   Backup / publish tab
-   -------------------------------------------------------------------------- */
 
 .admin-publish {
   display: flex;
@@ -435,10 +395,6 @@
 .admin-danger .admin-publish__step-num {
   color: var(--danger);
 }
-
-/* --------------------------------------------------------------------------
-   Responsive
-   -------------------------------------------------------------------------- */
 
 @media (max-width: 700px) {
   .admin {

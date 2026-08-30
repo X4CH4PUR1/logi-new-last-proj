@@ -1,36 +1,10 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views["contact-form"] = (function () {
-  /**
-   * Contact / service booking form.
-   *
-   * The original build only pretended to send: it showed "Sent!" and threw the
-   * message away. This one actually delivers, in one of two ways:
-   *
-   *   - if Admin → Settings has a form endpoint (Formspree, Basin, Web3Forms,
-   *     anything that accepts a JSON POST), the message is posted there;
-   *   - otherwise it opens the visitor's mail client with the message pre-filled
-   *     and addressed to the company e-mail.
-   *
-   * The fallback needs no server, which suits a site hosted on GitHub Pages, but
-   * it does depend on the visitor having a mail client — so the phone numbers
-   * stay prominent either way.
-   *
-   * The form is cloned once and its fields never rebuilt — sent/sending/error
-   * states are applied as direct mutations on the same nodes, since the field
-   * set itself never changes shape across a submission.
-   */
 
   const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
   const { contacts, settings } = Logi.core.selectors;
-  /**
-   * @param {{title?: string, messageRows?: number}} [options]
-   *        messageRows sizes the message field's starting height — taller on
-   *        the Contacts page, where the panel is stretched to match the map
-   *        card next to it and a 4-row field left most of that height empty.
-   * @returns {HTMLElement}
-   */
   function contactForm({ title, messageRows = 4 } = {}) {
     const root = tpl.clone('contact-form');
     const { titleEl, sentNote, form, nameInput, phoneInput, msgInput, errorEl, submitBtn } = tpl.refs(root);
@@ -47,8 +21,6 @@ Logi.views["contact-form"] = (function () {
 
     nameInput.addEventListener('input', (event) => { values.name = event.currentTarget.value; });
     phoneInput.addEventListener('input', (event) => { values.phone = event.currentTarget.value; });
-    // Grows with the message instead of offering a manual drag handle, so the
-    // field never hides the end of what the visitor just typed.
     msgInput.addEventListener('input', (event) => {
       values.msg = event.currentTarget.value;
       event.currentTarget.style.height = 'auto';
@@ -94,10 +66,6 @@ Logi.views["contact-form"] = (function () {
     return root;
   }
 
-  /**
-   * Sends the message, by whichever route is configured.
-   * @param {{name: string, phone: string, msg: string}} values
-   */
   async function deliver(values) {
     const endpoint = settings().formEndpoint?.trim();
 
@@ -116,7 +84,6 @@ Logi.views["contact-form"] = (function () {
       return;
     }
 
-    // No endpoint configured: hand the message to the visitor's mail client.
     const email = contacts().email;
     if (!email) throw new Error('No form endpoint and no contact e-mail configured.');
 

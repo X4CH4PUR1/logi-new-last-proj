@@ -2,16 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.filters = (function () {
-  /**
-   * Admin → Filters.
-   *
-   * The catalogue's category and fuel-type options — shown as filter tabs and
-   * chips on the public Products page, and as choices in the product editor.
-   * "Forklift" itself, and Sale/Rent, stay fixed (see FORKLIFT_CATEGORY in
-   * js/data/config.js) because that split is specific to how forklifts are
-   * sold. Anything added here becomes a new flat category tab (next to
-   * Parts/Wheels) or a new fuel chip, with no code change.
-   */
 
   const { h, mount } = Logi.core.dom;
   const store = Logi.core.store;

@@ -1,9 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.service = (function () {
-  /**
-   * Service page: what the workshop does, and a booking form.
-   */
 
   const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;

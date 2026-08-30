@@ -1,13 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.header = (function () {
-  /**
-   * Site header: logo, primary navigation, language switch, theme toggle.
-   *
-   * Below 900px the navigation collapses behind a burger. The original site let
-   * seven links wrap onto three lines on a phone; this keeps the header one row
-   * tall at every width.
-   */
 
   const dom = Logi.core.dom;
   const tpl = Logi.core.tpl;
@@ -17,17 +10,9 @@ Logi.views.header = (function () {
   const { brand, visibleNavRoutes } = Logi.core.selectors;
   const { socialLinks } = Logi.views.social;
   const noop = () => {};
-  /** Removes the document listeners belonging to the currently open menu. */
   let releaseMenuListeners = noop;
 
-  /**
-   * @param {{routeKey: string}} state
-   * @returns {HTMLElement}
-   */
   function header({ routeKey }) {
-    // The shell rebuilds this header on every navigation. Document-level
-    // listeners therefore have to be torn down, or each rebuild would leave
-    // another one behind holding a detached header alive.
     releaseMenuListeners();
 
     const root = tpl.clone('header');
@@ -46,8 +31,6 @@ Logi.views.header = (function () {
       a.addEventListener('click', closeMenu);
       return a;
     });
-    // Only visible once the nav has collapsed into the burger panel, where
-    // the toolbar copy has been hidden for want of room.
     dom.mount(tpl.slot(root, 'nav-social'), socialLinks('mobile'));
     dom.mount(tpl.slot(root, 'tools-social'), socialLinks('desktop'));
 
@@ -63,10 +46,6 @@ Logi.views.header = (function () {
       return b;
     });
 
-    // The label names the theme you would switch *to*, which is how the
-    // original behaved. It is updated in place rather than by re-rendering,
-    // because a theme change needs no other DOM work — the custom properties
-    // do all of it.
     themeToggle.textContent = theme.nextLabel();
     themeToggle.addEventListener('click', () => {
       theme.toggle();

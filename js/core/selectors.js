@@ -1,15 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.core = Logi.core || {};
 Logi.core.selectors = (function () {
-  /**
-   * Derived reads of the content tree.
-   *
-   * Views ask questions here ("which products match this filter?", "what does
-   * this product look like in the current language?") instead of walking the
-   * content tree themselves. That keeps filtering and label lookup in one place
-   * and out of the markup, and it means the admin panel and the public pages
-   * agree on what a product *is*.
-   */
 
   const store = Logi.core.store;
   const { NAV_ROUTES } = Logi.data.config;
@@ -22,14 +13,7 @@ Logi.core.selectors = (function () {
     osmEmbedUrl,
     osmLinkUrl,
   } = Logi.util.geo;
-  /* --------------------------------------------------------------------------
-     Products
-     -------------------------------------------------------------------------- */
 
-  /**
-   * Turns a stored product into everything a card or modal needs to render.
-   * @param {object} product
-   */
   function decorateProduct(product) {
     const badges = [];
     if (product.mode) badges.push(product.mode === 'sale' ? t('modeSale') : t('modeRent'));
@@ -42,9 +26,6 @@ Logi.core.selectors = (function () {
     if (product.lift) specs.push({ key: t('lift'), value: product.lift });
     if (product.year) specs.push({ key: t('year'), value: product.year });
 
-    // Older saved records may still carry a single `img` string from before
-    // the multi-photo gallery — treat it as a one-item gallery rather than
-    // losing the photo.
     const images = product.images?.length ? product.images : product.img ? [product.img] : [];
 
     return {
@@ -60,34 +41,24 @@ Logi.core.selectors = (function () {
     };
   }
 
-  /** Label for a fuel key, from content.fuels — admin-added fuel types resolve too. */
   function fuelLabel(fuel) {
     if (!fuel) return '';
     const match = (store.getContent().fuels ?? []).find((f) => f.key === fuel);
     return match ? localise(match.label) : fuel;
   }
 
-  /** Catalogue categories beyond the core "forklift" line — each is a flat browsing tab. */
   function categories() {
     return (store.getContent().categories ?? []).map((c) => ({ key: c.key, label: localise(c.label) }));
   }
 
-  /** Selectable fuel types, localised — used by both the admin editor and the public filter chips. */
   function fuels() {
     return (store.getContent().fuels ?? []).map((f) => ({ key: f.key, label: localise(f.label) }));
   }
 
-  /** Every product, unfiltered, in stored order. */
   function allProducts() {
     return store.getContent().products ?? [];
   }
 
-  /**
-   * Applies the catalogue filters.
-   * @param {{mode?: string, fuel?: string}} filters
-   *        mode: 'all' | 'sale' | 'rent' | 'parts' | 'wheels'
-   *        fuel: 'all' | 'electric' | 'diesel' | 'gasoline'
-   */
   function filterProducts({ mode = 'all', fuel = 'all' } = {}) {
     let list = allProducts();
 
@@ -95,15 +66,12 @@ Logi.core.selectors = (function () {
       list = list.filter((p) => p.mode === mode && p.cat === 'forklift');
       if (fuel !== 'all') list = list.filter((p) => p.fuel === fuel);
     } else if (mode !== 'all') {
-      // Any other mode is a category key — parts/wheels today, plus whatever
-      // Admin → Filters has added since.
       list = list.filter((p) => p.cat === mode);
     }
 
     return list;
   }
 
-  /** Fuel chips only make sense for the two forklift modes. */
   function fuelFilterApplies(mode) {
     return mode === 'sale' || mode === 'rent';
   }
@@ -112,18 +80,13 @@ Logi.core.selectors = (function () {
     return allProducts().find((p) => p.id === id) ?? null;
   }
 
-  /** The first `count` forklifts, for the home page stock strip. */
   function featuredProducts(count = 3) {
     return allProducts()
       .filter((p) => p.cat === 'forklift')
       .slice(0, count);
   }
 
-  /* --------------------------------------------------------------------------
-     News
-     -------------------------------------------------------------------------- */
 
-  /** Newest first. Dates are ISO, so a string compare is the right sort. */
   function sortedNews() {
     return [...(store.getContent().news ?? [])].sort((a, b) =>
       String(b.date || '').localeCompare(String(a.date || ''))
@@ -142,9 +105,6 @@ Logi.core.selectors = (function () {
     };
   }
 
-  /* --------------------------------------------------------------------------
-     Services, gallery, stats
-     -------------------------------------------------------------------------- */
 
   function services() {
     return (store.getContent().services ?? []).map((service) => ({
@@ -163,11 +123,6 @@ Logi.core.selectors = (function () {
     }));
   }
 
-  /**
-   * The statistic tiles. A stat with `sinceYear` reports elapsed years rather
-   * than a stored number, so "years of experience" stays correct without anyone
-   * having to remember to bump it every January.
-   */
   function stats() {
     const thisYear = new Date().getFullYear();
     return (store.getContent().stats ?? []).map((stat) => ({
@@ -178,28 +133,15 @@ Logi.core.selectors = (function () {
     }));
   }
 
-  /** The founding year, for prose that mentions it. */
   function foundedYear() {
     return store.getContent().foundedYear ?? 1999;
   }
 
-  /* --------------------------------------------------------------------------
-     Contacts
-     -------------------------------------------------------------------------- */
 
   function contacts() {
     return store.getContent().contacts ?? {};
   }
 
-  /**
-   * The contact table, already localised, with hrefs where a value is actionable.
-   *
-   * The phone row carries a `parts` array instead of a single href when there
-   * is more than one number — each number needs its own tel: link, or the
-   * second number would show but not actually be callable.
-   *
-   * @returns {{key: string, value: string, href?: string, parts?: {value: string, href: string}[]}[]}
-   */
   function contactRows() {
     const c = contacts();
     const phones = [
@@ -226,15 +168,6 @@ Logi.core.selectors = (function () {
       .map((row) => ({ ...row, key: row.key.toUpperCase() }));
   }
 
-  /**
-   * Everything the contacts map needs, or null when no map should be shown.
-   *
-   * A manually pasted embed URL wins; otherwise the URLs are built from the
-   * stored coordinates so the pin lands exactly where it was set.
-   *
-   * @returns {{embed: string, link: string, directions: string|null,
-   *            coords: string|null} | null}
-   */
   function mapView() {
     const c = contacts();
 
@@ -255,13 +188,6 @@ Logi.core.selectors = (function () {
     };
   }
 
-  /**
-   * Social and messaging links, ready to render.
-   * Entries without a usable destination are dropped rather than rendered as
-   * dead icons.
-   *
-   * @returns {{id: string, type: string, label: string, href: string}[]}
-   */
   function social() {
     return (store.getContent().social ?? [])
       .map((item) => ({
@@ -273,7 +199,6 @@ Logi.core.selectors = (function () {
       .filter((item) => item.href);
   }
 
-  /** The two phone numbers for the CTA band, with dial-ready hrefs. */
   function phoneLinks() {
     const c = contacts();
     return [
@@ -282,11 +207,7 @@ Logi.core.selectors = (function () {
     ].filter((p) => p.label);
   }
 
-  /* --------------------------------------------------------------------------
-     Free text
-     -------------------------------------------------------------------------- */
 
-  /** Reads a block from content.texts in the active language. */
   function text(key) {
     return localise(store.getContent().texts?.[key]);
   }
@@ -295,13 +216,11 @@ Logi.core.selectors = (function () {
     return store.getContent().brands || '';
   }
 
-  /** The wordmarks used by the logo, the hero watermark and the footer ghost. */
   function brand() {
     const b = store.getContent().brand ?? {};
     return { short: b.short || 'LOGI', full: b.full || 'LOGIMOTORS' };
   }
 
-  /** The floating chips around the hero dial, localised. */
   function heroPills() {
     return (store.getContent().heroPills ?? []).map((pill) => localise(pill)).filter(Boolean);
   }
@@ -310,7 +229,6 @@ Logi.core.selectors = (function () {
     return store.getContent().settings ?? {};
   }
 
-  /** Route keys the owner has hidden from Admin → Settings → Pages. */
   function hiddenPageKeys() {
     return new Set(settings().hiddenPages ?? []);
   }
@@ -319,11 +237,6 @@ Logi.core.selectors = (function () {
     return hiddenPageKeys().has(key);
   }
 
-  /**
-   * Nav routes with the hidden ones filtered out, for the header and footer
-   * menus. 'home' can never be hidden — it is where a hidden route's visitor
-   * gets redirected to, so hiding it too would have nowhere to send them.
-   */
   function visibleNavRoutes() {
     const hidden = hiddenPageKeys();
     return NAV_ROUTES.filter((r) => r.key === 'home' || !hidden.has(r.key));

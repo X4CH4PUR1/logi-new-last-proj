@@ -10,10 +10,8 @@
       content="LOGIMOTORS LTD, Rustavi — sale, rent, service and spare parts for forklifts of any brand. Gasoline, diesel and electric. Working in Georgia since 1999."
     />
     <meta name="theme-color" content="#101218" />
-    <!-- Update this if the site moves to its own domain. -->
     <link rel="canonical" href="https://x4ch4pur1.github.io/logi-new-last-proj/" />
 
-    <!-- Social preview -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="LOGIMOTORS" />
     <meta property="og:title" content="LOGIMOTORS — Forklifts: sale, rent, service, parts" />
@@ -26,12 +24,6 @@
 
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 
-    <!--
-      Preload the two Latin cuts: they are needed for the first paint whatever
-      the language, because the header and the logo are Latin in all three.
-      The Georgian, Cyrillic and symbol subsets are left to font-display: swap
-      and are fetched only if the page actually contains those characters.
-    -->
     <link
       rel="preload"
       href="assets/fonts/exo2-latin.woff2"
@@ -47,11 +39,6 @@
       crossorigin
     />
 
-    <!--
-      Stylesheets are listed in cascade order, narrowest scope last:
-      tokens -> base -> animations -> layout -> components -> pages -> admin.
-      No build step and no @import, so each is a normal parallel request.
-    -->
     <link rel="stylesheet" href="css/fonts.css" />
     <link rel="stylesheet" href="css/tokens.css" />
     <link rel="stylesheet" href="css/base.css" />
@@ -61,11 +48,6 @@
     <link rel="stylesheet" href="css/pages.css" />
     <link rel="stylesheet" href="css/admin.css" />
 
-    <!--
-      Applies the saved theme before the first paint. Without this, someone who
-      chose the light theme gets a dark flash on every page load. It is inline
-      and tiny on purpose: an external file would arrive too late to help.
-    -->
     <script>
       try {
         var saved = localStorage.getItem('logi:theme');
@@ -73,20 +55,9 @@
           document.documentElement.dataset.theme = saved;
         }
       } catch (e) {
-        /* private mode: the default night theme applies */
       }
     </script>
 
-    <!--
-      Loaded as classic (non-module) scripts, in dependency order, so the site
-      also runs from file:// (double-clicking index.html) with no local server.
-      Browsers refuse to execute <script type="module"> across the file://
-      origin at all, which is what used to leave the page on a black screen
-      with nothing but the favicon. Each file below assigns itself onto a
-      window.Logi.* namespace instead of using import/export; see any file
-      under js/ for the pattern. defer keeps them running in this order, after
-      the DOM is parsed, same as modules would.
-    -->
     <script defer src="js/core/dom.js"></script>
     <script defer src="js/core/tpl.js"></script>
     <script defer src="js/data/config.js"></script>
@@ -140,20 +111,7 @@
 
     <div id="app"></div>
 
-    <!--
-      Template library — edit this markup directly. Elements in here are
-      inert (<template> content never renders) until JS clones them into the
-      page above, so nothing below is ever visible as-is.
-
-      IMPORTANT for hand-editors: text inside a data-bind="..." element is a
-      placeholder only. Anything driven by the visitor's language or by
-      Admin -> UI Text / Admin -> Texts is overwritten by JS on every render
-      — edit locales/*.js or the Admin panel for that content, not the
-      placeholder text below. Structure, classes and wrapper markup ARE safe
-      to edit here directly.
-    -->
     <div id="templates" hidden aria-hidden="true">
-      <!-- ============ SOCIAL ============ -->
       <template id="tpl-social-links"><div class="social-links" data-slot="list"></div></template>
       <template id="tpl-social-link">
         <a class="social-link" target="_blank" rel="noopener noreferrer" data-bind-attr="href:href,title:label,aria-label:label">
@@ -163,7 +121,6 @@
         </a>
       </template>
 
-      <!-- ============ HEADER ============ -->
       <template id="tpl-header">
         <header class="site-header" data-nav-open="false">
           <span class="site-header__tape hazard" aria-hidden="true"></span>
@@ -192,7 +149,6 @@
       <template id="tpl-nav-link"><a class="main-nav__link" data-bind-attr="href:href" data-bind="label"></a></template>
       <template id="tpl-lang-btn"><button class="segmented__btn" type="button" data-bind="label" data-bind-attr="lang:htmlLang,title:name,aria-pressed:pressed"></button></template>
 
-      <!-- ============ FOOTER ============ -->
       <template id="tpl-footer">
         <footer class="site-footer">
           <span class="site-footer__ghost ghost-text" aria-hidden="true" data-bind="brandShort"></span>
@@ -226,7 +182,6 @@
       <template id="tpl-footer-link"><a data-bind-attr="href:href" data-bind="label"></a></template>
       <template id="tpl-footer-phone"><a data-bind-attr="href:href" data-bind="label" style="color: inherit; text-decoration: none"></a></template>
 
-      <!-- ============ SHARED PARTIALS ============ -->
       <template id="tpl-eyebrow"><div class="eyebrow" data-bind="label"></div></template>
       <template id="tpl-page-title"><h1 class="page__title" data-bind="title"></h1></template>
       <template id="tpl-section-head">
@@ -294,7 +249,6 @@
       </template>
       <template id="tpl-cta-phone"><a class="cta-band__phone" data-bind-attr="href:href" data-bind="label"></a></template>
 
-      <!-- ============ HOME ============ -->
       <template id="tpl-home">
         <div data-page="home">
           <div data-slot="hero"></div>
@@ -408,7 +362,6 @@
         </a>
       </template>
 
-      <!-- ============ ABOUT ============ -->
       <template id="tpl-about">
         <div class="page container" data-page="about">
           <span data-slot="eyebrow"></span>
@@ -430,7 +383,6 @@
         </div>
       </template>
 
-      <!-- ============ PRODUCTS / PRODUCT MODAL ============ -->
       <template id="tpl-products">
         <div class="page container" data-page="products">
           <span data-slot="eyebrow"></span>
@@ -481,7 +433,6 @@
         </button>
       </template>
 
-      <!-- ============ NEWS ============ -->
       <template id="tpl-news">
         <div class="page container container--narrow" data-page="news">
           <span data-slot="eyebrow"></span>
@@ -501,7 +452,6 @@
         </article>
       </template>
 
-      <!-- ============ GALLERY / LIGHTBOX ============ -->
       <template id="tpl-gallery">
         <div class="page container" data-page="gallery">
           <span data-slot="eyebrow"></span>
@@ -533,7 +483,6 @@
         </dialog>
       </template>
 
-      <!-- ============ SERVICE / CONTACTS / CONTACT-FORM ============ -->
       <template id="tpl-service">
         <div class="page container" data-page="service">
           <span data-slot="eyebrow"></span>

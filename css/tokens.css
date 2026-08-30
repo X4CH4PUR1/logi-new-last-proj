@@ -1,58 +1,39 @@
-/* ==========================================================================
-   Design tokens
-   --------------------------------------------------------------------------
-   Every colour, font, size and timing used anywhere in the site is declared
-   here once. Nothing below this file should contain a raw hex value.
-
-   Themes are switched by setting `data-theme="night" | "day"` on <html>.
-   `--ink`, `--accent` and `--accent-2` are deliberately theme-independent:
-   they are the brand marks and must look identical in both modes.
-   ========================================================================== */
-
 :root {
-  /* --- brand constants (never change between themes) --------------------- */
-  --accent: #f5a800;          /* forklift yellow */
-  --accent-2: #f07818;        /* warning orange  */
-  --ink: #16181f;             /* near-black, used on top of accent fills */
+  --accent: #f5a800;
+  --accent-2: #f07818;
+  --ink: #16181f;
   --danger: #e05555;
   --accent-gradient: linear-gradient(90deg, var(--accent), var(--accent-2));
 
-  /* --- typography -------------------------------------------------------- */
   --font-display: 'Unbounded', 'Noto Sans Georgian', sans-serif;
   --font-body: 'Exo 2', 'Noto Sans Georgian', system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Fluid display sizes, used by page headings */
-  --fs-hero: clamp(2.625rem, 5.4vw, 5.125rem);   /*  42px -> 82px */
-  --fs-page-title: clamp(1.875rem, 4vw, 3.25rem);/*  30px -> 52px */
-  --fs-section: clamp(1.75rem, 3.4vw, 2.75rem);  /*  28px -> 44px */
-  --fs-band: clamp(1.625rem, 3vw, 2.5rem);       /*  26px -> 40px */
-  --fs-phone: clamp(1.375rem, 2.4vw, 2rem);      /*  22px -> 32px */
+  --fs-hero: clamp(2.625rem, 5.4vw, 5.125rem);
+  --fs-page-title: clamp(1.875rem, 4vw, 3.25rem);
+  --fs-section: clamp(1.75rem, 3.4vw, 2.75rem);
+  --fs-band: clamp(1.625rem, 3vw, 2.5rem);
+  --fs-phone: clamp(1.375rem, 2.4vw, 2rem);
 
-  /* --- layout ------------------------------------------------------------ */
   --container: 1280px;
   --container-narrow: 1000px;
   --gutter: 28px;
   --header-height: 69px;
 
-  /* Corner cut sizes for the angled "engineered" panels */
   --notch-sm: 20px;
   --notch-md: 24px;
   --notch-lg: 28px;
 
-  /* --- motion ------------------------------------------------------------ */
   --t-fast: 0.2s;
   --t-base: 0.25s;
   --t-slow: 0.4s;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* --- elevation --------------------------------------------------------- */
   --z-base: 1;
   --z-header: 60;
   --z-modal: 80;
   --z-toast: 90;
 
-  /* --- night theme (default) --------------------------------------------- */
   --bg: #101218;
   --bg-2: #161922;
   --card: #1a1e29;
@@ -68,7 +49,6 @@
   color-scheme: dark;
 }
 
-/* --- day theme ----------------------------------------------------------- */
 :root[data-theme='day'] {
   --bg: #f6f1e7;
   --bg-2: #fbf8f2;

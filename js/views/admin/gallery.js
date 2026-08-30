@@ -2,15 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.gallery = (function () {
-  /**
-   * Admin → Gallery.
-   *
-   * Photos are added straight from the picker — there is no editor step, because
-   * a gallery entry is only a picture and a caption. Captions save as you type.
-   *
-   * Adding and deleting go through `commit`, which notifies the store; the app
-   * shell rebuilds this panel in response, so nothing here re-renders by hand.
-   */
 
   const { h, mount } = Logi.core.dom;
   const store = Logi.core.store;
@@ -102,7 +93,6 @@ Logi.views.admin.gallery = (function () {
           if (!files.length) return;
 
           let added = 0;
-          // Processed one at a time so a single bad file does not lose the batch.
           for (const file of files) {
             try {
               const dataUrl = await processImage(file);

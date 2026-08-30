@@ -2,13 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.services = (function () {
-  /**
-   * Admin → Services.
-   *
-   * These are the five numbered cards on the home and service pages. Editing is
-   * inline — there are only a handful, and each has just a number, a title and a
-   * paragraph, so a separate editor screen would be ceremony for its own sake.
-   */
 
   const { h, mount } = Logi.core.dom;
   const store = Logi.core.store;

@@ -1,12 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.gallery = (function () {
-  /**
-   * Gallery page.
-   *
-   * Photos open in a lightbox with keyboard paging. Only uploaded photos are
-   * clickable — an empty slot renders the hatched placeholder and is inert.
-   */
 
   const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
@@ -53,10 +47,6 @@ Logi.views.gallery = (function () {
     return root;
   }
 
-  /* --------------------------------------------------------------------------
-     Lightbox
-     -------------------------------------------------------------------------- */
-
   function openLightbox(items, startIndex) {
     let index = startIndex;
 
@@ -82,8 +72,6 @@ Logi.views.gallery = (function () {
       render();
     };
 
-    // As in product-modal.js: closing is explicit rather than event-driven, so
-    // it still works in shells that never dispatch the dialog `close` event.
     let dismissed = false;
     const dismiss = () => {
       if (dismissed) return;

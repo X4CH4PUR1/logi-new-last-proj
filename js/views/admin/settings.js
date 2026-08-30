@@ -2,10 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.settings = (function () {
-  /**
-   * Admin → Settings.
-   * Site defaults, where the contact form delivers, and the admin PIN.
-   */
 
   const { h, mount } = Logi.core.dom;
   const store = Logi.core.store;
@@ -22,8 +18,6 @@ Logi.views.admin.settings = (function () {
     textInput,
   } = Logi.views.admin.fields;
 
-  /** Every page that can be hidden — everything but Home, which is where a
-   *  hidden page's visitors get sent, so it has to always be reachable. */
   const HIDEABLE_PAGES = NAV_ROUTES.filter((r) => r.key !== 'home').map((r) => ({
     key: r.key,
     label: r.key.charAt(0).toUpperCase() + r.key.slice(1),

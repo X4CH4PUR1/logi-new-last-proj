@@ -1,14 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.core = Logi.core || {};
 Logi.core.theme = (function () {
-  /**
-   * Night / day theme.
-   *
-   * The whole switch is one attribute on <html>; every colour comes from the
-   * custom properties in css/tokens.css, so nothing else has to know which theme
-   * is active. The attribute is also set by the inline script in index.html
-   * before first paint, which is what stops the page flashing dark then light.
-   */
 
   const { DEFAULT_THEME, STORAGE } = Logi.data.config;
   const storage = Logi.util.storage;
@@ -42,7 +34,6 @@ Logi.core.theme = (function () {
     set(current === 'night' ? 'day' : 'night');
   }
 
-  /** Label for the toggle button: it names the theme you would switch *to*. */
   function nextLabel() {
     return current === 'night' ? 'DAY' : 'NIGHT';
   }
@@ -53,7 +44,6 @@ Logi.core.theme = (function () {
     if (meta) meta.content = current === 'night' ? '#101218' : '#f2f2ee';
   }
 
-  /** @returns {() => void} unsubscribe */
   function subscribe(listener) {
     listeners.add(listener);
     return () => listeners.delete(listener);

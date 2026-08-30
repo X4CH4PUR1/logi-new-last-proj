@@ -1,11 +1,7 @@
 window.Logi = window.Logi || {};
 Logi.locales = Logi.locales || {};
-Logi.locales.ka = /**
- * Georgian (ქართული) UI strings.
- * Key set must stay identical to locales/en.js — see the note in that file.
- */
+Logi.locales.ka =
 {
-  /* --- navigation ------------------------------------------------------- */
   navHome: 'მთავარი',
   navAbout: 'კომპანია',
   navProducts: 'პროდუქცია',
@@ -18,19 +14,16 @@ Logi.locales.ka = /**
   skipToContent: 'გადასვლა კონტენტზე',
   scroll: 'SCROLL',
 
-  /* --- hero and calls to action ------------------------------------------ */
   heroCta1: 'პროდუქციის ნახვა',
   heroCta2: 'დაგვიკავშირდით',
   ctaTitle: 'გჭირდებათ ტექნიკა ან ნაწილი?',
   ctaSub: 'დაგვირეკეთ — სწრაფად გიპასუხებთ.',
 
-  /* --- statistics -------------------------------------------------------- */
   statYears: 'წლიანი გამოცდილება',
   statMachines: 'მომსახურებული ტექნიკა',
   statParts: 'მიწოდებული ნაწილი',
   statSupport: 'მხარდაჭერა',
 
-  /* --- section headings -------------------------------------------------- */
   secServices: 'რას ვაკეთებთ',
   secFeatured: 'გამორჩეული ტექნიკა',
   secNews: 'ბოლო სიახლეები',
@@ -38,7 +31,6 @@ Logi.locales.ka = /**
   readMore: 'ვრცლად',
   close: 'დახურვა',
 
-  /* --- page titles ------------------------------------------------------- */
   aboutTitle: 'კომპანიის შესახებ',
   productsTitle: 'პროდუქცია',
   newsTitle: 'სიახლეები',
@@ -46,7 +38,6 @@ Logi.locales.ka = /**
   galleryTitle: 'გალერეა',
   contactsTitle: 'კონტაქტი',
 
-  /* --- product filters --------------------------------------------------- */
   filterAll: 'ყველა',
   modeSale: 'გაყიდვა',
   modeRent: 'გაქირავება',
@@ -60,7 +51,6 @@ Logi.locales.ka = /**
   condUsed: 'მეორადი',
   noProducts: 'ფილტრით პროდუქცია ვერ მოიძებნა.',
 
-  /* --- product detail ---------------------------------------------------- */
   brand: 'ბრენდი',
   capacity: 'ტვირთამწეობა',
   lift: 'აწევის სიმაღლე',
@@ -69,7 +59,6 @@ Logi.locales.ka = /**
   perMonth: '/თვე',
   photo: 'ფოტო',
 
-  /* --- contact details --------------------------------------------------- */
   address: 'მისამართი',
   phone: 'ტელეფონი',
   email: 'ელ. ფოსტა',
@@ -79,7 +68,6 @@ Logi.locales.ka = /**
   idCode: 'საიდენტიფიკაციო კოდი',
   anyBrand: 'ნებისმიერი ბრენდი · ნებისმიერი ტიპი · ბენზინი / დიზელი / ელექტრო',
 
-  /* --- forms ------------------------------------------------------------- */
   serviceCta: 'სერვისზე ჩაწერა',
   formName: 'თქვენი სახელი',
   formPhone: 'ტელეფონი',
@@ -90,7 +78,6 @@ Logi.locales.ka = /**
   formRequired: 'გთხოვთ მიუთითოთ სახელი და ტელეფონის ნომერი.',
   formError: 'შეტყობინების გაგზავნა ვერ მოხერხდა. გთხოვთ დაგვირეკოთ.',
 
-  /* --- empty states and gallery ------------------------------------------ */
   newsEmpty: 'სიახლეები ჯერ არ არის.',
   galleryEmpty: 'ფოტოები ჯერ არ არის.',
   prev: 'წინა',

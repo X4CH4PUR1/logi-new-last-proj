@@ -1,11 +1,3 @@
-/* ==========================================================================
-   Pages — styles that belong to one view only
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   Home / hero
-   -------------------------------------------------------------------------- */
-
 .hero {
   position: relative;
   overflow: hidden;
@@ -14,7 +6,6 @@
   align-items: center;
 }
 
-/* Two ambient orbs that parallax with the pointer. */
 .hero__orb {
   position: absolute;
   pointer-events: none;
@@ -50,8 +41,6 @@
   animation: float-b 9s ease-in-out infinite;
 }
 
-/* Oversized wordmark across the top of the hero, filled in the brand orange
-   at low opacity so it reads as a watermark rather than as a heading. */
 .hero__watermark {
   position: absolute;
   top: 26px;
@@ -69,12 +58,10 @@
   opacity: 0.16;
 }
 
-/* The light theme needs a little more of it to register against white. */
 :root[data-theme='day'] .hero__watermark {
   opacity: 0.22;
 }
 
-/* Four corner brackets, like a viewfinder. */
 .hero__bracket {
   position: absolute;
   width: 26px;
@@ -206,8 +193,6 @@
   gap: 14px;
   flex-wrap: wrap;
 }
-
-/* --- the rotating dial ---------------------------------------------------- */
 
 .dial-wrap {
   flex: 1;
@@ -348,10 +333,6 @@
   animation: float-b 9s ease-in-out infinite;
 }
 
-/* --------------------------------------------------------------------------
-   Service cards (used on home and on the service page)
-   -------------------------------------------------------------------------- */
-
 .service-card {
   overflow: hidden;
   padding: 26px 24px 30px;
@@ -388,10 +369,6 @@
   font-size: 14px;
   line-height: 1.6;
 }
-
-/* --------------------------------------------------------------------------
-   Product cards
-   -------------------------------------------------------------------------- */
 
 .product-card {
   cursor: pointer;
@@ -439,10 +416,6 @@
   flex-wrap: wrap;
   margin-bottom: 40px;
 }
-
-/* --------------------------------------------------------------------------
-   About
-   -------------------------------------------------------------------------- */
 
 .about__lead {
   font-size: 22px;
@@ -496,10 +469,6 @@
   margin-top: 56px;
 }
 
-/* --------------------------------------------------------------------------
-   Service page
-   -------------------------------------------------------------------------- */
-
 .service__intro {
   font-size: 19px;
   line-height: 1.7;
@@ -528,10 +497,6 @@
   font-size: 22px;
   margin-bottom: 24px;
 }
-
-/* --------------------------------------------------------------------------
-   News
-   -------------------------------------------------------------------------- */
 
 .news-item {
   display: flex;
@@ -573,7 +538,6 @@
   line-height: 1.7;
 }
 
-/* Compact teaser used on the home page. */
 .news-teaser {
   padding: 26px 26px 28px;
   --notch: var(--notch-sm);
@@ -592,10 +556,6 @@
   font-size: 14px;
   line-height: 1.6;
 }
-
-/* --------------------------------------------------------------------------
-   Gallery
-   -------------------------------------------------------------------------- */
 
 .gallery-grid {
   --min: 300px;
@@ -626,10 +586,6 @@
   object-fit: contain;
   background: var(--bg);
 }
-
-/* --------------------------------------------------------------------------
-   Contacts
-   -------------------------------------------------------------------------- */
 
 .contacts-grid {
   display: grid;
@@ -687,10 +643,6 @@
   padding: 40px;
   --notch: 26px;
 }
-
-/* --------------------------------------------------------------------------
-   CTA band
-   -------------------------------------------------------------------------- */
 
 .cta-band {
   position: relative;
@@ -763,10 +715,6 @@
   text-decoration: underline;
 }
 
-/* --------------------------------------------------------------------------
-   Responsive
-   -------------------------------------------------------------------------- */
-
 @media (max-width: 900px) {
   .hero {
     min-height: auto;
@@ -805,15 +753,6 @@
 }
 
 @media (max-width: 560px) {
-  /*
-    .hero__inner relies on .hero__copy/.dial-wrap's min-width to force
-    flex-wrap to actually wrap them onto separate lines (see base rules
-    above). Zeroing that min-width — needed so neither ever overflows a
-    narrow screen — also removes the one thing that was triggering the wrap,
-    so without an explicit column direction here the two squeeze onto one
-    row instead of stacking. That crushed .dial from a square down to a thin
-    oval, taking .dial__ticks (inset: 0 of .dial) down with it.
-  */
   .hero__inner {
     flex-direction: column;
   }

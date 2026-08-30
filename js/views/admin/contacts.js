@@ -2,14 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.contacts = (function () {
-  /**
-   * Admin → Contacts.
-   *
-   * Feeds the contacts page, the footer and the phone numbers in the yellow call
-   * to action band. The display number and the dial number are separate fields
-   * on purpose: "(599) 585 148" reads well on the page, but a phone needs the
-   * full international form to actually place the call.
-   */
 
   const { h, mount, when } = Logi.core.dom;
   const store = Logi.core.store;
@@ -108,9 +100,6 @@ Logi.views.admin.contacts = (function () {
     return panel;
   }
 
-  /* --------------------------------------------------------------------------
-     Social and messaging icons
-     -------------------------------------------------------------------------- */
 
   const SOCIAL_TYPES = [
     { value: 'facebook', label: 'Facebook' },
@@ -120,14 +109,6 @@ Logi.views.admin.contacts = (function () {
     { value: 'link', label: 'Other link' },
   ];
 
-  /**
-   * The icons in the header.
-   *
-   * WhatsApp entries take a phone number and the wa.me link is built from it;
-   * every other type takes a full URL. The label is what a screen reader
-   * announces and what shows on hover, which is how two WhatsApp icons sitting
-   * side by side stay tellable apart.
-   */
   function socialPanel(items) {
     const row = (item, index, total) =>
       h(
@@ -269,19 +250,7 @@ Logi.views.admin.contacts = (function () {
     );
   }
 
-  /* --------------------------------------------------------------------------
-     Map
-     -------------------------------------------------------------------------- */
 
-  /**
-   * Places the map pin.
-   *
-   * Three ways in, because the right one depends on where you are: read the
-   * device's GPS if you are standing at the yard, paste a link if you found the
-   * spot on a map on your computer, or type the numbers if you already have
-   * them. Whichever you use, the preview updates immediately so you can see the
-   * pin land before you publish.
-   */
   function mapPanel(c, rerender) {
     const pin = {
       lat: Number(c.mapLat),
@@ -310,7 +279,6 @@ Logi.views.admin.contacts = (function () {
     const lonInput = h('input.input.input--sm', { type: 'number', step: '0.000001', value: hasPin ? pin.lon : '' });
     const zoomInput = h('input.input.input--sm', { type: 'number', min: '1', max: '19', value: pin.zoom });
 
-    /** Pushes the current values into the store and refreshes the preview. */
     const apply = ({ immediate = false, message = '' } = {}) => {
       const lat = Number(latInput.value);
       const lon = Number(lonInput.value);
@@ -338,7 +306,6 @@ Logi.views.admin.contacts = (function () {
       input.addEventListener('input', () => apply());
     }
 
-    /* --- paste a link -------------------------------------------------------- */
 
     const pasteBox = h('input.input.input--sm', {
       type: 'text',
@@ -364,7 +331,6 @@ Logi.views.admin.contacts = (function () {
       },
     });
 
-    /* --- read the device's position ------------------------------------------ */
 
     const locateButton = h('button.btn.btn--ghost.btn--sm', {
       type: 'button',
@@ -405,7 +371,6 @@ Logi.views.admin.contacts = (function () {
       },
     });
 
-    // Initial readout.
     apply();
 
     return editorPanel(

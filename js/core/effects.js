@@ -1,17 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.core = Logi.core || {};
 Logi.core.effects = (function () {
-  /**
-   * Pointer and motion effects.
-   *
-   * All four of these are decoration. Each one checks for a fine pointer and for
-   * `prefers-reduced-motion` and simply does nothing when either says no, so the
-   * site stays fully usable on a phone and for anyone who gets motion sick.
-   *
-   * They write to `style.transform` directly rather than going through a render,
-   * because they run on every pointer move and a re-render per frame would be
-   * absurd.
-   */
 
   const reduceMotion = () =>
     window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -19,10 +8,6 @@ Logi.core.effects = (function () {
   const finePointer = () =>
     window.matchMedia?.('(pointer: fine)').matches ?? false;
 
-  /* --------------------------------------------------------------------------
-     Cursor spotlight
-     A soft radial glow that lags behind the pointer. One per document.
-     -------------------------------------------------------------------------- */
 
   let spotlight = null;
 
@@ -70,14 +55,7 @@ Logi.core.effects = (function () {
     return spotlight;
   }
 
-  /* --------------------------------------------------------------------------
-     Card tilt
-     -------------------------------------------------------------------------- */
 
-  /**
-   * Tips a card towards the pointer. Attach with `h('div', { ref: attachTilt })`.
-   * @param {HTMLElement} el
-   */
   function attachTilt(el) {
     if (!el || !finePointer() || reduceMotion()) return;
 
@@ -97,17 +75,7 @@ Logi.core.effects = (function () {
     el.addEventListener('blur', reset);
   }
 
-  /* --------------------------------------------------------------------------
-     Hero parallax
-     -------------------------------------------------------------------------- */
 
-  /**
-   * Drifts the hero's glow orbs and tips the dial as the pointer crosses the
-   * section. Amounts are small on purpose — it should read as depth, not motion.
-   *
-   * @param {HTMLElement} hero
-   * @param {{orbA?: HTMLElement, orbB?: HTMLElement, dial?: HTMLElement}} parts
-   */
   function attachHeroParallax(hero, parts) {
     if (!hero || !finePointer() || reduceMotion()) return;
 
@@ -132,23 +100,7 @@ Logi.core.effects = (function () {
     });
   }
 
-  /* --------------------------------------------------------------------------
-     Counting numbers
-     -------------------------------------------------------------------------- */
 
-  /**
-   * Counts an element up to `value`, starting when it first scrolls into view.
-   * Returns a teardown function; the caller drops it when the view is replaced.
-   *
-   * @param {HTMLElement} el
-   * @param {number} value
-   * @param {string} suffix     e.g. '+' or '/7'
-   * @param {object} [options]
-   * @param {(n: number) => string} [options.format] renders each intermediate
-   *        number — used to group thousands, so 80000 reads as "80 000"
-   * @param {number} [options.duration] milliseconds
-   * @returns {() => void}
-   */
   function countUp(el, value, suffix = '', options = {}) {
     const { format = String, duration = 1400 } = options;
     const write = (n) => {
@@ -167,7 +119,6 @@ Logi.core.effects = (function () {
       const start = performance.now();
       const step = (now) => {
         const progress = Math.min(1, (now - start) / duration);
-        // Cubic ease-out: fast at first, gliding into the final number.
         const eased = 1 - (1 - progress) ** 3;
         write(Math.round(value * eased));
         if (progress < 1) frame = requestAnimationFrame(step);
@@ -192,14 +143,7 @@ Logi.core.effects = (function () {
     };
   }
 
-  /* --------------------------------------------------------------------------
-     Reveal on scroll
-     -------------------------------------------------------------------------- */
 
-  /**
-   * Fades a section up the first time it enters the viewport.
-   * @param {HTMLElement} el
-   */
   function attachReveal(el) {
     if (!el || reduceMotion() || typeof IntersectionObserver === 'undefined') return;
 

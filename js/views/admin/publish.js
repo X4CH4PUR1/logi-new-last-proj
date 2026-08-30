@@ -2,17 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.publish = (function () {
-  /**
-   * Admin → Publish.
-   *
-   * The one part of the admin panel that needs explaining, so it explains itself
-   * on screen rather than only in the README.
-   *
-   * Edits live in this browser's localStorage. They are real and they persist,
-   * but they are yours alone — a visitor loads data/content.json from the
-   * repository. Publishing means downloading that file and committing it. This
-   * tab does the download, and tells you exactly where to put the result.
-   */
 
   const { h, mount, when } = Logi.core.dom;
   const store = Logi.core.store;
@@ -103,7 +92,6 @@ Logi.views.admin.publish = (function () {
       );
     };
 
-    /* --- steps ------------------------------------------------------------- */
 
     function step(num, title, text, children) {
       return h(
@@ -191,7 +179,6 @@ Logi.views.admin.publish = (function () {
       );
     }
 
-    /* --- actions ----------------------------------------------------------- */
 
     function download(json) {
       const blob = new Blob([json], { type: 'application/json' });
@@ -200,7 +187,6 @@ Logi.views.admin.publish = (function () {
       document.body.append(link);
       link.click();
       link.remove();
-      // Give the browser a moment to start the download before revoking.
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       toast.show('Downloaded — now commit it to the repository');
     }

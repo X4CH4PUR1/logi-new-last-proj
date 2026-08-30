@@ -1,26 +1,11 @@
 window.Logi = window.Logi || {};
 Logi.data = Logi.data || {};
 Logi.data.defaults = (function () {
-  /**
-   * Default site content.
-   *
-   * This is the content the site falls back to when data/content.json does not
-   * exist and nothing has been saved locally. Treat it as the "factory reset"
-   * state — Admin → Publish → Reset restores exactly this.
-   *
-   * Shape of a translatable value: { ka: '…', en: '…', ru: '…' }
-   * Anything not translatable (prices, dates, phone numbers) is a plain value.
-   */
 
-  /** @typedef {{ka: string, en: string, ru: string}} Translatable */
 
   const DEFAULT_CONTENT = {
-    /** Bumped when the shape changes so store.js can migrate old saved data. */
     version: 1,
 
-    /* ======================================================================
-       Free text blocks, editable in Admin → Texts
-       ====================================================================== */
     texts: {
       heroBadge: {
         en: 'LOGIMOTORS LTD — RUSTAVI, GEORGIA',
@@ -57,7 +42,6 @@ Logi.data.defaults = (function () {
         ka: 'აღდგენითი შეკეთება, გეგმიური მომსახურება და დიაგნოსტიკა ნებისმიერი ბრენდის სატვირთველისთვის — ბენზინი, დიზელი, ელექტრო. ორიგინალი და ანალოგი ნაწილები მიწოდების მინიმალური ვადებით.',
         ru: 'Восстановительный ремонт, плановое обслуживание и диагностика погрузчиков любых брендов — бензин, дизель, электро. Оригинальные и аналоговые запчасти с минимальными сроками поставки.',
       },
-      /** Used for the <meta name="description"> tag, per language. */
       metaDescription: {
         en: 'LOGIMOTORS LTD, Rustavi — sale, rent, service and spare parts for forklifts of any brand. Gasoline, diesel and electric. Working in Georgia since 1999.',
         ka: 'შპს ლოგიმოტორსი, რუსთავი — ნებისმიერი ბრენდის ავტოსატვირთველას გაყიდვა, გაქირავება, სერვისი და სათადარიგო ნაწილები. ვმუშაობთ 1999 წლიდან.',
@@ -65,20 +49,11 @@ Logi.data.defaults = (function () {
       },
     },
 
-    /* ======================================================================
-       Brand wordmarks. `short` is the logo and the oversized outlined lettering
-       in the footer; `full` is the watermark across the top of the hero.
-       ====================================================================== */
     brand: {
       short: 'LOGI',
       full: 'LOGIMOTORS',
     },
 
-    /**
-     * The four floating chips around the hero dial. Add or remove entries and
-     * the ring re-flows — positions come from :nth-child in css/pages.css, so
-     * four is the number the layout is designed for.
-     */
     heroPills: [
       { en: '1.5 – 5.0 t', ka: '1.5 – 5.0 ტ', ru: '1,5 – 5,0 т' },
       { en: 'ELECTRIC', ka: 'ელექტრო', ru: 'ЭЛЕКТРО' },
@@ -86,15 +61,9 @@ Logi.data.defaults = (function () {
       { en: '24/7', ka: '24/7', ru: '24/7' },
     ],
 
-    /* ======================================================================
-       Brand ticker — one string, shared by all languages
-       ====================================================================== */
     brands:
       'TOYOTA · LINDE · HYSTER · KOMATSU · JUNGHEINRICH · STILL · CAT · NISSAN · MITSUBISHI · CROWN · TCM · CLARK · HELI · DOOSAN · ANY BRAND · ',
 
-    /* ======================================================================
-       Services — shown on the home page and the service page
-       ====================================================================== */
     services: [
       {
         id: 'sale',
@@ -160,16 +129,8 @@ Logi.data.defaults = (function () {
       },
     ],
 
-    /** The year the company was founded. Drives the years-of-experience figure. */
     foundedYear: 1999,
 
-    /* ======================================================================
-       Statistics shown on the home and about pages.
-
-       The years entry carries `sinceYear` instead of a fixed value, so the
-       figure is worked out from the current date every time the page loads and
-       can never quietly go stale. The others are plain numbers.
-       ====================================================================== */
     stats: [
       { id: 'years', sinceYear: 1999, suffix: '+', labelKey: 'statYears' },
       { id: 'machines', value: 3500, suffix: '+', labelKey: 'statMachines' },
@@ -177,14 +138,6 @@ Logi.data.defaults = (function () {
       { id: 'support', value: 24, suffix: '/7', labelKey: 'statSupport' },
     ],
 
-    /* ======================================================================
-       Catalogue filters, editable in Admin → Filters.
-
-       "forklift" itself stays structural (see FORKLIFT_CATEGORY in
-       js/data/config.js) because sale/rent + fuel is specific to how
-       forklifts are sold. Everything here is a flat browsing tab instead —
-       adding an entry adds a tab next to Parts/Wheels with no code change.
-       ====================================================================== */
     categories: [
       { key: 'parts', label: { en: 'Parts', ka: 'ნაწილები', ru: 'Запчасти' } },
       { key: 'wheels', label: { en: 'Wheels', ka: 'თვლები', ru: 'Колёса' } },
@@ -195,9 +148,6 @@ Logi.data.defaults = (function () {
       { key: 'gasoline', label: { en: 'Gasoline / LPG', ka: 'ბენზინი / გაზი', ru: 'Бензин / Газ' } },
     ],
 
-    /* ======================================================================
-       Catalogue
-       ====================================================================== */
     products: [
       {
         id: 'p1',
@@ -361,9 +311,6 @@ Logi.data.defaults = (function () {
       },
     ],
 
-    /* ======================================================================
-       News
-       ====================================================================== */
     news: [
       {
         id: 'n1',
@@ -412,9 +359,6 @@ Logi.data.defaults = (function () {
       },
     ],
 
-    /* ======================================================================
-       Gallery
-       ====================================================================== */
     gallery: [
       {
         id: 'g1',
@@ -464,14 +408,6 @@ Logi.data.defaults = (function () {
       },
     ],
 
-    /* ======================================================================
-       Social and messaging links, shown as icons in the header.
-
-       Order here is the order on screen. `type` picks the icon — 'facebook',
-       'whatsapp', 'instagram' or 'telegram' are drawn; anything else falls back
-       to a generic link glyph. WhatsApp entries take a phone number and the link
-       is built from it; the rest take a full URL.
-       ====================================================================== */
     social: [
       {
         id: 'facebook',
@@ -493,9 +429,6 @@ Logi.data.defaults = (function () {
       },
     ],
 
-    /* ======================================================================
-       Contact details
-       ====================================================================== */
     contacts: {
       address: {
         en: '21 Gagarin St, Rustavi, Georgia',
@@ -514,63 +447,25 @@ Logi.data.defaults = (function () {
       },
       phone1: '(599) 585 148',
       phone2: '(555) 502 502',
-      /** Dial strings for tel: links — kept separate from the display format. */
       phone1Dial: '+995599585148',
       phone2Dial: '+995555502502',
       email: 'logi@logimotors.com',
       web: 'www.logimotors.com',
       idCode: '416289171',
-      /**
-       * Where the map pin goes.
-       *
-       * Taken from the company's own Google Maps listing (ლოგიმოტორსი /
-       * Logimotors) — specifically the place marker in that URL, not the map
-       * centre, which sits about 40 m to the south-west.
-       *
-       * To move it: Admin → Contacts → Map. Paste a link, type the numbers, or
-       * press "Use my current location" while standing at the yard.
-       *
-       * Clear mapLat/mapLon to hide the map and show a plain placeholder, which
-       * also means no request to openstreetmap.org at all.
-       */
       mapLat: 41.5425058,
       mapLon: 45.0236142,
       mapZoom: 17,
-      /** True once someone has confirmed the pin; drives the admin's warning. */
       mapPinConfirmed: true,
-      /**
-       * Advanced escape hatch: paste a complete embed URL here and it wins over
-       * the coordinates above. Only needed for a non-OpenStreetMap provider.
-       */
       mapEmbed: '',
     },
 
-    /* ======================================================================
-       Per-language overrides for the UI strings in locales/*.js.
-       Only keys the owner has actually changed appear here.
-       ====================================================================== */
     strings: { ka: {}, en: {}, ru: {} },
 
-    /* ======================================================================
-       Behavioural settings, editable in Admin → Settings
-       ====================================================================== */
     settings: {
       defaultLang: 'en',
       defaultTheme: 'night',
-      /**
-       * Where the contact form posts. Leave empty and the form falls back to
-       * opening the visitor's mail client with the message pre-filled, which
-       * needs no server at all. Set it to a Formspree / Basin / Web3Forms
-       * endpoint to receive submissions by e-mail instead.
-       */
       formEndpoint: '',
-      /** SHA-256 of PIN_SALT + pin. null means "still using the default PIN". */
       pinHash: null,
-      /**
-       * Route keys hidden from navigation and direct visits. Editable in
-       * Admin → Settings → Pages. 'home' is never included — see the note
-       * on visibleNavRoutes() in js/core/selectors.js.
-       */
       hiddenPages: [],
     },
   };

@@ -1,29 +1,12 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views["product-modal"] = (function () {
-  /**
-   * Product detail modal.
-   *
-   * Built on a native <dialog>, which gives keyboard focus trapping and makes
-   * the rest of the page inert without any of that being hand written.
-   *
-   * Teardown is driven by an explicit `dismiss()` rather than by listening for
-   * the dialog's `close` event. Every route into closing — the buttons, the
-   * scrim, Escape — calls it, and it is safe to call twice. Some embedded
-   * browsers (Electron shells in particular) never dispatch `close`, and a modal
-   * that will not go away is a much worse failure than a redundant call.
-   */
 
   const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
   const router = Logi.core.router;
   const { decorateProduct } = Logi.core.selectors;
   const { badgeRow, media } = Logi.views.partials;
-  /**
-   * @param {object} product raw product record
-   * @param {() => void} onDismiss called once, after the dialog has closed
-   * @returns {HTMLDialogElement}
-   */
   function productModal(product, onDismiss) {
     const view = decorateProduct(product);
     let dismissed = false;
@@ -61,11 +44,9 @@ Logi.views["product-modal"] = (function () {
     quote.addEventListener('click', dismiss);
     closeBtn.addEventListener('click', dismiss);
 
-    // Clicking the scrim — but not the panel — dismisses.
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) dismiss();
     });
-    // Escape. preventDefault stops the browser closing it behind our back.
     dialog.addEventListener('cancel', (event) => {
       event.preventDefault();
       dismiss();
@@ -81,13 +62,6 @@ Logi.views["product-modal"] = (function () {
     return dialog;
   }
 
-  /**
-   * The main photo plus a thumbnail strip when there is more than one — the
-   * strip only appears once a product actually has extra photos, so a single-
-   * image product (or one with none) looks exactly as it did before.
-   * @param {string[]} images
-   * @param {string} title used as the alt text for every photo
-   */
   function gallery(images, title) {
     const root = tpl.clone('product-gallery');
     const { thumbs } = tpl.refs(root);

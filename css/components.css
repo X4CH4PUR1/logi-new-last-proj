@@ -1,13 +1,3 @@
-/* ==========================================================================
-   Components — reusable UI pieces shared by more than one page
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   Buttons
-   The primary/secondary shapes cut the top-left and bottom-right corners,
-   which is the counterpart to the .notch used on panels.
-   -------------------------------------------------------------------------- */
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -66,7 +56,6 @@
   width: 100%;
 }
 
-/* Square-cornered utility button — admin rows, chips, toolbars. */
 .btn-plain {
   cursor: pointer;
   border: 1px solid var(--line);
@@ -86,10 +75,6 @@
   border-color: var(--danger);
   color: var(--danger);
 }
-
-/* --------------------------------------------------------------------------
-   Segmented control — language switch, admin edit-language switch
-   -------------------------------------------------------------------------- */
 
 .segmented {
   display: flex;
@@ -121,10 +106,6 @@
   color: var(--ink);
 }
 
-/* --------------------------------------------------------------------------
-   Theme toggle
-   -------------------------------------------------------------------------- */
-
 .theme-toggle {
   cursor: pointer;
   background: transparent;
@@ -141,12 +122,6 @@
 .theme-toggle:hover {
   border-color: var(--accent);
 }
-
-/* --------------------------------------------------------------------------
-   Cards
-   `.card--tilt` opts into the JS pointer-tilt effect; the transform itself is
-   written inline by js/core/tilt.js and cleared on pointer leave.
-   -------------------------------------------------------------------------- */
 
 .card {
   position: relative;
@@ -184,10 +159,6 @@
 .card__body {
   padding: 20px 22px 24px;
 }
-
-/* --------------------------------------------------------------------------
-   Badges and filter chips
-   -------------------------------------------------------------------------- */
 
 .badge-row {
   display: flex;
@@ -230,7 +201,6 @@
   color: var(--accent);
 }
 
-/* Angled tab used for the product mode filter and the admin tab bar. */
 .tab {
   cursor: pointer;
   border: 1px solid var(--line);
@@ -266,10 +236,6 @@
   gap: 10px;
   flex-wrap: wrap;
 }
-
-/* --------------------------------------------------------------------------
-   Forms
-   -------------------------------------------------------------------------- */
 
 .field {
   display: flex;
@@ -370,11 +336,6 @@
   font-size: 12px;
 }
 
-/* --------------------------------------------------------------------------
-   Brand marquee
-   The track is duplicated so the -50% translation loops seamlessly.
-   -------------------------------------------------------------------------- */
-
 .marquee {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -414,10 +375,6 @@
   animation-play-state: paused;
 }
 
-/* --------------------------------------------------------------------------
-   Stat tiles
-   -------------------------------------------------------------------------- */
-
 .stat {
   position: relative;
   overflow: hidden;
@@ -436,9 +393,6 @@
 .stat__value {
   font-family: var(--font-display);
   font-weight: 800;
-  /* The thousands separator is a no-break space, so a wide number (e.g.
-     "80 000+") never wraps onto a second line — it has to shrink to fit
-     the card's width instead, or it overflows and gets clipped. */
   font-size: clamp(28px, 17cqw, 52px);
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
@@ -469,13 +423,6 @@
   margin-top: 8px;
 }
 
-/* --------------------------------------------------------------------------
-   Modal
-   -------------------------------------------------------------------------- */
-
-/* A native <dialog>, so Escape, focus trapping and inertness come for free.
-   The element itself fills the viewport and paints the scrim; ::backdrop is
-   left transparent so one blur applies rather than two. */
 .modal {
   position: fixed;
   inset: 0;
@@ -613,10 +560,6 @@
   font-size: 16px;
 }
 
-/* --------------------------------------------------------------------------
-   Toast — transient confirmation, used by the admin panel
-   -------------------------------------------------------------------------- */
-
 .toast {
   position: fixed;
   left: 50%;
@@ -653,10 +596,6 @@
   background: var(--danger);
 }
 
-/* --------------------------------------------------------------------------
-   Empty state
-   -------------------------------------------------------------------------- */
-
 .empty {
   border: 1px dashed var(--line);
   padding: 60px 24px;
@@ -664,11 +603,6 @@
   color: var(--muted);
   font-size: 16px;
 }
-
-/* --------------------------------------------------------------------------
-   Cursor spotlight — a soft glow that trails the pointer on fine-pointer
-   devices. Created by js/core/spotlight.js, positioned by transform.
-   -------------------------------------------------------------------------- */
 
 .cursor-glow {
   position: fixed;

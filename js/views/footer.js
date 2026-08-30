@@ -1,9 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.footer = (function () {
-  /**
-   * Site footer: legal name, menu, contact details, and the admin entry point.
-   */
 
   const tpl = Logi.core.tpl;
   const { t, localise } = Logi.core.i18n;
@@ -25,13 +22,9 @@ Logi.views.footer = (function () {
       address: localise(c.address),
       email: c.email,
       hours: localise(c.hours),
-      // No admin link here on purpose. The panel lives at an unlisted address
-      // (ADMIN_PATH in js/data/config.js) so visitors never see a way in.
       copyright: `© ${year} ${localise(c.legal)}${c.idCode ? ` · ID ${c.idCode}` : ''}`,
     });
     tpl.toggle(address, !!c.address);
-    // Each number gets its own tel: link — joining them under one href meant
-    // only the first was ever actually callable.
     tpl.toggle(phonesEl, phones.length > 0);
     phones.forEach((phone, index) => {
       if (index > 0) phonesEl.append(' · ');

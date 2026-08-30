@@ -1,9 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.news = (function () {
-  /**
-   * News page: every post, newest first.
-   */
 
   const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;

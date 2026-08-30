@@ -1,10 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.home = (function () {
-  /**
-   * Home page: hero, brand ticker, statistics, services, featured stock,
-   * latest news and the closing call to action.
-   */
 
   const tpl = Logi.core.tpl;
   const { t } = Logi.core.i18n;
@@ -28,9 +24,6 @@ Logi.views.home = (function () {
     serviceGrid,
     statGrid,
   } = Logi.views.partials;
-  /**
-   * @param {{onOpenProduct: (id: string) => void}} handlers
-   */
   function homePage({ onOpenProduct }) {
     const root = tpl.clone('home');
     tpl.place(root, 'hero', hero());
@@ -42,10 +35,6 @@ Logi.views.home = (function () {
     tpl.place(root, 'cta', ctaBand());
     return root;
   }
-
-  /* --------------------------------------------------------------------------
-     Hero
-     -------------------------------------------------------------------------- */
 
   function hero() {
     const parts = {};
@@ -72,14 +61,10 @@ Logi.views.home = (function () {
 
     tpl.place(root, 'dial', dial(parts));
 
-    // Read by attachHeroParallax below, and set by dial() above — this must
-    // run after both, same ordering the original relied on since children
-    // are always built before a parent's own ref callback fires.
     attachHeroParallax(root, parts);
     return root;
   }
 
-  /** The rotating instrument dial on the right of the hero. */
   function dial(parts) {
     const headline = stats()[0];
     const pills = heroPills();
@@ -102,26 +87,11 @@ Logi.views.home = (function () {
     return root;
   }
 
-  /* --------------------------------------------------------------------------
-     Brand ticker
-     -------------------------------------------------------------------------- */
-
-  /**
-   * Two rows drifting in opposite directions. Each row repeats its text four
-   * times so the -50% loop has no visible seam at any viewport width — a
-   * fixed 4x repeat, not driven by a data array, so it is literal markup in
-   * tpl-marquee; only the brand text itself (bound onto all 8 spans at once)
-   * is data-driven.
-   */
   function marquee() {
     const root = tpl.clone('marquee');
     tpl.bind(root, { brand: brands() });
     return root;
   }
-
-  /* --------------------------------------------------------------------------
-     Sections
-     -------------------------------------------------------------------------- */
 
   function statsSection() {
     const root = tpl.clone('stats-section');

@@ -2,10 +2,6 @@ window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.news = (function () {
-  /**
-   * Admin → News.
-   * Same list/editor pattern as the products tab.
-   */
 
   const { h, mount } = Logi.core.dom;
   const { clone } = Logi.core.store;

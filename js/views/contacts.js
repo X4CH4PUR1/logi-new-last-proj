@@ -1,9 +1,6 @@
 window.Logi = window.Logi || {};
 Logi.views = Logi.views || {};
 Logi.views.contacts = (function () {
-  /**
-   * Contacts page: the detail table with a map, and the enquiry form.
-   */
 
   const tpl = Logi.core.tpl;
   const { localise, t } = Logi.core.i18n;
@@ -23,9 +20,6 @@ Logi.views.contacts = (function () {
 
   function detailsCard() {
     const root = tpl.clone('contact-details');
-    // Rows are inserted before the map marker (not via each()/clear+append,
-    // which would also wipe the marker) so both can share one container,
-    // exactly like the original's rows-then-map child list.
     const mapMarker = tpl.slot(root, 'map');
     for (const row of contactRows()) {
       mapMarker.before(contactRow(row));
@@ -40,8 +34,6 @@ Logi.views.contacts = (function () {
     tpl.bind(root, { key: row.key, value: row.value });
 
     if (row.parts) {
-      // Several numbers in one row — each needs its own tel: link, so a
-      // single href on the row (as below) can't cover both.
       tpl.toggle(link, false);
       tpl.toggle(plain, false);
       tpl.toggle(parts, true);
@@ -67,14 +59,6 @@ Logi.views.contacts = (function () {
     return root;
   }
 
-  /**
-   * The map, pinned on the exact coordinates set in Admin → Contacts.
-   *
-   * When no coordinates are set the same hatched placeholder the rest of the
-   * site uses appears instead — which also means no request to a third party.
-   * The frame is lazy-loaded, so a visitor who never scrolls this far never
-   * contacts openstreetmap.org at all.
-   */
   function map() {
     const view = mapView();
 
@@ -88,10 +72,6 @@ Logi.views.contacts = (function () {
     const { linkA, directionsA } = tpl.refs(root);
     tpl.bindAttr(root, {
       embed: view.embed,
-      // Third-party frame: withholding allow-top-navigation means the embed
-      // can never redirect the page out from under a visitor. It still gets
-      // scripts and its own origin, which map tiles need, and popups so
-      // "view larger map" opens in a new tab.
       mapTitle: `${t('address')} — ${localise(contacts().address)}`,
       link: view.link || '',
       directions: view.directions || '',
