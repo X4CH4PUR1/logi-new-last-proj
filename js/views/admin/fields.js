@@ -198,6 +198,25 @@ Logi.views.admin.fields = (function () {
   }
 
   /**
+   * A checkbox with its label alongside it, rather than above it.
+   * @param {{label: string, checked: boolean, onChange: (checked: boolean) => void,
+   *          hint?: string}} options
+   */
+  function checkboxInput({ label, checked, onChange, hint }) {
+    const input = h('input.checkbox', {
+      type: 'checkbox',
+      checked: !!checked,
+      on: { change: (event) => onChange(event.currentTarget.checked) },
+    });
+    return h(
+      'label.field.field--checkbox',
+      {},
+      h('span', {}, input, h('span', { text: ` ${label}` })),
+      when(hint, () => h('span.hint', { text: hint }))
+    );
+  }
+
+  /**
    * A dropdown.
    * @param {{label: string, value: any, options: Array<{value: string, label: string}>,
    *          onInput: (value: string) => void, hint?: string}} config
@@ -333,5 +352,5 @@ Logi.views.admin.fields = (function () {
     };
   }
 
-  return { getEditLang, editLangSwitch, patch, patchDebounced, commit, field, textInput, textArea, select, imageInput, localisedInput, setTranslation, editorPanel, editorGrid, editorActions, primaryButton, ghostButton, confirmThen };
+  return { getEditLang, editLangSwitch, patch, patchDebounced, commit, field, textInput, textArea, select, checkboxInput, imageInput, localisedInput, setTranslation, editorPanel, editorGrid, editorActions, primaryButton, ghostButton, confirmThen };
 })();

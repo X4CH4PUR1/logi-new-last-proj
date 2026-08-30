@@ -12,6 +12,7 @@ Logi.core.selectors = (function () {
    */
 
   const store = Logi.core.store;
+  const { NAV_ROUTES } = Logi.data.config;
   const { localise, t } = Logi.core.i18n;
   const { excerpt, formatPrice, telHref, webHref, whatsappHref } = Logi.util.format;
   const {
@@ -309,5 +310,24 @@ Logi.core.selectors = (function () {
     return store.getContent().settings ?? {};
   }
 
-  return { decorateProduct, fuelLabel, categories, fuels, allProducts, filterProducts, fuelFilterApplies, findProduct, featuredProducts, sortedNews, decorateNews, services, gallery, stats, foundedYear, contacts, contactRows, mapView, social, phoneLinks, text, brands, brand, heroPills, settings };
+  /** Route keys the owner has hidden from Admin → Settings → Pages. */
+  function hiddenPageKeys() {
+    return new Set(settings().hiddenPages ?? []);
+  }
+
+  function isPageHidden(key) {
+    return hiddenPageKeys().has(key);
+  }
+
+  /**
+   * Nav routes with the hidden ones filtered out, for the header and footer
+   * menus. 'home' can never be hidden — it is where a hidden route's visitor
+   * gets redirected to, so hiding it too would have nowhere to send them.
+   */
+  function visibleNavRoutes() {
+    const hidden = hiddenPageKeys();
+    return NAV_ROUTES.filter((r) => r.key === 'home' || !hidden.has(r.key));
+  }
+
+  return { decorateProduct, fuelLabel, categories, fuels, allProducts, filterProducts, fuelFilterApplies, findProduct, featuredProducts, sortedNews, decorateNews, services, gallery, stats, foundedYear, contacts, contactRows, mapView, social, phoneLinks, text, brands, brand, heroPills, settings, isPageHidden, visibleNavRoutes };
 })();

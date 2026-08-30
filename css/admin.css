@@ -266,6 +266,36 @@
   color: var(--accent);
 }
 
+/* A checkbox field reads left-to-right, not label-above-control like the rest. */
+.field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  cursor: pointer;
+}
+
+.field--checkbox > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.field--checkbox .checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.admin-page-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 /* --------------------------------------------------------------------------
    Texts tab
    -------------------------------------------------------------------------- */

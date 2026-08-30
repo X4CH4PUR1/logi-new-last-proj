@@ -6,10 +6,9 @@ Logi.views.footer = (function () {
    */
 
   const tpl = Logi.core.tpl;
-  const { NAV_ROUTES } = Logi.data.config;
   const { t, localise } = Logi.core.i18n;
   const router = Logi.core.router;
-  const { brand, contacts, phoneLinks } = Logi.core.selectors;
+  const { brand, contacts, phoneLinks, visibleNavRoutes } = Logi.core.selectors;
   function footer() {
     const c = contacts();
     const marks = brand();
@@ -45,7 +44,7 @@ Logi.views.footer = (function () {
     if (c.email) tpl.bindAttr(root, { emailHref: `mailto:${c.email}` });
     tpl.toggle(hours, !!c.hours);
 
-    tpl.each(tpl.slot(root, 'menu-links'), NAV_ROUTES, (route) => {
+    tpl.each(tpl.slot(root, 'menu-links'), visibleNavRoutes(), (route) => {
       const a = tpl.clone('footer-link');
       tpl.bindAttr(a, { href: router.href(route.key) });
       tpl.bind(a, { label: t(route.labelKey) });

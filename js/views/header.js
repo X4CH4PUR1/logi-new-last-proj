@@ -11,11 +11,10 @@ Logi.views.header = (function () {
 
   const dom = Logi.core.dom;
   const tpl = Logi.core.tpl;
-  const { NAV_ROUTES } = Logi.data.config;
   const i18n = Logi.core.i18n;
   const theme = Logi.core.theme;
   const router = Logi.core.router;
-  const { brand } = Logi.core.selectors;
+  const { brand, visibleNavRoutes } = Logi.core.selectors;
   const { socialLinks } = Logi.views.social;
   const noop = () => {};
   /** Removes the document listeners belonging to the currently open menu. */
@@ -39,7 +38,7 @@ Logi.views.header = (function () {
     tpl.bind(root, { brandShort: marks.short, menuLabel });
     tpl.bindAttr(root, { homeHref: router.href('home'), brandFull: marks.full, menuLabel });
 
-    tpl.each(tpl.slot(root, 'nav-links'), NAV_ROUTES, (route) => {
+    tpl.each(tpl.slot(root, 'nav-links'), visibleNavRoutes(), (route) => {
       const a = tpl.clone('nav-link');
       tpl.bindAttr(a, { href: router.href(route.key) });
       tpl.bind(a, { label: i18n.t(route.labelKey) });

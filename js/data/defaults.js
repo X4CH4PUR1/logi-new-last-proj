@@ -566,6 +566,12 @@ Logi.data.defaults = (function () {
       formEndpoint: '',
       /** SHA-256 of PIN_SALT + pin. null means "still using the default PIN". */
       pinHash: null,
+      /**
+       * Route keys hidden from navigation and direct visits. Editable in
+       * Admin → Settings → Pages. 'home' is never included — see the note
+       * on visibleNavRoutes() in js/core/selectors.js.
+       */
+      hiddenPages: [],
     },
   };
 

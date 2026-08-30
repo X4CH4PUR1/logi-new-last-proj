@@ -11,14 +11,23 @@ Logi.views.admin.settings = (function () {
   const store = Logi.core.store;
   const auth = Logi.core.auth;
   const toast = Logi.core.toast;
-  const { LANGUAGES } = Logi.data.config;
+  const { LANGUAGES, NAV_ROUTES } = Logi.data.config;
   const {
+    checkboxInput,
+    commit,
     editorPanel,
     patchDebounced,
     primaryButton,
     select,
     textInput,
   } = Logi.views.admin.fields;
+
+  /** Every page that can be hidden — everything but Home, which is where a
+   *  hidden page's visitors get sent, so it has to always be reachable. */
+  const HIDEABLE_PAGES = NAV_ROUTES.filter((r) => r.key !== 'home').map((r) => ({
+    key: r.key,
+    label: r.key.charAt(0).toUpperCase() + r.key.slice(1),
+  }));
   function settingsTab() {
     const panel = h('div.admin__panel');
 
@@ -85,9 +94,43 @@ Logi.views.admin.settings = (function () {
           )
         ),
 
+        pagesPanel(settings),
         pinPanel()
       );
     };
+
+    function pagesPanel(settings) {
+      const hidden = new Set(settings.hiddenPages ?? []);
+
+      const toggle = (key, checked) =>
+        commit((draft) => {
+          draft.settings.hiddenPages = draft.settings.hiddenPages ?? [];
+          const set = new Set(draft.settings.hiddenPages);
+          if (checked) set.delete(key);
+          else set.add(key);
+          draft.settings.hiddenPages = [...set];
+        });
+
+      return editorPanel(
+        'Pages',
+        h('p.hint', {
+          text:
+            'Hide a page and it disappears from the menu; anyone who still has the old link is sent ' +
+            'back to the home page instead.',
+        }),
+        h(
+          'div.admin-page-list',
+          {},
+          HIDEABLE_PAGES.map((page) =>
+            checkboxInput({
+              label: page.label,
+              checked: !hidden.has(page.key),
+              onChange: (checked) => toggle(page.key, checked),
+            })
+          )
+        )
+      );
+    }
 
     function pinPanel() {
       let current = '';

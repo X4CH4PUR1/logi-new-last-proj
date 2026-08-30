@@ -17,7 +17,7 @@ Logi.app = (function () {
   const router = Logi.core.router;
   const i18n = Logi.core.i18n;
   const store = Logi.core.store;
-  const { findProduct, text } = Logi.core.selectors;
+  const { findProduct, text, isPageHidden } = Logi.core.selectors;
   const { header } = Logi.views.header;
   const { footer } = Logi.views.footer;
   const { homePage } = Logi.views.home;
@@ -72,6 +72,14 @@ Logi.app = (function () {
   function page(route) {
     const onOpenProduct = (id) => router.go('products', [id]);
 
+    // A page hidden in Admin → Settings → Pages is off the menus; a visitor
+    // who still has the old link or types it by hand lands on the home page
+    // instead of a page that no longer officially exists.
+    if (route.key !== 'admin' && isPageHidden(route.key)) {
+      router.go('home', [], { replace: true });
+      return homePage({ onOpenProduct });
+    }
+
     switch (route.key) {
       case 'about':
         return aboutPage();
@@ -102,7 +110,7 @@ Logi.app = (function () {
      -------------------------------------------------------------------------- */
 
   function syncModal(route) {
-    if (route.key !== 'products') return;
+    if (route.key !== 'products' || isPageHidden(route.key)) return;
 
     const id = route.segments[0];
     if (!id) return;
