@@ -18,10 +18,12 @@ Logi.core.i18n = (function () {
   function init() {
     const saved = storage.readString(STORAGE.lang, '');
     const settingsDefault = store.getContent().settings?.defaultLang;
+    const offered = getLanguages().map((l) => l.code);
 
-    current = [saved, detectFromBrowser(), settingsDefault, DEFAULT_LANGUAGE].find(
-      (code) => code && LANGUAGE_CODES.includes(code)
-    );
+    current =
+      [saved, detectFromBrowser(), settingsDefault, DEFAULT_LANGUAGE].find(
+        (code) => code && offered.includes(code)
+      ) ?? offered[0];
 
     applyToDocument();
     if (isDevHost()) verifyBundles();
@@ -56,8 +58,13 @@ Logi.core.i18n = (function () {
     return current;
   }
 
+  // The control room can take languages off the site; a language switched off here
+  // disappears from the header and can no longer be chosen. Hiding every one of them
+  // would leave nothing to read the site in, so that falls back to the full list.
   function getLanguages() {
-    return LANGUAGES;
+    const hidden = new Set(store.getContent().settings?.hiddenLangs ?? []);
+    const offered = LANGUAGES.filter((l) => !hidden.has(l.code));
+    return offered.length ? offered : LANGUAGES;
   }
 
   function t(key) {

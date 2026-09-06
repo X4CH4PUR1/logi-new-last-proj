@@ -34,7 +34,12 @@ Logi.views.header = (function () {
     dom.mount(tpl.slot(root, 'nav-social'), socialLinks('mobile'));
     dom.mount(tpl.slot(root, 'tools-social'), socialLinks('desktop'));
 
-    tpl.each(tpl.slot(root, 'lang-switch'), i18n.getLanguages(), (lang) => {
+    const languages = i18n.getLanguages();
+    const langSwitch = tpl.slot(root, 'lang-switch');
+    // One language left is no choice at all, so the switcher goes away with it.
+    tpl.toggle(langSwitch, languages.length > 1);
+
+    tpl.each(langSwitch, languages, (lang) => {
       const b = tpl.clone('lang-btn');
       tpl.bind(b, { label: lang.label });
       tpl.bindAttr(b, {

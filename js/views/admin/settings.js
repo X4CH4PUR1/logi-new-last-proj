@@ -6,6 +6,7 @@ Logi.views.admin.settings = (function () {
   const { h, mount } = Logi.core.dom;
   const store = Logi.core.store;
   const auth = Logi.core.auth;
+  const i18n = Logi.core.i18n;
   const toast = Logi.core.toast;
   const { LANGUAGES, NAV_ROUTES } = Logi.data.config;
   const {
@@ -42,8 +43,8 @@ Logi.views.admin.settings = (function () {
             select({
               label: 'Starting language',
               value: settings.defaultLang,
-              options: LANGUAGES.map((l) => ({ value: l.code, label: l.name })),
-              hint: "Only used when the visitor's browser language is not one of the three.",
+              options: i18n.getLanguages().map((l) => ({ value: l.code, label: l.name })),
+              hint: "Only used when the visitor's browser language is not one of the ones you offer.",
               onInput: (value) =>
                 patchDebounced((draft) => {
                   draft.settings.defaultLang = value;
@@ -88,10 +89,59 @@ Logi.views.admin.settings = (function () {
           )
         ),
 
+        languagesPanel(settings),
         pagesPanel(settings),
         pinPanel()
       );
     };
+
+    function languagesPanel(settings) {
+      const hidden = new Set(settings.hiddenLangs ?? []);
+      const shown = LANGUAGES.filter((l) => !hidden.has(l.code));
+
+      const toggle = (code, checked) => {
+        if (!checked && shown.length <= 1) {
+          toast.error('One language has to stay on — the site has to be readable in something.');
+          render();
+          return;
+        }
+
+        commit((draft) => {
+          draft.settings.hiddenLangs = draft.settings.hiddenLangs ?? [];
+          const set = new Set(draft.settings.hiddenLangs);
+          if (checked) set.delete(code);
+          else set.add(code);
+          draft.settings.hiddenLangs = [...set];
+
+          // A starting language nobody can reach would strand the first visitor.
+          if (set.has(draft.settings.defaultLang)) {
+            draft.settings.defaultLang = LANGUAGES.find((l) => !set.has(l.code))?.code;
+          }
+        });
+      };
+
+      return editorPanel(
+        'Languages',
+        h('p.hint', {
+          text:
+            'Which languages visitors can switch between. Switch one off and its button leaves the ' +
+            'header — anyone already reading in it is moved to another on their next visit. Leave ' +
+            'a single language on and the switcher disappears altogether. Nothing is deleted: ' +
+            'the translations stay in the editor and come back the moment you switch a language on again.',
+        }),
+        h(
+          'div.admin-page-list',
+          {},
+          LANGUAGES.map((lang) =>
+            checkboxInput({
+              label: lang.name,
+              checked: !hidden.has(lang.code),
+              onChange: (checked) => toggle(lang.code, checked),
+            })
+          )
+        )
+      );
+    }
 
     function pagesPanel(settings) {
       const hidden = new Set(settings.hiddenPages ?? []);

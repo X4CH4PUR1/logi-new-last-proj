@@ -467,6 +467,7 @@ Logi.data.defaults = (function () {
       formEndpoint: '',
       pinHash: null,
       hiddenPages: [],
+      hiddenLangs: [],
     },
   };
 

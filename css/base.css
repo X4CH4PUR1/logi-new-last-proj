@@ -9,6 +9,12 @@
   padding: 0;
 }
 
+/* A display rule on a class would otherwise out-rank the browser's own
+   [hidden] styling, so anything hidden through the attribute stays hidden. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;

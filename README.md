@@ -139,12 +139,15 @@ see [A note on the admin PIN](#a-note-on-the-admin-pin) below.
 | Texts | Hero copy, About paragraphs, wordmarks, dial chips, brand ticker |
 | UI text | Every button and label on the site |
 | Contacts | Address, phones, e-mail, hours, map pin |
-| Settings | Default language and theme, contact form delivery, PIN |
+| Settings | Default language and theme, which languages and pages are on, contact form delivery, PIN |
 | Publish | Export, restore, revert |
 
 The **EDIT LANG** switch in the toolbar chooses which language you are typing
 into. It is independent of the language the site is being previewed in, so you
-can read the page in English while filling in the Georgian text.
+can read the page in English while filling in the Georgian text. It always
+offers all three, including any language switched off under
+**Settings → Languages**, so translations can be kept up to date while a
+language is off the site.
 
 ### Publishing — the one thing to understand
 
