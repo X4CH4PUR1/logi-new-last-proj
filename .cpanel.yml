@@ -1,11 +1,28 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/logimoto/public_html/
+    # $HOME rather than a hard-coded /home/<user>, so the path cannot be wrong
+    # about the account name.
+    - export DEPLOYPATH=$HOME/public_html/
+
+    # Printed into the cPanel deployment log, so a failed deploy says where it
+    # was looking. Remove the ls once the path is known to be right.
+    - echo "deploying as $(whoami) from $(pwd) into $DEPLOYPATH"
+    - ls -la $HOME
+
+    # Refuse to copy anywhere that is not already this site. Without this a
+    # wrong DEPLOYPATH would overwrite whatever else lives there.
+    - test -f $DEPLOYPATH/index.html
+    - grep -q LOGIMOTORS $DEPLOYPATH/index.html
+
     - /bin/cp -R assets $DEPLOYPATH
     - /bin/cp -R css $DEPLOYPATH
     - /bin/cp -R data $DEPLOYPATH
     - /bin/cp -R js $DEPLOYPATH
     - /bin/cp -R locales $DEPLOYPATH
-    - /bin/cp -R tools $DEPLOYPATH
     - /bin/cp index.html $DEPLOYPATH
+
+    # Written last, so it only exists if every step above succeeded. Fetch
+    # https://www.logimotors.com/deploy-stamp.txt to see what is actually live.
+    - git log -1 --format="%h %s" > $DEPLOYPATH/deploy-stamp.txt
+    - date -u >> $DEPLOYPATH/deploy-stamp.txt
