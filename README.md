@@ -178,6 +178,21 @@ live. `Factory reset` goes all the way back to the demo content in
 
 ---
 
+## Deploying to cPanel
+
+`www.logimotors.com` is served from cPanel, and updates through **Git™ Version
+Control → Pull or Deploy**: *Update from Remote*, then *Deploy HEAD Commit*.
+
+That button runs [`.cpanel.yml`](.cpanel.yml), which runs
+[`tools/cpanel-deploy.sh`](tools/cpanel-deploy.sh). The script finds the
+document root rather than assuming it, copies the site there, and writes a
+`deploy-stamp.txt` as its last step — so
+<https://www.logimotors.com/deploy-stamp.txt> tells you which commit is
+actually live. If it shows an older commit than you expect, the deploy failed;
+read the tasks' output in the cPanel deployment log.
+
+---
+
 ## Deploying to GitHub Pages
 
 Push this folder to the repository, then in **Settings → Pages** set the source
