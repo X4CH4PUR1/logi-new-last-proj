@@ -5,7 +5,7 @@ Logi.data.config = (function () {
   const LANGUAGES = [
     { code: 'ka', label: 'ქარ', name: 'ქართული', htmlLang: 'ka' },
     { code: 'en', label: 'ENG', name: 'English', htmlLang: 'en' },
-    // { code: 'ru', label: 'РУС', name: 'Русский', htmlLang: 'ru' }, // რუსული ენა დროებით გამორთულია
+    { code: 'ru', label: 'РУС', name: 'Русский', htmlLang: 'ru' },
   ];
 
   const LANGUAGE_CODES = LANGUAGES.map((l) => l.code);
