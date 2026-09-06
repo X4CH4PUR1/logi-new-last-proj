@@ -184,12 +184,17 @@ live. `Factory reset` goes all the way back to the demo content in
 Control → Pull or Deploy**: *Update from Remote*, then *Deploy HEAD Commit*.
 
 That button runs [`.cpanel.yml`](.cpanel.yml), which runs
-[`tools/cpanel-deploy.sh`](tools/cpanel-deploy.sh). The script finds the
-document root rather than assuming it, copies the site there, and writes a
-`deploy-stamp.txt` as its last step — so
-<https://www.logimotors.com/deploy-stamp.txt> tells you which commit is
-actually live. If it shows an older commit than you expect, the deploy failed;
-read the tasks' output in the cPanel deployment log.
+[`tools/cpanel-deploy.sh`](tools/cpanel-deploy.sh). The script copies the
+site into the document root and leaves two files behind:
+
+- <https://www.logimotors.com/deploy-stamp.txt> — the commit that is actually
+  live. Written only on success.
+- <https://www.logimotors.com/deploy-log.txt> — everything the run printed,
+  written whether it succeeded or failed.
+
+If neither exists after a deploy, cPanel is not running the tasks in
+`.cpanel.yml` at all, which is a hosting setting rather than anything in this
+repository.
 
 ---
 

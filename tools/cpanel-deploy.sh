@@ -2,71 +2,76 @@
 # Run by cPanel's Git Version Control when you press "Deploy HEAD Commit".
 # See .cpanel.yml, which does nothing but call this file.
 #
-# Why a script rather than a list of tasks: the document root is not
-# $HOME/public_html on this account, and a hard-coded path that is wrong
-# copies the site into a directory nobody serves — silently, which is how
-# five deploys in a row appeared to succeed while the live site stayed on
-# a build from August. So the path is discovered, not assumed, and the run
-# says out loud what it found.
+# Everything this prints is copied to public_html/deploy-log.txt as the very
+# last thing it does, whether it succeeded or failed. So
+# https://www.logimotors.com/deploy-log.txt answers the question a silent
+# deploy cannot: did these tasks run at all, and what did they see?
 
 set -u
 
-# If you know the document root, put it here and discovery is skipped.
-# cPanel > Domains lists it next to logimotors.com.
+# cPanel > Domains reports /public_html as the document root for
+# logimotors.com. Set this if that ever stops being true.
 OVERRIDE=""
 
 log() { echo "[deploy] $*"; }
 
-cd "$(dirname "$0")/.." || exit 1
-REPO="$(pwd)"
+main() {
+  cd "$(dirname "$0")/.." || exit 1
+  REPO="$(pwd)"
 
-log "user    $(whoami)"
-log "home    $HOME"
-log "repo    $REPO"
-log "commit  $(git log -1 --format='%h %s')"
-log "--- contents of $HOME ---"
-ls -la "$HOME"
+  log "started $(date -u)"
+  log "user    $(whoami)"
+  log "home    $HOME"
+  log "repo    $REPO"
+  log "commit  $(git log -1 --format='%h %s')"
 
-if [ -n "$OVERRIDE" ]; then
-  DEPLOYPATH="$OVERRIDE"
-  log "using the override path $DEPLOYPATH"
-else
-  # The live site is wherever the index.html carrying the brand sits. Skip
-  # this checkout's own copy, or the deploy would find itself.
-  log "--- searching for the live index.html ---"
-  find "$HOME" -maxdepth 5 -name index.html \
-    -not -path "$REPO/*" -not -path "*/repositories/*" -not -path "*/mail/*" \
-    -exec grep -l LOGIMOTORS {} + 2>/dev/null | while read -r hit; do log "candidate  $hit"; done
+  log "--- $HOME ---"
+  ls -la "$HOME"
+  log "--- $HOME/public_html ---"
+  ls -la "$HOME/public_html" || log "there is no $HOME/public_html"
 
-  LIVE="$(find "$HOME" -maxdepth 5 -name index.html \
-    -not -path "$REPO/*" -not -path "*/repositories/*" -not -path "*/mail/*" \
-    -exec grep -l LOGIMOTORS {} + 2>/dev/null | head -n 1)"
-
-  if [ -z "$LIVE" ]; then
-    log "FAILED — no LOGIMOTORS index.html anywhere under $HOME."
-    log "The document root is outside this account. Read it off cPanel > Domains"
-    log "and set OVERRIDE at the top of this script."
-    exit 1
+  if [ -n "$OVERRIDE" ]; then
+    DEPLOYPATH="$OVERRIDE"
+  elif [ -d "$HOME/public_html" ]; then
+    DEPLOYPATH="$HOME/public_html"
+  else
+    # Fallback: the site is wherever the index.html carrying the brand sits,
+    # ignoring this checkout's own copy.
+    log "no public_html — searching for the live index.html"
+    LIVE="$(find "$HOME" -maxdepth 5 -name index.html \
+      -not -path "$REPO/*" -not -path "*/repositories/*" -not -path "*/mail/*" \
+      -exec grep -l LOGIMOTORS {} + 2>/dev/null | head -n 1)"
+    [ -n "$LIVE" ] || { log "FAILED — nothing to deploy into under $HOME."; return 1; }
+    DEPLOYPATH="$(dirname "$LIVE")"
   fi
 
-  DEPLOYPATH="$(dirname "$LIVE")"
+  log "deploying into $DEPLOYPATH"
+
+  set -e
+  for item in assets css data js locales; do
+    cp -R "$item" "$DEPLOYPATH/"
+  done
+  cp index.html "$DEPLOYPATH/"
+
+  {
+    git log -1 --format='%h %s'
+    date -u
+    echo "into $DEPLOYPATH"
+  } > "$DEPLOYPATH/deploy-stamp.txt"
+
+  log "copied. $DEPLOYPATH now holds:"
+  ls -la "$DEPLOYPATH"
+  log "finished"
+}
+
+LOG="$(mktemp)"
+main 2>&1 | tee "$LOG"
+STATUS=${PIPESTATUS[0]}
+
+# Last act, and deliberately outside main: even a failed run leaves its
+# reasoning somewhere fetchable.
+if [ -d "$HOME/public_html" ]; then
+  cp "$LOG" "$HOME/public_html/deploy-log.txt"
 fi
-
-log "deploying into $DEPLOYPATH"
-[ -d "$DEPLOYPATH" ] || { log "FAILED — $DEPLOYPATH is not a directory."; exit 1; }
-
-set -e
-for item in assets css data js locales; do
-  cp -R "$item" "$DEPLOYPATH/"
-done
-cp index.html "$DEPLOYPATH/"
-
-# Written last, so it exists only if everything above succeeded. Fetching
-# https://www.logimotors.com/deploy-stamp.txt then shows what is really live.
-{
-  git log -1 --format='%h %s'
-  date -u
-  echo "into $DEPLOYPATH"
-} > "$DEPLOYPATH/deploy-stamp.txt"
-
-log "done — $(tr '\n' ' ' < "$DEPLOYPATH/deploy-stamp.txt")"
+rm -f "$LOG"
+exit "$STATUS"
