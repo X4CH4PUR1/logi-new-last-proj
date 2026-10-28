@@ -9,6 +9,9 @@
 
 set -u
 
+# cPanel does not guarantee much about the environment it hands these tasks.
+: "${HOME:=/home/logimoto}"
+
 # cPanel > Domains reports /public_html as the document root for
 # logimotors.com. Set this if that ever stops being true.
 OVERRIDE=""

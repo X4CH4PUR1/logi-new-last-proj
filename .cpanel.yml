@@ -1,4 +1,12 @@
 ---
 deployment:
   tasks:
-    - /bin/bash tools/cpanel-deploy.sh
+    # A bare probe, using nothing but absolute paths and a redirect. If this
+    # file turns up and deploy-log.txt does not, the tasks are running and the
+    # script below is what is not being found. If neither turns up, cPanel is
+    # not executing these tasks at all.
+    - /bin/date -u > /home/logimoto/public_html/deploy-heartbeat.txt
+
+    # Absolute, because cPanel's working directory for tasks is not guaranteed
+    # to be the repository.
+    - /bin/bash /home/logimoto/repositories/logi-new-last-proj/tools/cpanel-deploy.sh
