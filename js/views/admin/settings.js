@@ -85,6 +85,15 @@ Logi.views.admin.settings = (function () {
                 patchDebounced((draft) => {
                   draft.settings.formEndpoint = value.trim();
                 }),
+            }),
+            textInput({
+              label: 'Form access key (Web3Forms)',
+              value: settings.formAccessKey,
+              placeholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+              onInput: (value) =>
+                patchDebounced((draft) => {
+                  draft.settings.formAccessKey = value.trim();
+                }),
             })
           )
         ),

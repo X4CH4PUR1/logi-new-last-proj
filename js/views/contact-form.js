@@ -68,12 +68,16 @@ Logi.views["contact-form"] = (function () {
 
   async function deliver(values) {
     const endpoint = settings().formEndpoint?.trim();
+    const accessKey = settings().formAccessKey?.trim();
 
     if (endpoint) {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
+          ...(accessKey && { access_key: accessKey }),
+          subject: `Website enquiry — ${values.name}`,
+          from_name: 'Logi Motors website',
           name: values.name,
           phone: values.phone,
           message: values.msg,
@@ -81,6 +85,8 @@ Logi.views["contact-form"] = (function () {
         }),
       });
       if (!response.ok) throw new Error(`Form endpoint returned ${response.status}`);
+      const result = await response.json().catch(() => ({}));
+      if (result.success === false) throw new Error(result.message || 'Form endpoint rejected the submission');
       return;
     }
 

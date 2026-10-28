@@ -464,7 +464,8 @@ Logi.data.defaults = (function () {
     settings: {
       defaultLang: 'en',
       defaultTheme: 'night',
-      formEndpoint: '',
+      formEndpoint: 'https://api.web3forms.com/submit',
+      formAccessKey: 'c07ef491-8b66-4b6a-a048-1ce877d79224',
       pinHash: null,
       hiddenPages: [],
       hiddenLangs: [],
