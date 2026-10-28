@@ -373,6 +373,11 @@
   color: var(--muted);
 }
 
+.site-footer__credit-btn {
+  color: var(--text);
+  text-decoration: none;
+}
+
 @media (max-width: 900px) {
   :root {
     --gutter: 20px;
