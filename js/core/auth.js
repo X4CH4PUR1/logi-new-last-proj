@@ -26,14 +26,14 @@ Logi.core.auth = (function () {
   }
 
   async function setPin(pin) {
-    if (!/^\d{4,12}$/.test(pin)) {
-      return { ok: false, reason: 'The PIN must be 4 to 12 digits.' };
+    if (pin.length < 6 || pin.length > 64) {
+      return { ok: false, reason: 'The password must be 6 to 64 characters.' };
     }
     const hashed = await hashPin(pin);
     if (hashed === null) {
       return {
         ok: false,
-        reason: 'Changing the PIN needs a secure context. Open the site over https or on localhost.',
+        reason: 'Changing the password needs a secure context. Open the site over https or on localhost.',
       };
     }
     store.update((draft) => {

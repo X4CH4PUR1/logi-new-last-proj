@@ -192,18 +192,18 @@ Logi.views.admin.settings = (function () {
 
       const message = h('p.hint', {
         text: auth.usingDefaultPin()
-          ? 'This site is still using the default PIN of 1234. Change it.'
-          : 'A PIN is set.',
+          ? 'This site is still using the default password. Change it.'
+          : 'A password is set.',
         style: auth.usingDefaultPin() ? { color: 'var(--accent)' } : null,
       });
 
       const change = async () => {
         if (!(await auth.verify(current))) {
-          toast.error('The current PIN is not correct.');
+          toast.error('The current password is not correct.');
           return;
         }
         if (next !== confirm) {
-          toast.error('The two new PINs do not match.');
+          toast.error('The two new passwords do not match.');
           return;
         }
         const result = await auth.setPin(next);
@@ -211,12 +211,12 @@ Logi.views.admin.settings = (function () {
           toast.error(result.reason);
           return;
         }
-        toast.show('PIN changed. It applies once you publish.');
+        toast.show('Password changed. Publish to make it take effect.');
         render();
       };
 
       return editorPanel(
-        'Admin PIN',
+        'Admin password',
         h(
           'div',
           { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
@@ -231,7 +231,7 @@ Logi.views.admin.settings = (function () {
             'div.admin-editor__grid',
             {},
             textInput({
-              label: 'Current PIN',
+              label: 'Current password',
               type: 'password',
               value: '',
               onInput: (value) => {
@@ -239,16 +239,16 @@ Logi.views.admin.settings = (function () {
               },
             }),
             textInput({
-              label: 'New PIN',
+              label: 'New password',
               type: 'password',
               value: '',
-              hint: '4 to 12 digits',
+              hint: 'At least 6 characters — letters, digits, anything',
               onInput: (value) => {
                 next = value;
               },
             }),
             textInput({
-              label: 'Repeat new PIN',
+              label: 'Repeat new password',
               type: 'password',
               value: '',
               onInput: (value) => {
@@ -256,7 +256,7 @@ Logi.views.admin.settings = (function () {
               },
             })
           ),
-          h('div', {}, primaryButton('Change PIN', change))
+          h('div', {}, primaryButton('Change password', change))
         )
       );
     }

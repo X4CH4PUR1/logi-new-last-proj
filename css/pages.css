@@ -498,23 +498,39 @@
   margin-bottom: 24px;
 }
 
+/* Every post gets the same card height whatever the language — Georgian runs
+   noticeably longer than English for the same text. What does not fit fades
+   out behind a "Read more" button (news.js), which opens the card fully. */
 .news-item {
+  --news-height: 256px;
   display: flex;
   flex-wrap: wrap;
+  height: var(--news-height);
   --notch: var(--notch-md);
+}
+
+.news-item.is-open {
+  height: auto;
 }
 
 .news-item__media {
   width: 240px;
+  height: var(--news-height);
   flex: none;
   object-fit: cover;
-  align-self: stretch;
 }
 
 .news-item__body {
   padding: 28px 30px;
   flex: 1;
   min-width: 280px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-item.is-open .news-item__body {
+  height: auto;
 }
 
 .news-item__date {
@@ -536,6 +552,36 @@
   color: var(--muted);
   font-size: 15px;
   line-height: 1.7;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.news-item.is-clipped .news-item__text {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 3em), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 3em), transparent);
+}
+
+.news-item.is-open .news-item__text {
+  overflow: visible;
+  white-space: pre-line;
+}
+
+.news-item__more {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.news-item__more:hover {
+  text-decoration: underline;
 }
 
 .news-teaser {
@@ -742,9 +788,23 @@
     font-size: 56px;
   }
 
+  /* Stacked: the photo sits on top, so the fixed height moves to the text. */
+  .news-item {
+    height: auto;
+  }
+
   .news-item__media {
     width: 100%;
     height: 200px;
+  }
+
+  .news-item__text {
+    flex: none;
+    max-height: calc(1.7em * 6);
+  }
+
+  .news-item.is-open .news-item__text {
+    max-height: none;
   }
 
   .cta-band__phones {

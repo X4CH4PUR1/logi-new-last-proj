@@ -79,6 +79,8 @@ Logi.locales.ru =
   formError: 'Не удалось отправить сообщение. Пожалуйста, позвоните нам.',
 
   newsEmpty: 'Новостей пока нет.',
+  newsReadMore: 'Читать полностью',
+  newsShowLess: 'Свернуть',
   galleryEmpty: 'Фотографий пока нет.',
   prev: 'Назад',
   next: 'Вперёд',

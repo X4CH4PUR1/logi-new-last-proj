@@ -448,7 +448,8 @@
           <div class="news-item__body">
             <p class="news-item__date" data-ref="dateP"><time data-bind-attr="datetime:date" data-bind="date"></time></p>
             <h2 class="news-item__title" data-bind="title"></h2>
-            <p class="news-item__text" data-bind="body"></p>
+            <p class="news-item__text" data-ref="textP" data-bind="body"></p>
+            <button type="button" class="news-item__more" data-ref="moreBtn" hidden></button>
           </div>
         </article>
       </template>

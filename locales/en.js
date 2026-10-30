@@ -79,6 +79,8 @@ Logi.locales.en =
   formError: 'Could not send the message. Please call us instead.',
 
   newsEmpty: 'No news posts yet.',
+  newsReadMore: 'Read more',
+  newsShowLess: 'Show less',
   galleryEmpty: 'No photos yet.',
   prev: 'Previous',
   next: 'Next',

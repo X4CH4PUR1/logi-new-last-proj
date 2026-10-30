@@ -117,11 +117,11 @@ npx serve .
 The editor lives at an **unlisted address**:
 
 ```
-https://<your-site>/#/control-room
+https://<your-site>/#/<ADMIN_PATH in js/data/config.js>
 ```
 
-There is deliberately no link to it anywhere on the site — bookmark it. The
-default PIN is **1234**; change it in Settings.
+There is deliberately no link to it anywhere on the site — bookmark it. Change the
+admin password in Settings, then publish.
 
 To move it somewhere else, change one line — `ADMIN_PATH` in
 [js/data/config.js](js/data/config.js). Nothing else refers to the old path.

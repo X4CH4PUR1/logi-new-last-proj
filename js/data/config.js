@@ -13,7 +13,7 @@ Logi.data.config = (function () {
   const DEFAULT_LANGUAGE = 'en';
   const DEFAULT_THEME = 'night';
 
-  const ADMIN_PATH = 'control-room';
+  const ADMIN_PATH = 'lm-c6474fc79c54';
 
   const ROUTES = [
     { key: 'home', path: '', labelKey: 'navHome', nav: true },

@@ -3,7 +3,7 @@ Logi.views = Logi.views || {};
 Logi.views.admin = Logi.views.admin || {};
 Logi.views.admin.index = (function () {
 
-  const { h, mount, when } = Logi.core.dom;
+  const { h, mount } = Logi.core.dom;
   const store = Logi.core.store;
   const router = Logi.core.router;
   const auth = Logi.core.auth;
@@ -48,7 +48,7 @@ Logi.views.admin.index = (function () {
         onAuthChange();
         return;
       }
-      error.textContent = 'That PIN is not correct.';
+      error.textContent = 'That password is not correct.';
       error.hidden = false;
     };
 
@@ -65,10 +65,9 @@ Logi.views.admin.index = (function () {
           { on: { submit } },
           h('input.input.admin-lock__pin', {
             type: 'password',
-            inputmode: 'numeric',
             autocomplete: 'current-password',
-            placeholder: 'PIN',
-            'aria-label': 'Admin PIN',
+            placeholder: 'Password',
+            'aria-label': 'Admin password',
             on: {
               input: (event) => {
                 pin = event.currentTarget.value;
@@ -78,13 +77,7 @@ Logi.views.admin.index = (function () {
           }),
           h('button.btn.btn--primary.btn--block', { type: 'submit', text: 'Enter' })
         ),
-        error,
-        when(auth.usingDefaultPin(), () =>
-          h('p.hint', {
-            style: { marginTop: '18px' },
-            text: 'Default PIN: 1234 — change it in Settings once you are in.',
-          })
-        )
+        error
       )
     );
   }

@@ -28,13 +28,29 @@ Logi.views.news = (function () {
 
   function article(post) {
     const root = tpl.clone('news-article');
-    const { dateP } = tpl.refs(root);
+    const { dateP, textP, moreBtn } = tpl.refs(root);
     tpl.place(root, 'media', post.img
       ? media({ src: post.img, alt: post.title, className: 'news-item__media' })
       : null);
     tpl.toggle(dateP, !!post.date);
     tpl.bind(root, { date: post.date, title: post.title, body: post.body });
     tpl.bindAttr(root, { date: post.date });
+
+    // Whether the text is cut off is only known once the card is laid out,
+    // and changes with the window width.
+    const sync = () => {
+      const open = root.classList.contains('is-open');
+      const clipped = !open && textP.scrollHeight > textP.clientHeight + 1;
+      root.classList.toggle('is-clipped', clipped);
+      moreBtn.hidden = !open && !clipped;
+      moreBtn.textContent = t(open ? 'newsShowLess' : 'newsReadMore');
+    };
+    moreBtn.addEventListener('click', () => {
+      root.classList.toggle('is-open');
+      sync();
+    });
+    new ResizeObserver(sync).observe(textP);
+
     return root;
   }
 

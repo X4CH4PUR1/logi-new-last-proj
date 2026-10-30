@@ -79,6 +79,8 @@ Logi.locales.ka =
   formError: 'შეტყობინების გაგზავნა ვერ მოხერხდა. გთხოვთ დაგვირეკოთ.',
 
   newsEmpty: 'სიახლეები ჯერ არ არის.',
+  newsReadMore: 'სრულად ნახვა',
+  newsShowLess: 'აკეცვა',
   galleryEmpty: 'ფოტოები ჯერ არ არის.',
   prev: 'წინა',
   next: 'შემდეგი',
