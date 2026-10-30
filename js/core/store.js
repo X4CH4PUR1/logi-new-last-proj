@@ -125,6 +125,17 @@ Logi.core.store = (function () {
     notify();
   }
 
+  // `stored` is what the server saved (photos swapped for file URLs); `sent` is
+  // what was posted. Edits made while the request was in flight stay a draft.
+  function markPublished(stored, sent) {
+    published = merge(DEFAULT_CONTENT, stored);
+    if (sameContent(content, sent)) content = clone(published);
+    dirty = !sameContent(content, published);
+    if (dirty) storage.writeJSON(STORAGE.content, content);
+    else storage.remove(STORAGE.content);
+    notify();
+  }
+
   function resetToDefaults() {
     storage.remove(STORAGE.content);
     content = clone(DEFAULT_CONTENT);
@@ -162,5 +173,5 @@ Logi.core.store = (function () {
     return `${JSON.stringify(content, null, 2)}\n`;
   }
 
-  return { clone, merge, init, getContent, getPublished, isDirty, getLastSave, update, revertToPublished, resetToDefaults, replaceAll, subscribe, toJSON };
+  return { clone, merge, init, getContent, getPublished, isDirty, getLastSave, update, revertToPublished, markPublished, resetToDefaults, replaceAll, subscribe, toJSON };
 })();

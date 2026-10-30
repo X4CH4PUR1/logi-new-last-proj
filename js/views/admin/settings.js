@@ -224,7 +224,7 @@ Logi.views.admin.settings = (function () {
             text:
               'This lock keeps the editor out of the way of ordinary visitors. It is not security: ' +
               'the check runs in the browser, so anyone determined can get past it and edit their own ' +
-              'copy of the page. What protects the live site is that publishing needs a commit to the repository.',
+              'copy of the page. What protects the live site is the publish password, which the server checks.',
           }),
           message,
           h(

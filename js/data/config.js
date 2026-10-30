@@ -33,9 +33,12 @@ Logi.data.config = (function () {
     lang: 'logi:lang',
     theme: 'logi:theme',
     session: 'logi:admin-session',
+    publishKey: 'logi:publish-key',
   };
 
   const CONTENT_URL = 'data/content.json';
+
+  const PUBLISH_URL = 'api/publish.php';
 
   const DEFAULT_PIN = '1234';
 
@@ -49,5 +52,5 @@ Logi.data.config = (function () {
   const MODES = ['sale', 'rent'];
   const CONDITIONS = ['new', 'used'];
 
-  return { LANGUAGES, LANGUAGE_CODES, DEFAULT_LANGUAGE, DEFAULT_THEME, ADMIN_PATH, ROUTES, NAV_ROUTES, STORAGE, CONTENT_URL, DEFAULT_PIN, PIN_SALT, IMAGE_MAX_EDGE, IMAGE_QUALITY, FORKLIFT_CATEGORY, MODES, CONDITIONS };
+  return { LANGUAGES, LANGUAGE_CODES, DEFAULT_LANGUAGE, DEFAULT_THEME, ADMIN_PATH, ROUTES, NAV_ROUTES, STORAGE, CONTENT_URL, PUBLISH_URL, DEFAULT_PIN, PIN_SALT, IMAGE_MAX_EDGE, IMAGE_QUALITY, FORKLIFT_CATEGORY, MODES, CONDITIONS };
 })();

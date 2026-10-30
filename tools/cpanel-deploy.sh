@@ -51,10 +51,19 @@ main() {
   log "deploying into $DEPLOYPATH"
 
   set -e
-  for item in assets css data js locales; do
+  for item in api assets css js locales; do
     cp -R "$item" "$DEPLOYPATH/"
   done
   cp index.html "$DEPLOYPATH/"
+
+  # The live content is written by the control room's Publish button
+  # (api/publish.php), not by git. Copying data/ over it would roll the site
+  # back to whatever the repository happens to hold, so only seed it once.
+  if [ -s "$DEPLOYPATH/data/content.json" ]; then
+    log "keeping the live data/content.json"
+  else
+    cp -R data "$DEPLOYPATH/"
+  fi
 
   {
     git log -1 --format='%h %s'

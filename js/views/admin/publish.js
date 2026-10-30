@@ -6,9 +6,15 @@ Logi.views.admin.publish = (function () {
   const { h, mount, when } = Logi.core.dom;
   const store = Logi.core.store;
   const toast = Logi.core.toast;
-  const { CONTENT_URL } = Logi.data.config;
+  const { CONTENT_URL, PUBLISH_URL, STORAGE } = Logi.data.config;
   const { formatBytes } = Logi.util.image;
-  const { usageBytes, hasLocalStorage } = Logi.util.storage;
+  const { usageBytes, hasLocalStorage, readString, writeString, remove } = Logi.util.storage;
+
+  // Outside publishTab: publishing re-renders the whole app, which rebuilds
+  // this tab, and the outcome has to survive that.
+  let busy = false;
+  let outcome = null;
+
   function publishTab() {
     const panel = h('div.admin__panel');
 
@@ -20,8 +26,8 @@ Logi.views.admin.publish = (function () {
         panel,
         h('p.admin__panel-intro', {
           text:
-            'Your edits are saved in this browser as you make them. To put them in front of visitors, ' +
-            'download the content file and commit it to the repository — that is what everyone else loads.',
+            'Your edits are saved in this browser as you make them. Visitors see them only after you ' +
+            'publish — that writes them straight to the live site, photos included.',
         }),
 
         when(!hasLocalStorage, () =>
@@ -39,14 +45,15 @@ Logi.views.admin.publish = (function () {
         h(
           'div.admin-publish',
           {},
+          publishStep(dirty),
+
           step(
-            '01',
-            'Download the content file',
-            dirty
-              ? 'You have changes that visitors cannot see yet.'
-              : 'Everything currently matches what is published. You can still re-download the file.',
+            '↓',
+            'Keep a copy',
+            'Download everything as a single file — a backup you can load again below. ' +
+              `The server also keeps the last 30 published versions of ${CONTENT_URL}.`,
             [
-              h('button.btn.btn--primary.btn--sm', {
+              h('button.btn.btn--ghost.btn--sm', {
                 type: 'button',
                 text: `Download ${CONTENT_URL.split('/').pop()}`,
                 on: { click: () => download(json) },
@@ -58,27 +65,6 @@ Logi.views.admin.publish = (function () {
                 on: { click: () => copy(json) },
               }),
             ]
-          ),
-
-          step(
-            '02',
-            'Put it in the repository',
-            `Replace the file at ${CONTENT_URL} in your project folder with the one you just downloaded, ` +
-              'then commit and push. GitHub Pages rebuilds within a minute or two.',
-            [
-              h('code.admin-publish__code', {
-                text: `git add ${CONTENT_URL}\ngit commit -m "Update site content"\ngit push`,
-                style: { whiteSpace: 'pre' },
-              }),
-            ]
-          ),
-
-          step(
-            '03',
-            'Check the live site',
-            'Once the deploy finishes, reload the public site. This panel notices that your draft now ' +
-              'matches what is published and clears the “unpublished changes” marker on its own.',
-            []
           ),
 
           backupStep(),
@@ -102,6 +88,101 @@ Logi.views.admin.publish = (function () {
         h('p.admin-publish__step-text', { text }),
         ...children
       );
+    }
+
+    function publishStep(dirty) {
+      const remembered = readString(STORAGE.publishKey, '');
+      const keyInput = h('input.input', {
+        type: 'password',
+        autocomplete: 'current-password',
+        placeholder: 'Publish password',
+        value: remembered,
+        style: { maxWidth: '320px' },
+      });
+      const rememberBox = h('input.checkbox', { type: 'checkbox', checked: remembered !== '' });
+
+      return h(
+        'div.admin-publish__step',
+        {},
+        h('p.admin-publish__step-num', { text: '01' }),
+        h('p.admin-publish__step-title', { text: 'Publish to the live site' }),
+        h('p.admin-publish__step-text', {
+          text: dirty
+            ? 'You have changes that visitors cannot see yet.'
+            : 'Everything currently matches what is published.',
+        }),
+        h(
+          'form',
+          {
+            style: { display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-start' },
+            on: {
+              submit: (event) => {
+                event.preventDefault();
+                publish(keyInput.value.trim(), rememberBox.checked);
+              },
+            },
+          },
+          keyInput,
+          h('label.field--checkbox', {}, rememberBox, h('span', { text: ' Remember the password on this device' })),
+          h('button.btn.btn--primary.btn--sm', {
+            type: 'submit',
+            text: busy ? 'Publishing…' : dirty ? 'Publish now' : 'Publish again',
+            disabled: busy,
+          })
+        ),
+        when(outcome, () =>
+          h('p.admin-publish__step-text', {
+            role: 'status',
+            text: outcome.text,
+            style: { marginTop: '12px', color: outcome.ok ? null : 'var(--accent)' },
+          })
+        )
+      );
+    }
+
+    async function publish(key, rememberKey) {
+      if (!key) {
+        toast.error('Enter the publish password first.');
+        return;
+      }
+      if (rememberKey) writeString(STORAGE.publishKey, key);
+      else remove(STORAGE.publishKey);
+
+      const sent = store.clone(store.getContent());
+      busy = true;
+      outcome = null;
+      render();
+
+      try {
+        const res = await fetch(PUBLISH_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key, content: sent }),
+          cache: 'no-store',
+        });
+        const reply = await res.json().catch(() => null);
+        if (!reply) {
+          throw new Error(
+            res.status === 404 || res.status === 405
+              ? 'This copy of the site cannot publish. Open the control room on the live site (logimotors.com) instead.'
+              : `The server answered ${res.status} without saying why.`
+          );
+        }
+        if (!reply.ok) {
+          if (res.status === 403) remove(STORAGE.publishKey);
+          throw new Error(reply.error || `The server answered ${res.status}.`);
+        }
+
+        busy = false;
+        outcome = { ok: true, text: `Published at ${new Date().toLocaleTimeString()}. Visitors now see these changes.` };
+        toast.show('Published — the live site is updated');
+        store.markPublished(reply.content, sent);
+      } catch (err) {
+        busy = false;
+        outcome = { ok: false, text: err.message || 'Publishing failed — check your connection.' };
+        toast.error(outcome.text);
+      }
+      render();
     }
 
     function backupStep() {
@@ -188,7 +269,7 @@ Logi.views.admin.publish = (function () {
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast.show('Downloaded — now commit it to the repository');
+      toast.show('Downloaded');
     }
 
     async function copy(json) {
